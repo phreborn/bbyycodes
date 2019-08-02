@@ -7,21 +7,22 @@
 #include "JSONDoc.h"
 #include "serializers.h"
 
-#include "modelIterator.h"
+#include "algorithm.h"
 #include "Controller.h"
 
 using json = nlohmann::json;
 
 
 JSONParser::JSONParser(std::string f):fileName(f) {;}
-void JSONParser::setIterator(modelIterator* i) {iterator=i;}
+void JSONParser::setAlgorithm(algorithm* i) {algorithms.push_back(i);}
 void JSONParser::parseAndIterate() {
 	std::ifstream fileIn(fileName);
 	json j = json::parse(fileIn);
 
 	json &jj=j;
 	CreateDocument(jj);
-	iterator->IterateModel(jj);
+	for (auto it:algorithms)
+		it->execute();
 }
 void JSONParser::parse() {
 	std::ifstream fileIn(fileName);
@@ -40,7 +41,15 @@ void JSONParser::CreateDocument(json& jj)
       	json pp=val;
 
         std::string key = it.key();
-        if (key == "bins") {
+	if (key == "sequencer") {
+		document.algorithms = pp;
+		for (auto it:document.algorithms.items)
+		{
+			std::cout << " setting algorithm "<<it<<std::endl;
+			setAlgorithm(Controller::getController()->getAlgorithm(it));
+		}
+	}
+        else if (key == "bins") {
         	document.bins = pp;
         }
         else if (key == "directories") {
@@ -49,8 +58,8 @@ void JSONParser::CreateDocument(json& jj)
         else if (key == "lumi") {
             document.luminosity = pp;
         }
-        else if (key == "myy_var") {
-            document.variables.variable = it.value();
+        else if (key == "variables") {
+            document.variables = pp;
         }
         else if (key == "samples") {
             document.samples = pp;

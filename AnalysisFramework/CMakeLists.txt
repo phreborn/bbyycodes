@@ -10,7 +10,16 @@ include_directories(${PROJECT_SOURCE_DIR}/include ${ROOT_INCLUDE_DIRS})
 SET(CMAKE_CXX_FLAGS "-std=c++1y")
 
 #file(GLOB SOURCES "src/main.cxx")
-add_executable(hhbbyy src/main.cxx src/YieldIterator.cxx src/JSONParser.cxx src/Controller.cxx)
+add_executable(hhbbyy 
+		src/main.cxx 
+		src/JSONParser.cxx 
+		src/YieldIterator.cxx
+		src/ROOTHelper.cxx 
+		src/DataAnalysis.cxx
+		src/VariablePlotter.cxx 
+		src/Controller.cxx
+		src/Plotting.cxx
+		src/PrettyPlotter.cxx)
 target_link_libraries(hhbbyy ${ROOT_LIBRARIES} )
 
 #add_executable(hhbbyy_data src/main_data.cxx)

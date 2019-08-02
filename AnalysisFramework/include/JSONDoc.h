@@ -3,6 +3,7 @@
 #include <string>
 #include <nlohmann/json.hpp>
 #include <map>
+#include <vector>
 
 using nlohmann::json;
 
@@ -11,33 +12,41 @@ using nlohmann::json;
 namespace mytest {
   
 
+	struct Sequences {
+		std::vector<std::string> items;
+	};
+
+        struct Bins {
+               int nBins=55;
+               double lowerBin=105;
+               double upperBin=160;
+        };
+
         struct Dir {
+	       std::string dataDir="root://eosatlas.cern.ch//eos/atlas/user/a/altaylor/bbgg/h024/";
                std::map <std::string, std::string, std::less<std::string> > dirMap;
         };
 
  
         struct Var {
-               std::string variable; 
+                std::map <std::string, std::pair<std::string,Bins>, std::less<std::string> > varMap; 
         };
 
         struct Sel {
-               std::map <std::string, std::string, std::less<std::string> > selMap;
+                std::map <std::string, std::string, std::less<std::string> > selMap;
+		std::string dataSel;
+		std::string weight;
         };
-
 
         struct Lumi {
                std::map <std::string, double, std::less<std::string> > lumiMap;
         };
 
-        struct Bins {
- 	       int nBins=55;
-               double lowerBin=105;
-               double upperBin=160;	
-        };
-
 	struct aSample {
 	       std::map <std::string, std::string, std::less<std::string> > sampleMap;
 	       std::string histoName;
+	       std::string color;
+	       std::string legendEntry;
 	};
 
         struct MCSamples {
@@ -48,6 +57,7 @@ namespace mytest {
 
 
         struct JSONData {
+		Sequences algorithms;
                 Dir directories;
                 Var variables;
                 Sel selections;

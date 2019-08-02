@@ -3,7 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-class modelIterator;
+class algorithm;
 
 using json = nlohmann::json;
 
@@ -11,12 +11,12 @@ using json = nlohmann::json;
 class JSONParser {
 public:
 	JSONParser(std::string f);
-	void setIterator(modelIterator* i);
+	void setAlgorithm(algorithm* i);
         void parseAndIterate(); 
 	void parse();
 	void CreateDocument(json& jj);
 private:
-	modelIterator* iterator;
+	std::vector<algorithm*> algorithms;
 	std::string fileName;
 
 };

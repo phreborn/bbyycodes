@@ -15,8 +15,8 @@
 
 #include "algorithm.h"
 
-class YieldIterator: public algorithm {
+class DataAnalysis: public algorithm {
 public:
-	YieldIterator(std::string name):algorithm(name) {;}
+	DataAnalysis(std::string name):algorithm(name) {;}
 	void execute() final override;
 };

@@ -1,5 +1,6 @@
 #include "JSONParser.h"
-#include "YieldIterator.h"
+#include <iostream>
+#include "Controller.h"
 
 int main (int argc, char* argv[]) {
 
@@ -9,7 +10,6 @@ int main (int argc, char* argv[]) {
 	fileName=argv[1];
 
   JSONParser jp(fileName);
-  jp.setIterator(new YieldIterator);
   jp.parseAndIterate();
 
   std::cout << "DONE! exiting with return code 0 " << std::endl;

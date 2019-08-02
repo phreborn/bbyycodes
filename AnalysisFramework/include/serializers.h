@@ -10,10 +10,27 @@ using nlohmann::json;
 namespace mytest {
   
 
+	void from_json(const json& j, Sequences& p)
+	{
+		for (auto it = j.begin(); it != j.end(); ++it) {
+			p.items.push_back(it.value());
+		}
+	}
+	void from_json(const json& j, Bins& p)
+        {
+                if (j.find("nbins")!=j.end())
+                        p.nBins=j.at("nbins").get<int>();
+                if (j.find("lbins")!=j.end())
+                        p.lowerBin=j.at("lbins").get<double>();
+                if (j.find("ubins")!=j.end())
+                        p.upperBin=j.at("ubins").get<double>();
+        }
+
         void from_json(const json& j, Dir& p)
         {
                 for (auto it = j.begin(); it != j.end(); ++it) {
-                    p.dirMap [it.key()]=it.value();
+		    if (it.key()=="data") p.dataDir=it.value();
+                    else p.dirMap [it.key()]=it.value();
                 }
 
         }
@@ -21,17 +38,44 @@ namespace mytest {
 
         void from_json(const json& j, Var& p)
         {
-                if (j.find("myy_var")!=j.end())
-                        p.variable=j.at("myy_var").get<std::string>();
+                for (auto it = j.begin(); it != j.end(); ++it) {
+		    std::string varName=it.key();
+		    const json& jj=it.value();
+		    std::string varValue="";
+		    Bins b;
+		    for (auto ir=jj.begin();ir!=jj.end();++ir)
+		    {
+			if (ir.key()=="var") varValue=ir.value();
+			else if (ir.key()=="bins") b=ir.value();
+			else std::cout<<" something is very wrong in variables!"<<ir.key()<<std::endl;
+		    }
+		    auto varP=std::make_pair(varValue,b);		    
+                    p.varMap [varName]=varP;
+                } 
         }
 
 
         void from_json(const json& j, Sel& p)
         {
-                for (auto it = j.begin(); it != j.end(); ++it) {
-                    p.selMap [it.key()]=it.value();
-                }
 
+		if (j.find("weight")!=j.end())
+		{
+			p.weight=j.at("weight").get<std::string>();
+		}
+		if (j.find("cutFlows")!=j.end())
+		{
+			const json& jj = j.at("cutFlows");
+			for (auto ik= jj.begin(); ik != jj.end(); ++ik)
+			{ 
+				std::cout<<" selection found "<<std::endl;
+				std::cout<<" \t selection "<<ik.key()<<std::endl;
+				std::cout<<" \t\t "<<ik.value()<<std::endl<<std::endl;
+				if (ik.key()=="data")
+					p.dataSel=ik.value();
+				else
+					p.selMap[ik.key()]=ik.value();
+			}
+		}
         }
 
 
@@ -42,18 +86,8 @@ namespace mytest {
 		    p.lumiMap [it.key()]=it.value();
 		}	
 		
-		}
+	}
 
-
-        void from_json(const json& j, Bins& p)
-        {
-                if (j.find("nbins_myy")!=j.end())
-                	p.nBins=j.at("nbins_myy").get<int>();
-                if (j.find("lbins_myy")!=j.end())
-                        p.lowerBin=j.at("lbins_myy").get<double>();
-                if (j.find("ubins_myy")!=j.end())
-                        p.upperBin=j.at("ubins_myy").get<double>();
-        }
 
         void from_json(const json& j, MCSamples& p)
         {      
@@ -70,6 +104,10 @@ namespace mytest {
 		 }
                  if (jjj.find("histoName")!=jjj.end())
                          x.histoName=jjj.at("histoName").get<std::string>();
+		 if (jjj.find("color")!=jjj.end())
+                         x.color=jjj.at("color").get<std::string>();
+		 if (jjj.find("legendEntry")!=jjj.end())
+                         x.legendEntry=jjj.at("legendEntry").get<std::string>();
 			 
 		 p.samples[it.key()]=x;
         
