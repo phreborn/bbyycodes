@@ -3,14 +3,16 @@
 # If you have any questions, please contact us: valentina.maria.cairo@cern.ch, michael.edward.nelson@cern.ch
 
 
-Structure:
+#Structure:
 
 PyPlotter.py =  A collection of functions for making stack plots from root inputs
+
 histoDictionary.py = A python directory summarising the plotting properties of each histogram produced for the final plots (add your new histograms here)
+
 plottingScheduler.py = Script to stage the various different plots and plotting confirguriations, based on the other dictionaries and functions defined in this package. It reads 3 arguments from command line: -m for mcOnly usage (defaulted to false), -i for path_to_inputs (defaulted to ""), -o for path_to_output (defaulted to "./Plots/")
 
 
-Instructions:
+#Instructions:
 
 cd bbyyPlotter
 
