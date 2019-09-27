@@ -23,6 +23,20 @@ def PlottingDict():
             'x-max' : 160,
             'nBinsX' : 10
         },
+        'sumHisto_pT_yy_': {
+            'x-axis title': '#it{p_{T}}_{#gamma#gamma} [GeV]',
+            'y-axis title': 'Events / 5 GeV',
+            'x-min' : 500,
+            'x-max' : 500500,
+            'nBinsX' : 100 
+        },
+        'sumHisto_pT_jj_': {
+            'x-axis title': '#it{p_{T}}_{jj} [GeV]',
+            'y-axis title': 'Events / 5 GeV',
+            'x-min' : 500,
+            'x-max' : 500500,
+            'nBinsX' : 100
+        },
         'sumHisto_m_yyjj_tilde_': { 
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} [GeV]',
             'y-axis title': 'Events / 25 GeV',
@@ -30,6 +44,21 @@ def PlottingDict():
             'x-max' : 500,
             'nBinsX' : 15
         },
+        'sumHisto_pT_yy_div_m_yyjj_tilde_': {
+            'x-axis title': '#it{p_{T}}_{#gamma#gamma} / Mtilde',
+            'y-axis title': 'Events / 5 GeV',
+            'x-min' : 0,
+            'x-max' : 1000,
+            'nBinsX' : 100 
+        },
+        'sumHisto_pT_jj_div_m_yyjj_tilde_': {
+            'x-axis title': '#it{p_{T}}_{jj} / Mtilde',
+            'y-axis title': 'Events / 5 GeV',
+            'x-min' : 0,
+            'x-max' : 1000,
+            'nBinsX' : 100
+        },
+
         'sumHisto_deltaR_yy_': { 
             'x-axis title': '#Delta#it{R}(#gamma,#gamma)',
             'y-axis title': 'Events / 0.2',

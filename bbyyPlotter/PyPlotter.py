@@ -12,11 +12,12 @@ from array import array
 import collections
 from math import sqrt
 
-def initializeLegend(x1=0.65, y1=0.70, x2=0.85, y2=0.75):
+def initializeLegend(x1=0.65, y1=0.70, x2=0.75, y2=0.73):
     aLegend = r.TLegend(x1, y1, x2, y2);
     aLegend.SetLineColor(r.kWhite);
     aLegend.SetFillColor(r.kWhite);
     aLegend.SetTextSize(0.030);
+    aLegend.SetNColumns(2);
     aLegend.SetBorderSize(0);
     aLegend.SetTextFont(42) # Remove bold text
     
@@ -35,6 +36,17 @@ def addStack(histo, stack, color, legend, legendText):
     
     stack.Add(histo)
     legend.AddEntry(histo, legendText, "f")
+
+def shape(histo, color, legend, legendText):
+    histo.SetFillColor(color)
+    histo.SetMarkerColor(color)
+    histo.SetLineColor(r.kBlack)
+    legend.AddEntry(histo, legendText, "f")
+
+def shape_alt(histo, color):
+    histo.SetFillColor(color)
+    histo.SetMarkerColor(color)
+    histo.SetLineColor(r.kBlack)
 
 def addRatio(ratioHist, numeratorHist, denominatorHist, xAxisTitle):
     ratioHist = numeratorHist.clone()
