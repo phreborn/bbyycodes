@@ -29,6 +29,7 @@ set(hhbbyy_SCRIPTS
 #	samples.js
 #        data_sample.js
         computeYieldsEffs.js
+        computeYieldsEffs_allSelections.js
    )
 foreach(_script ${hhbbyy_SCRIPTS})
   configure_file(
