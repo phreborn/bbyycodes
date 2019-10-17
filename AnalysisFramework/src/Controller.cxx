@@ -6,24 +6,24 @@ mytest::JSONData Controller::document;
 
 Controller* Controller::getController()
 {
-	static Controller* controller=new Controller;
-	return controller;
+  static Controller* controller=new Controller;
+  return controller;
 }
 
 mytest::JSONData& Controller::GetDocument()
 {
-	return document;
+  return document;
 }
 
 void Controller::setAlgorithm(std::string name, algorithm* it)
 {
-	std::cout<< " Controller::setAlgorithm: registering algorithm "<<name<<std::endl;
-	algorithmMap[name]=it;
+  std::cout<< " Controller::setAlgorithm: registering algorithm "<<name<<std::endl;
+  algorithmMap[name]=it;
 }
 algorithm* Controller::getAlgorithm(std::string name)
 {
-	if (algorithmMap.find(name)!=algorithmMap.end())
-		return algorithmMap[name];
-	else
-		return 0;
+  if (algorithmMap.find(name)!=algorithmMap.end())
+    return algorithmMap[name];
+  else
+    return 0;
 }
