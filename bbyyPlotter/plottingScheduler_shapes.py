@@ -38,6 +38,8 @@ histosToPlot = [
                   'sumHisto_m_yyjj_tilde_',
                   'sumHisto_pT_jj_div_m_yyjj_tilde_',
                   'sumHisto_pT_yy_div_m_yyjj_tilde_',
+                  'sumHisto_pT_jj_div_m_jj_',
+                  'sumHisto_pT_yy_div_m_yy_',
                   'sumHisto_deltaR_yy_',
                   'sumHisto_deltaR_jj_',
                   'sumHisto_deltaR_yyjj_',

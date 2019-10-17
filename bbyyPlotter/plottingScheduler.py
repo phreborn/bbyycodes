@@ -40,15 +40,18 @@ histosToPlot = [
                   'sumHisto_N_j_',
                   'sumHisto_N_j_central_',
                   'sumHisto_btag_score_',
-                  'sumHisto_m_yyjj_tilde_HM_',
+                  'sumHisto_m_yyjj_tilde_',
                   'sumHisto_MET_',
                ]
 
 # List of keys from the samples dictionary
 samplesToStack = [
-                    #'tty_nohad',
-                    #'ttyy_nohad',
-                    #'ttyy_had',
+                    '15_to_18_data',
+                    'tty_nohad',
+                    'ttyy_nohad',
+                    'ttyy_had',
+                    'yy',
+                    'yybb',
                     'HH',
                     'ggH',
                     'VBF',
@@ -64,6 +67,7 @@ samplesToStack = [
 
 # List of selections to plot
 selections = [
+                'Continuum', # For the continuum backgrounds
                 'LM_A', # Category 1
                 'LM_B', # Category 2
                 'HM_A', # Category 3
@@ -88,13 +92,14 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
         for histo in histosToPlot:
             # Create the upper pad
             canv =  r.TCanvas("canvas","canvas",600,600)
-            canv.SetLogy()
+            if mcOnly: canv.SetLogy()
             canv.cd()
             
             if not mcOnly:
-              padhigh = r.TPad("padhigh","padhigh",0.,0.28,1.,1.,0)
+              padhigh = r.TPad("padhigh","padhigh",0.,0.30,1.,1.)
+              padhigh.SetBottomMargin(0.)
               padhigh.SetGrid(0,0)
-              padhigh.SetBottomMargin(0.05)
+              padhigh.SetLogy()
               padhigh.Draw()
               padhigh.cd()
             
@@ -106,22 +111,33 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
             stackHist = r.THStack()
             ratioHist = r.TH1F()
 
-            theLegend = initializeLegend(0.50,0.20,0.85,0.75)
+            #theLegend = initializeLegend(0.65,0.10,0.85,0.65)
+            theLegend = initializeLegend(0.60,0.55,0.80,0.75)
             sumHist = r.TH1F()
             for sample in samplesToStack:
                 # Loop over the samples, adding them to the THStack
+                print 'Sample: ', sample
                 infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
+                if mcOnly and sample == '15_to_18_data': continue # Skip the data if running on MC only
                 theHisto = infile.Get(path + histo)
+                print 'The full path: ', path + histo
+                print 'theHisto: ', theHisto
                 r.gROOT.cd()
-                newHisto = theHisto.Clone()
-                if 'data' in infile: 
-                    dataHist = newHisto # Get the data
+                if sample == '15_to_18_data': 
+                    dataHist = theHisto.Clone()  # Get the data
+                    dataHist.SetMarkerColor(r.kBlack)
+                    ratioHist.SetBins(dataHist.GetNbinsX(), dataHist.GetXaxis().GetXmin(), dataHist.GetXaxis().GetXmax())
+                    ratioHist.Add(dataHist)
+                    #theLegend.AddEntry(dataHist,"Data 2015-2018", "f")
                 else:
+                  newHisto = theHisto.Clone()
+                  print 'newHisto: ', newHisto
                   addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])   
-                  sumHist = getSumHist(newHisto, sumHist, sampleDict[str(sample)]['color'])
+                  getSumHist(newHisto, sumHist, sampleDict[str(sample)]['color'])
 
-            if not mcOnly: addRatio(ratioHist, dataHist, sumHist, histoDict[str(histoOrig)]['x-axis title']) # This needs fixing
-            
+            # Divide and get the ratio
+            ratioHist.Divide(sumHist)
+
             # Apply nice ATLAS-style plotting here
             stackHist.ls()
             stackHist.Draw("HIST")
@@ -129,12 +145,13 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
             stackHist.GetYaxis().SetTitle(histoDict[str(histoOrig)]['y-axis title'])
             stackHist.GetXaxis().Set(histoDict[str(histoOrig)]['nBinsX']+2, histoDict[str(histoOrig)]['x-min'], histoDict[str(histoOrig)]['x-max'])
             stackHist.GetXaxis().SetNdivisions(306)
-            
+            stackHist.SetMaximum(1.35*dataHist.GetMaximum())
+
             # Draw the relevant histograms
             if not mcOnly: 
+              print 'Drawing on data'
               dataHist.Draw("E0 SAME")
-              theLegend.AddEntry(dataHist, "Data 2015-2018", "f")
-            theLegend.Draw("same")
+            theLegend.Draw("SAME")
             
             # Set up latex and the ATLAS label
             l = r.TLatex()
@@ -143,34 +160,48 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
             l.SetTextFont(42)
             l.SetTextSize(0.04)
 
-            r.ATLASLabel(0.493,0.88,"Internal")
+            r.ATLASLabel(0.523,0.88,"Internal")
             l.SetTextFont(42)
             l.SetTextSize(0.04)
-            l.DrawLatex(0.493, 0.84, "#it{L} = 139.7 fb^{-1}")
-            l.DrawLatex(0.493, 0.80, selectionDict[str(selection)]['legend upper'])
-            l.DrawLatex(0.493, 0.76, selectionDict[str(selection)]['legend lower'])
+            l.DrawLatex(0.523, 0.82, "#sqrt{#it{s}} = 13 TeV, 139.7 fb^{-1}")
+            l.DrawLatex(0.523, 0.78, selectionDict[str(selection)]['legend upper'])
+            l.DrawLatex(0.523, 0.74, selectionDict[str(selection)]['legend lower'])
             
             # Set up the lower pad
             if not mcOnly:
-              padlow = r.TPad("padlow","padlow",0.,0.,1.,0.33,0)
+              canv.cd()
+              padlow = r.TPad("padlow","padlow",0.,0.0,1.,0.30)
               padlow.SetFillStyle(4000)
-              padlow.SetGrid(1,1)
+              padlow.SetGrid(0,0)
               padlow.SetTopMargin(0.05)
-              padlow.SetBottomMargin(0.3)
+              padlow.SetBottomMargin(0.30)
               padlow.Draw()
               padlow.cd()
-              ratioHist.Draw("ep")
+              
+              # A few additional aesthetics for the ratio
+              ratioHist.GetYaxis().SetTitle("Data/Pred.")
+              #ratioHist.GetYaxis().CenterTitle()
+              #ratioHist.GetYaxis().SetTitleSize(0.10)
+              ratioHist.GetXaxis().SetNdivisions(306)
+              ratioHist.GetXaxis().SetTitle(histoDict[str(histoOrig)]['x-axis title'])
+              ratioHist.GetXaxis().SetTitleSize(0.10)
+              ratioHist.GetXaxis().SetLabelFont(43)
+              ratioHist.GetXaxis().SetLabelSize(15)
+              ratioHist.Draw("EP") 
+
 
             # Add line to the ratio plot
             rl = r.TLine()
-            rl.SetLineColor(2)
+            rl.SetLineColor(r.kRed)
             if not mcOnly: rl.DrawLine(ratioHist.GetBinLowEdge(1), 1., ratioHist.GetBinLowEdge(ratioHist.GetNbinsX()+1), 1.)
             
             # Save canvas to png, pdf, eps, and C
-            canv.Print(outDir + histo + ".C", "C")
-            canv.Print(outDir + histo + ".png", "png")
-            canv.Print(outDir + histo + ".pdf", "pdf")
-            canv.Print(outDir + histo + ".eps", "eps")
+            extra = ''
+            if mcOnly: extra = '_SumMC'
+            canv.Print(outDir + histo + extra + ".C", "C")
+            canv.Print(outDir + histo + extra + ".png", "png")
+            canv.Print(outDir + histo + extra + ".pdf", "pdf")
+            canv.Print(outDir + histo + extra + ".eps", "eps")
         
 if __name__ == "__main__":
     
@@ -188,9 +219,9 @@ if __name__ == "__main__":
     outDir = options.outputPath
     if not os.path.exists(outDir):
            os.makedirs(outDir)
-           print("The output directlory did not exist, I have just created one: " + outDir)   
+           print "The output directlory did not exist, I have just created one: ", outDir   
  
-    #Defining dictionary to be passed to the main function
+    # Defining dictionary to be passed to the main function
     option_dict = dict( (k, v) for k, v in vars(options).iteritems() if v is not None)
     print option_dict
     main(**option_dict)

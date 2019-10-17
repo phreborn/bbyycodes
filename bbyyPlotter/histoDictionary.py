@@ -14,7 +14,7 @@ def PlottingDict():
             'y-axis title': 'Events / GeV',
             'x-min' : 105,
             'x-max' : 160,
-            'nBinsX' : 55 # Might want to perform a rebinning
+            'nBinsX' : 10 # Might want to perform a rebinning
         },
         'sumHisto_m_jj_': { 
             'x-axis title': '#it{m_{jj}} [GeV]',
@@ -28,7 +28,7 @@ def PlottingDict():
             'y-axis title': 'Events / 5 GeV',
             'x-min' : 500,
             'x-max' : 500500,
-            'nBinsX' : 100 
+            'nBinsX' : 100
         },
         'sumHisto_pT_jj_': {
             'x-axis title': '#it{p_{T}}_{jj} [GeV]',
@@ -49,13 +49,27 @@ def PlottingDict():
             'y-axis title': 'Events / 5 GeV',
             'x-min' : 0,
             'x-max' : 1000,
-            'nBinsX' : 100 
+            'nBinsX' : 100
         },
         'sumHisto_pT_jj_div_m_yyjj_tilde_': {
             'x-axis title': '#it{p_{T}}_{jj} / Mtilde',
             'y-axis title': 'Events / 5 GeV',
             'x-min' : 0,
             'x-max' : 1000,
+            'nBinsX' : 100
+        },
+        'sumHisto_pT_yy_div_m_yy_': {
+            'x-axis title': '#it{p_{T}}_{#gamma#gamma} / #it{m}_{#gamma#gamma}',
+            'y-axis title': 'Events',
+            'x-min' : 0,
+            'x-max' : 5000,
+            'nBinsX' : 100
+        },
+        'sumHisto_pT_jj_div_m_jj_': {
+            'x-axis title': '#it{p_{T}}_{jj} / #it{m}_{jj}',
+            'y-axis title': 'Events',
+            'x-min' : 0,
+            'x-max' : 5000,
             'nBinsX' : 100
         },
 
@@ -84,15 +98,15 @@ def PlottingDict():
             'x-axis title': '#it{N}_{jets}',
             'y-axis title': 'Events',
             'x-min' : 0,
-            'x-max' : 6,
-            'nBinsX' : 6
+            'x-max' : 15,
+            'nBinsX' : 15
         },
         'sumHisto_N_j_central_': { 
             'x-axis title': '#it{N}_{central jets}',
             'y-axis title': 'Events',
             'x-min' : 0,
-            'x-max' : 6,
-            'nBinsX' : 6
+            'x-max' : 15,
+            'nBinsX' : 15
         },
         'sumHisto_btag_score_': { 
             'x-axis title': 'Sum of #it{b}-tag scores of 2 jets',
@@ -132,6 +146,14 @@ def SampleDict():
         'ttyy_had': { 
             'color': 2,
             'legend description': 'Hadronic #it{t#bar{t}#gamma#gamma}',
+        },
+        'yy': { 
+            'color': 5,
+            'legend description': 'SM #it{#gamma#gamma}',
+        },
+        'yybb': { 
+            'color': 6,
+            'legend description': 'SM #it{#gamma#gammab#bar{b}}',
         },
         'HH': { 
             'color': 5,
@@ -183,6 +205,10 @@ def SampleDict():
 
 def SelectionDict():
     dict = {
+        'Continuum': { 
+            'legend upper': 'Continuum bkg. selection',
+            'legend lower': '',
+        },
         'LM_A': { 
             'legend upper': '#it{M_{X}} < 350 GeV',
             'legend lower': '#it{b}-tag loose',
