@@ -20,7 +20,7 @@ cmake ../
 
 make -j
 
-./hhbbyy computeYieldsEffs.js
+./hhbbyy computeYieldsEffs_allSelections_HHNLOBugFix.js
 
 ========================================
 

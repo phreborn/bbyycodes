@@ -69,7 +69,7 @@ void VariablePlotter::execute()
         
         // File name
         std::string fileName=thisSample.sampleMap[iMC];
-        
+
         //////////////// Below is a hack until we have a proper fix
         // This part is a place holder until we have all MC. We are duplicating mc16d with the luminosity of mc16d and mc16e!!
         if (fileName=="mc16d.PowhegPy8_NNPDF30_VBFH125.MxAODDetailed.e6636_s3126_r10201_p3665.h024.root")
@@ -78,11 +78,18 @@ void VariablePlotter::execute()
           dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
         if (fileName=="mc16d.MGPy8_ttgamma_nonallhadronic_AF2.MxAODDetailed.e6155_a875_r10201_p3703.h024.root")
           dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
-        //if (fileName=="yy_mc16a.root" || fileName=="yy_mc16d.root" || fileName=="yy_mc16e.root" || fileName=="15_16_data.root" || fileName=="17_data.root" || fileName=="18_data.root")
+        //if (fileName=="yy_mc16a.root")
         //  dataDir="root://eosatlas.cern.ch//eos/atlas/user/a/altaylor/bbgg/h024/";
-        std::cout<<"dataDir ========== "<< dataDir<< std::endl;
+        //if (fileName=="yy_mc16e.root")
+        //  dataDir="root://eosatlas.cern.ch//eos/atlas/user/a/altaylor/bbgg/h024/";
+        if (fileName=="mc16a_hh_yybb_NLO.root" || fileName=="mc16d_hh_yybb_NLO.root" || fileName=="mc16e_hh_yybb_NLO.root")
+          dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples/";
+        if (fileName=="15_16_data.root" || fileName=="17_data.root" || fileName=="18_data.root")
+          dataDir="root://eosatlas.cern.ch//eos/atlas/user/a/altaylor/bbgg/h024/";
         ////////////////
-        
+       
+       
+ 
         TFile* file=ROOTHelper::GetTFile(sampleName,mc,dataDir+fileName);
         std::string histoName=thisSample.histoName;
         TH1* histo=dynamic_cast<TH1*>(file->Get(histoName.c_str()));

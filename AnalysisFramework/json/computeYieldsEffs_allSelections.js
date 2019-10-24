@@ -171,26 +171,7 @@
         "histoName" : "CutFlow_MGPy8_ttgammagamma_allhad_AF2_noDalitz_weighted",
         "color" : "2",
         "legendEntry" : "Hadronic #it{ttyy}"
-      },
-
-      "yy": 	{
-        "datafiles" : { 
-          "mc16a" : "yy_mc16a.root",
-          "mc16d" : "yy_mc16d.root",
-          "mc16e" : "yy_mc16e.root"
-        },
-        "histoName" : "CutFlow_Sherpa2_myy_90_175_noDalitz_weighted"
-      },
-
-      "yybb": 	{
-        "datafiles" : { 
-          "mc16a" : "mc16a_hh_yybb_NLO.root",
-          "mc16d" : "mc16d_hh_yybb_NLO.root",
-          "mc16e" : "mc16e_hh_yybb_NLO.root"
-        },
-        "histoName" : "CutFlow_aMCnlo_Hwpp_hh_yybb_noDalitz_weighted"
       }
-
-    }
+     }
 
 }

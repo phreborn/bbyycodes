@@ -27,9 +27,11 @@ target_link_libraries(hhbbyy ${ROOT_LIBRARIES} )
 
 set(hhbbyy_SCRIPTS
 #	samples.js
-#        data_sample.js
+        dataAnalysis.js
         computeYieldsEffs.js
         computeYieldsEffs_allSelections.js
+        computeYieldsEffs_allSelections_HHNLOBugFix.js
+        computeYieldsEffs_photonJetBkg.js
    )
 foreach(_script ${hhbbyy_SCRIPTS})
   configure_file(
