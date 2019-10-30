@@ -126,8 +126,8 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
                 if sample == '15_to_18_data': 
                     dataHist = theHisto.Clone()  # Get the data
                     dataHist.SetMarkerColor(r.kBlack)
-                    ratioHist.SetBins(dataHist.GetNbinsX(), dataHist.GetXaxis().GetXmin(), dataHist.GetXaxis().GetXmax())
-                    ratioHist.Add(dataHist)
+                    #ratioHist.SetBins(dataHist.GetNbinsX(), dataHist.GetXaxis().GetXmin(), dataHist.GetXaxis().GetXmax())
+                    ratioHist = dataHist.Clone()
                     #theLegend.AddEntry(dataHist,"Data 2015-2018", "f")
                 else:
                   newHisto = theHisto.Clone()
@@ -136,6 +136,9 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
                   getSumHist(newHisto, sumHist, sampleDict[str(sample)]['color'])
 
             # Divide and get the ratio
+            #print "N BIns data ", dataHist.GetNbinsX(), ", BinMIn ", dataHist.GetXaxis().GetXmin(), ", BIN mAX ", dataHist.GetXaxis().GetXmax()
+            #print "N BIns MC ", sumHist.GetNbinsX(), ", BinMIn ", sumHist.GetXaxis().GetXmin(), ", BIN mAX ", sumHist.GetXaxis().GetXmax()
+            #print "N BIns MC ", stackHist.GetNbinsX(), ", BinMIn ", stackHist.GetXaxis().GetXmin(), ", BIN mAX ", stackHist.GetXaxis().GetXmax()
             ratioHist.Divide(sumHist)
 
             # Apply nice ATLAS-style plotting here
@@ -143,7 +146,7 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
             stackHist.Draw("HIST")
             if mcOnly: stackHist.GetXaxis().SetTitle(histoDict[str(histoOrig)]['x-axis title'])
             stackHist.GetYaxis().SetTitle(histoDict[str(histoOrig)]['y-axis title'])
-            stackHist.GetXaxis().Set(histoDict[str(histoOrig)]['nBinsX']+2, histoDict[str(histoOrig)]['x-min'], histoDict[str(histoOrig)]['x-max'])
+            #stackHist.GetXaxis().Set(histoDict[str(histoOrig)]['nBinsX']+2, histoDict[str(histoOrig)]['x-min'], histoDict[str(histoOrig)]['x-max'])
             stackHist.GetXaxis().SetNdivisions(306)
             if not mcOnly: stackHist.SetMaximum(1.35*dataHist.GetMaximum())
 
@@ -198,10 +201,10 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
             # Save canvas to png, pdf, eps, and C
             extra = ''
             if mcOnly: extra = '_SumMC'
-            canv.Print(outDir + histo + extra + ".C", "C")
-            canv.Print(outDir + histo + extra + ".png", "png")
+            #canv.Print(outDir + histo + extra + ".C", "C")
+            #canv.Print(outDir + histo + extra + ".png", "png")
             canv.Print(outDir + histo + extra + ".pdf", "pdf")
-            canv.Print(outDir + histo + extra + ".eps", "eps")
+            #canv.Print(outDir + histo + extra + ".eps", "eps")
         
 if __name__ == "__main__":
     
