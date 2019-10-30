@@ -92,14 +92,14 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
         for histo in histosToPlot:
             # Create the upper pad
             canv =  r.TCanvas("canvas","canvas",600,600)
-            if mcOnly: canv.SetLogy()
+            #if mcOnly: canv.SetLogy()
             canv.cd()
             
             if not mcOnly:
               padhigh = r.TPad("padhigh","padhigh",0.,0.30,1.,1.)
               padhigh.SetBottomMargin(0.)
               padhigh.SetGrid(0,0)
-              padhigh.SetLogy()
+              #padhigh.SetLogy()
               padhigh.Draw()
               padhigh.cd()
             
@@ -145,7 +145,7 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
             stackHist.GetYaxis().SetTitle(histoDict[str(histoOrig)]['y-axis title'])
             stackHist.GetXaxis().Set(histoDict[str(histoOrig)]['nBinsX']+2, histoDict[str(histoOrig)]['x-min'], histoDict[str(histoOrig)]['x-max'])
             stackHist.GetXaxis().SetNdivisions(306)
-            stackHist.SetMaximum(1.35*dataHist.GetMaximum())
+            if not mcOnly: stackHist.SetMaximum(1.35*dataHist.GetMaximum())
 
             # Draw the relevant histograms
             if not mcOnly: 

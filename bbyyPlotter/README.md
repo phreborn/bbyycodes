@@ -22,3 +22,4 @@ lsetup "root 6.14.04-x86_64-slc6-gcc62-opt"
 
 python plottingScheduler.py -m -i path_to_inputs -o path_to_output
 
+(or without the -m option if you want also the ratio panels)
