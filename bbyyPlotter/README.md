@@ -20,6 +20,13 @@ setupATLAS
 
 lsetup "root 6.14.04-x86_64-slc6-gcc62-opt"
 
-python plottingScheduler.py -m -i path_to_inputs -o path_to_output
+python plottingScheduler.py -i path_to_inputs -o path_to_output
 
-(or without the -m option if you want also the ratio panels)
+
+
+The various options and default values are:
+    parser.add_argument("-m", "--mcOnly", help="", action="store_true", default=False)
+    parser.add_argument("-H", "--separateHiggsBackgrounds", help="", action="store_true", default=False)
+    parser.add_argument("-l", "--logOn", help="", action="store_true", default=False)
+    parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="")
+    parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/")

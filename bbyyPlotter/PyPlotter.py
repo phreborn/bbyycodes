@@ -17,8 +17,8 @@ def initializeLegend(x1=0.65, y1=0.70, x2=0.75, y2=0.73):
     aLegend = r.TLegend(x1, y1, x2, y2);
     aLegend.SetLineColor(r.kWhite);
     aLegend.SetFillColor(r.kWhite);
-    aLegend.SetNColumns(2);
-    aLegend.SetTextSize(0.030);
+    aLegend.SetNColumns(1);
+    aLegend.SetTextSize(0.12);
     aLegend.SetBorderSize(0);
     aLegend.SetTextFont(42) # Remove bold text
     
@@ -53,7 +53,7 @@ def addRatio(ratioHist, numeratorHist, denominatorHist):
     ratioHist.Divide(denominatorHist)
     #ratioHist.Sumw2()
     
-def getSumHist(histo, sumHist, color):
+def getSumHist(histo, sumHist):
     nBins = histo.GetNbinsX()
     uBin = histo.GetXaxis().GetXmax()
     dBin = histo.GetXaxis().GetXmin()

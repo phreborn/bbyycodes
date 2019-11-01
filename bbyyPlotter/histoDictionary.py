@@ -136,15 +136,15 @@ def PlottingDict():
 def SampleDict():
     dict = {
         'tty_nohad': { # Name of sample
-            'color': 4,
+            'color': 3,
             'legend description': '#it{t#bar{t}#gamma}',
         },
         'ttyy_nohad': {
-            'color': 3,
+            'color': 2,
             'legend description': 'Non-hadronic #it{t#bar{t}#gamma#gamma}',
         },
         'ttyy_had': { 
-            'color': 2,
+            'color': 1,
             'legend description': 'Hadronic #it{t#bar{t}#gamma#gamma}',
         },
         'yy': { 
@@ -156,15 +156,15 @@ def SampleDict():
             'legend description': 'SM #it{#gamma#gammab#bar{b}}',
         },
         'HH': { 
-            'color': 5,
+            'color': 7,
             'legend description': '#it{HH}',
         },
         'ggH': { 
-            'color': 6,
+            'color': 28,
             'legend description': '#it{ggH}',
         },
         'VBF': { 
-            'color': 7,
+            'color': 30,
             'legend description': 'VBF #it{H}',
         },
         'WpH': { 

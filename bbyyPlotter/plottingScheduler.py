@@ -53,6 +53,7 @@ samplesToStack = [
                     'yy',
                     'yybb',
                     'HH',
+                    # Then all of the single H backgrounds (these are combined, by default)
                     'ggH',
                     'VBF',
                     'WpH',
@@ -83,23 +84,21 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 
 
-def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
+def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
     
     for selection in selections:
-        # Declare the data and ratio histograms once only
-        dataHist = r.TH1F()
 
         for histo in histosToPlot:
             # Create the upper pad
             canv =  r.TCanvas("canvas","canvas",600,600)
-            #if mcOnly: canv.SetLogy()
+            if mcOnly and logOn : canv.SetLogy()
             canv.cd()
             
             if not mcOnly:
-              padhigh = r.TPad("padhigh","padhigh",0.,0.30,1.,1.)
-              padhigh.SetBottomMargin(0.)
+              padhigh = r.TPad("padhigh","padhigh",0.,0.30,0.90,1.)
+              padhigh.SetBottomMargin(0.02)
               padhigh.SetGrid(0,0)
-              #padhigh.SetLogy()
+              if logOn: padhigh.SetLogy()
               padhigh.Draw()
               padhigh.cd()
             
@@ -110,35 +109,51 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
             theHisto = r.TH1F()
             stackHist = r.THStack()
             ratioHist = r.TH1F()
-
-            #theLegend = initializeLegend(0.65,0.10,0.85,0.65)
-            theLegend = initializeLegend(0.60,0.55,0.80,0.75)
+            dataHist = r.TH1F() # For the ratio
+            
+            x1, y1, x2, y2 = 0.10, 0.75, 0.90, 0.95
+            if separateHiggsBackgrounds: x1, y1, x2, y2 = 0.10, 0.45, 0.90, 0.95
+            theLegend = initializeLegend(x1, y1, x2, y2)
             sumHist = r.TH1F()
+            
+            # Combine the single Higgs backgrounds, unless specified otherwise
+            if not separateHiggsBackgrounds: 
+                higgsHist = r.TH1F()
+                for sample in samplesToStack:
+                    if ('H' in sample and 'HH' not in sample) or sample == 'VBF':
+                      infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
+                      theHisto = infile.Get(path + histo)
+                      newHisto = theHisto.Clone()
+                      getSumHist(newHisto, higgsHist)
+
             for sample in samplesToStack:
                 # Loop over the samples, adding them to the THStack
-                print 'Sample: ', sample
                 infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
                 if mcOnly and sample == '15_to_18_data': continue # Skip the data if running on MC only
                 theHisto = infile.Get(path + histo)
-                print 'The full path: ', path + histo
-                print 'theHisto: ', theHisto
                 r.gROOT.cd()
                 if sample == '15_to_18_data': 
                     dataHist = theHisto.Clone()  # Get the data
                     dataHist.SetMarkerColor(r.kBlack)
-                    #ratioHist.SetBins(dataHist.GetNbinsX(), dataHist.GetXaxis().GetXmin(), dataHist.GetXaxis().GetXmax())
                     ratioHist = dataHist.Clone()
-                    #theLegend.AddEntry(dataHist,"Data 2015-2018", "f")
+                    theLegend.AddEntry(dataHist,"Data", "lep")
                 else:
                   newHisto = theHisto.Clone()
-                  print 'newHisto: ', newHisto
-                  addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])   
-                  getSumHist(newHisto, sumHist, sampleDict[str(sample)]['color'])
+                  if separateHiggsBackgrounds:
+                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])   
+                      getSumHist(newHisto, sumHist)
+                      continue 
+                  elif ('H' in sample and 'HH' not in sample) or sample == 'VBF': continue # To avoid double-counting the single Higgs backgrounds
+                  else:                                                                                         
+                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])   
+                      getSumHist(newHisto, sumHist)
+
+            # Add the combined single Higgs backgrounds back in, unless specified otherwise
+            if not separateHiggsBackgrounds:
+                addStack(higgsHist, stackHist, 4, theLegend, 'Single Higgs')   
+                getSumHist(higgsHist, sumHist)
 
             # Divide and get the ratio
-            #print "N BIns data ", dataHist.GetNbinsX(), ", BinMIn ", dataHist.GetXaxis().GetXmin(), ", BIN mAX ", dataHist.GetXaxis().GetXmax()
-            #print "N BIns MC ", sumHist.GetNbinsX(), ", BinMIn ", sumHist.GetXaxis().GetXmin(), ", BIN mAX ", sumHist.GetXaxis().GetXmax()
-            #print "N BIns MC ", stackHist.GetNbinsX(), ", BinMIn ", stackHist.GetXaxis().GetXmin(), ", BIN mAX ", stackHist.GetXaxis().GetXmax()
             ratioHist.Divide(sumHist)
 
             # Apply nice ATLAS-style plotting here
@@ -148,32 +163,42 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
             stackHist.GetYaxis().SetTitle(histoDict[str(histoOrig)]['y-axis title'])
             #stackHist.GetXaxis().Set(histoDict[str(histoOrig)]['nBinsX']+2, histoDict[str(histoOrig)]['x-min'], histoDict[str(histoOrig)]['x-max'])
             stackHist.GetXaxis().SetNdivisions(306)
-            if not mcOnly: stackHist.SetMaximum(1.35*dataHist.GetMaximum())
-
-            # Draw the relevant histograms
+            stackHist.SetMaximum(1.45*stackHist.GetMaximum())
+            if not mcOnly : 
+                   stackHist.GetXaxis().SetLabelOffset(999)
+                   stackHist.GetXaxis().SetLabelSize(0)
+                   stackHist.SetMaximum(1.45*dataHist.GetMaximum())
+         
+            # Draw the relevant data 
             if not mcOnly: 
-              print 'Drawing on data'
               dataHist.Draw("E0 SAME")
-            theLegend.Draw("SAME")
-            
+
             # Set up latex and the ATLAS label
             l = r.TLatex()
             l.SetNDC()
             l.SetTextColor(r.kBlack)
-            l.SetTextFont(42)
-            l.SetTextSize(0.04)
 
-            r.ATLASLabel(0.523,0.88,"Internal")
+            r.ATLASLabel(0.55,0.88,"Internal")
             l.SetTextFont(42)
             l.SetTextSize(0.04)
-            l.DrawLatex(0.523, 0.82, "#sqrt{#it{s}} = 13 TeV, 139.7 fb^{-1}")
-            l.DrawLatex(0.523, 0.78, selectionDict[str(selection)]['legend upper'])
-            l.DrawLatex(0.523, 0.74, selectionDict[str(selection)]['legend lower'])
+            l.DrawLatex(0.55, 0.84, "#sqrt{#it{s}} = 13 TeV, 139.7 fb^{-1}")
+            l.DrawLatex(0.55, 0.80, selectionDict[str(selection)]['legend upper'])
+            l.DrawLatex(0.55, 0.76, selectionDict[str(selection)]['legend lower'])
+            
+            # Add the legend to a separare, sideways pad
+            canv.cd()
+            padside = r.TPad("padside","padside",0.80,0.0,0.95,1.)
+            if mcOnly : padside = r.TPad("padside","padside",0.85,0.0,0.98,1.)
+            padside.SetFillStyle(4000)
+            padside.SetGrid(0,0)
+            padside.Draw()
+            padside.cd()
+            theLegend.Draw("SAME")
             
             # Set up the lower pad
             if not mcOnly:
               canv.cd()
-              padlow = r.TPad("padlow","padlow",0.,0.0,1.,0.30)
+              padlow = r.TPad("padlow","padlow",0.,0.0,0.90,0.30)
               padlow.SetFillStyle(4000)
               padlow.SetGrid(0,0)
               padlow.SetTopMargin(0.05)
@@ -183,24 +208,29 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
               
               # A few additional aesthetics for the ratio
               ratioHist.GetYaxis().SetTitle("Data/Pred.")
-              #ratioHist.GetYaxis().CenterTitle()
-              #ratioHist.GetYaxis().SetTitleSize(0.10)
+              ratioHist.GetYaxis().CenterTitle()
+              ratioHist.GetYaxis().SetNdivisions(306)
+              ratioHist.GetYaxis().SetTitleOffset(0.5)
+              ratioHist.GetYaxis().SetTitleSize(0.12)
+              ratioHist.GetYaxis().SetLabelSize(0.10)
               ratioHist.GetXaxis().SetNdivisions(306)
               ratioHist.GetXaxis().SetTitle(histoDict[str(histoOrig)]['x-axis title'])
               ratioHist.GetXaxis().SetTitleSize(0.10)
               ratioHist.GetXaxis().SetLabelFont(43)
-              ratioHist.GetXaxis().SetLabelSize(15)
+              ratioHist.GetXaxis().SetLabelSize(20)
               ratioHist.Draw("EP") 
 
 
             # Add line to the ratio plot
             rl = r.TLine()
             rl.SetLineColor(r.kRed)
+            rl.SetLineWidth(3)
             if not mcOnly: rl.DrawLine(ratioHist.GetBinLowEdge(1), 1., ratioHist.GetBinLowEdge(ratioHist.GetNbinsX()+1), 1.)
             
             # Save canvas to png, pdf, eps, and C
             extra = ''
             if mcOnly: extra = '_SumMC'
+            if separateHiggsBackgrounds: extra = '_separateSingleHiggsBkgs'
             #canv.Print(outDir + histo + extra + ".C", "C")
             #canv.Print(outDir + histo + extra + ".png", "png")
             canv.Print(outDir + histo + extra + ".pdf", "pdf")
@@ -212,6 +242,8 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("-m", "--mcOnly", help="", action="store_true", default=False)
+    parser.add_argument("-H", "--separateHiggsBackgrounds", help="", action="store_true", default=False)
+    parser.add_argument("-l", "--logOn", help="", action="store_true", default=False)
     parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="")
     parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
   
