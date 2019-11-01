@@ -94,8 +94,9 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
             if mcOnly and logOn : canv.SetLogy()
             canv.cd()
             
+            if mcOnly: r.gStyle.SetPadRightMargin(0.23)
             if not mcOnly:
-              padhigh = r.TPad("padhigh","padhigh",0.,0.30,0.90,1.)
+              padhigh = r.TPad("padhigh","padhigh",0.,0.30,0.85,1.)
               padhigh.SetBottomMargin(0.02)
               padhigh.SetGrid(0,0)
               if logOn: padhigh.SetLogy()
@@ -178,17 +179,19 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
             l.SetNDC()
             l.SetTextColor(r.kBlack)
 
-            r.ATLASLabel(0.55,0.88,"Internal")
+            l1, l2 = 0.55, 0.88
+            if mcOnly: l1, l2 = 0.35, 0.88
+            r.ATLASLabel(l1,l2,"Internal")
             l.SetTextFont(42)
             l.SetTextSize(0.04)
-            l.DrawLatex(0.55, 0.84, "#sqrt{#it{s}} = 13 TeV, 139.7 fb^{-1}")
-            l.DrawLatex(0.55, 0.80, selectionDict[str(selection)]['legend upper'])
-            l.DrawLatex(0.55, 0.76, selectionDict[str(selection)]['legend lower'])
+            l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139.7 fb^{-1}")
+            l.DrawLatex(l1, 0.80, selectionDict[str(selection)]['legend upper'])
+            l.DrawLatex(l1, 0.76, selectionDict[str(selection)]['legend lower'])
             
             # Add the legend to a separare, sideways pad
             canv.cd()
-            padside = r.TPad("padside","padside",0.80,0.0,0.95,1.)
-            if mcOnly : padside = r.TPad("padside","padside",0.85,0.0,0.98,1.)
+            padside = r.TPad("padside","padside",0.75,0.0,0.98,1.)
+            #if mcOnly : padside = r.TPad("padside","padside",0.85,0.0,0.98,1.)
             padside.SetFillStyle(4000)
             padside.SetGrid(0,0)
             padside.Draw()
@@ -198,7 +201,7 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
             # Set up the lower pad
             if not mcOnly:
               canv.cd()
-              padlow = r.TPad("padlow","padlow",0.,0.0,0.90,0.30)
+              padlow = r.TPad("padlow","padlow",0.,0.0,0.85,0.30)
               padlow.SetFillStyle(4000)
               padlow.SetGrid(0,0)
               padlow.SetTopMargin(0.05)
@@ -231,6 +234,7 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
             extra = ''
             if mcOnly: extra = '_SumMC'
             if separateHiggsBackgrounds: extra = '_separateSingleHiggsBkgs'
+            if separateHiggsBackgrounds and mcOnly : extra = '_separateSingleHiggsBkgs_SumMC'
             #canv.Print(outDir + histo + extra + ".C", "C")
             #canv.Print(outDir + histo + extra + ".png", "png")
             canv.Print(outDir + histo + extra + ".pdf", "pdf")
