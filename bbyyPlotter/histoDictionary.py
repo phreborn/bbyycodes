@@ -141,7 +141,7 @@ def SampleDict():
         },
         'ttyy_nohad': {
             'color': 2,
-            'legend description': 'Non-hadronic #it{t#bar{t}#gamma#gamma}',
+            'legend description': 'Non-had #it{t#bar{t}#gamma#gamma}',
         },
         'ttyy_had': { 
             'color': 1,
