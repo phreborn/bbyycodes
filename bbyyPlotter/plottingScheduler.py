@@ -40,7 +40,6 @@ histosToPlot = [
                   'sumHisto_N_j_',
                   'sumHisto_N_j_central_',
                   'sumHisto_btag_score_',
-                  'sumHisto_m_yyjj_tilde_',
                   'sumHisto_MET_',
                ]
 
@@ -84,8 +83,10 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 
 
-def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
+def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
     
+    if UNBLIND: print 'WARNING: You have unblinded the analysis! Are you sure you want to do this?'
+
     for selection in selections:
 
         for histo in histosToPlot:
@@ -135,6 +136,11 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
                 r.gROOT.cd()
                 if sample == '15_to_18_data': 
                     dataHist = theHisto.Clone()  # Get the data
+                    if not UNBLIND and 'm_yyjj' in histo: # Blind the m_yyjj for the resonant search
+                        for xbin in range(0, dataHist.GetNbinsX()+1):
+                            if dataHist.GetXaxis().GetBinCenter(xbin) > 150: 
+                                dataHist.SetBinContent(xbin,0) 
+                                dataHist.SetBinError(xbin,0.0001) 
                     dataHist.SetMarkerColor(r.kBlack)
                     ratioHist = dataHist.Clone()
                     theLegend.AddEntry(dataHist,"Data", "lep")
@@ -153,7 +159,7 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
             if not separateHiggsBackgrounds:
                 addStack(higgsHist, stackHist, 4, theLegend, 'Single Higgs')   
                 getSumHist(higgsHist, sumHist)
-
+            
             # Divide and get the ratio
             ratioHist.Divide(sumHist)
 
@@ -168,7 +174,10 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
             if not mcOnly : 
                    stackHist.GetXaxis().SetLabelOffset(999)
                    stackHist.GetXaxis().SetLabelSize(0)
-                   stackHist.SetMaximum(1.45*dataHist.GetMaximum())
+                   if 'm_yyjj' in histo:
+                      stackHist.SetMaximum(1.45*stackHist.GetMaximum())
+                   else:
+                      stackHist.SetMaximum(1.45*dataHist.GetMaximum())
          
             # Draw the relevant data 
             if not mcOnly: 
@@ -250,6 +259,7 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--logOn", help="", action="store_true", default=False)
     parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="")
     parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
+    parser.add_argument("-UB", "--UNBLIND", help="",action="store_true",default=False) 
   
     options = parser.parse_args()
 
