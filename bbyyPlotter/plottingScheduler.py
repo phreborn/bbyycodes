@@ -138,7 +138,7 @@ def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,i
                     dataHist = theHisto.Clone()  # Get the data
                     if not UNBLIND and 'm_yyjj' in histo: # Blind the m_yyjj for the resonant search
                         for xbin in range(0, dataHist.GetNbinsX()+1):
-                            if dataHist.GetXaxis().GetBinCenter(xbin) > 150: 
+                            if dataHist.GetXaxis().GetBinCenter(xbin) > 120: 
                                 dataHist.SetBinContent(xbin,0) 
                                 dataHist.SetBinError(xbin,0.0001) 
                     dataHist.SetMarkerColor(r.kBlack)
