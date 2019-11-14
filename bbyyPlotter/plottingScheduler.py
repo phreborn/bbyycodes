@@ -74,6 +74,13 @@ selections = [
                 'HM_B', # Category 4
              ]
 
+# List of signals to plot
+signals = [
+            'HHlamPlus10',
+            'X400toHH',
+            'X700toHH',
+          ]
+
 # Global path to histos within input file
 path = ''
 
@@ -81,7 +88,7 @@ path = ''
 histoDict = PlottingDict()
 sampleDict = SampleDict()
 selectionDict = SelectionDict()
-
+signalDict = SignalDict()
 
 def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
     
@@ -110,11 +117,12 @@ def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,i
 
             theHisto = r.TH1F()
             stackHist = r.THStack()
+            signalHist = r.THStack()
             ratioHist = r.TH1F()
             dataHist = r.TH1F() # For the ratio
             
-            x1, y1, x2, y2 = 0.10, 0.75, 0.90, 0.95
-            if separateHiggsBackgrounds: x1, y1, x2, y2 = 0.10, 0.45, 0.90, 0.95
+            x1, y1, x2, y2 = 0.10, 0.55, 0.90, 0.95
+            if separateHiggsBackgrounds: x1, y1, x2, y2 = 0.10, 0.35, 0.90, 0.95
             theLegend = initializeLegend(x1, y1, x2, y2)
             sumHist = r.TH1F()
             
@@ -182,7 +190,29 @@ def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,i
             # Draw the relevant data 
             if not mcOnly: 
               dataHist.Draw("E0 SAME")
+            
+            # Inject the relevant signals
+            infile1 = r.TFile.Open(inDir  + signalDict.keys()[0] + '_' + selection + '.root')
+            signalHist1 = infile1.Get(path + histo)
+            signalHist1.SetLineWidth(5)
+            signalHist1.SetLineColor(signalDict[signalDict.keys()[0]]['color'])
+            theLegend.AddEntry(signalHist1, signalDict[signalDict.keys()[0]]['legend description'], "l")
+            signalHist1.Draw("HIST SAME")
+            
+            infile2 = r.TFile.Open(inDir  + signalDict.keys()[1] + '_' + selection + '.root')
+            signalHist2 = infile2.Get(path + histo)
+            signalHist2.SetLineWidth(5)
+            signalHist2.SetLineColor(signalDict[signalDict.keys()[1]]['color'])
+            theLegend.AddEntry(signalHist2, signalDict[signalDict.keys()[1]]['legend description'], "l")
+            signalHist2.Draw("HIST SAME")
 
+            infile3 = r.TFile.Open(inDir  + signalDict.keys()[2] + '_' + selection + '.root')
+            signalHist3 = infile3.Get(path + histo)
+            signalHist3.SetLineWidth(5)
+            signalHist3.SetLineColor(signalDict[signalDict.keys()[2]]['color'])
+            theLegend.AddEntry(signalHist3, signalDict[signalDict.keys()[2]]['legend description'], "l")
+            signalHist3.Draw("HIST SAME")
+            
             # Set up latex and the ATLAS label
             l = r.TLatex()
             l.SetNDC()

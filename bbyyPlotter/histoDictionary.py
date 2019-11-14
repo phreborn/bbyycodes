@@ -198,10 +198,26 @@ def SampleDict():
         'tHjb': { 
             'color': 43,
             'legend description': '#it{tHb}+#it{j}',
-        },
+        }
     }
-
     return dict
+
+def SignalDict():
+    dict = {
+        'HHlamPlus10': {
+            'color': 4,
+            'legend description': '#it{HH} #kappa_{#lambda} = 10',
+        },
+        'X400toHH': {
+            'color': 3,
+            'legend description': '#it{X}(400)#it{HH} ',
+        },
+        'X700toHH': {
+            'color': 2,
+            'legend description': '#it{X}(700)#it{HH} ',
+        }
+    }
+    return dict 
 
 def SelectionDict():
     dict = {
