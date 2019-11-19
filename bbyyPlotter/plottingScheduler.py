@@ -90,7 +90,7 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 signalDict = SignalDict()
 
-def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
+def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
     
     if UNBLIND: print 'WARNING: You have unblinded the analysis! Are you sure you want to do this?'
 
@@ -120,7 +120,8 @@ def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,i
             signalHist = r.THStack()
             ratioHist = r.TH1F()
             dataHist = r.TH1F() # For the ratio
-            
+            dataGraph = r.TGraphErrors()
+
             x1, y1, x2, y2 = 0.10, 0.55, 0.90, 0.95
             if separateHiggsBackgrounds: x1, y1, x2, y2 = 0.10, 0.35, 0.90, 0.95
             theLegend = initializeLegend(x1, y1, x2, y2)
@@ -149,9 +150,19 @@ def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,i
                             if dataHist.GetXaxis().GetBinCenter(xbin) > 120: 
                                 dataHist.SetBinContent(xbin,0) 
                                 dataHist.SetBinError(xbin,0.0001) 
+                    # Transfer the histo information to a TGraph for upper pad plotting
+                    for xbin in range(0, dataHist.GetNbinsX()+1):
+                        if dataHist.GetBinContent(xbin) > 0.: # Don't plot markers for zero-valued data points
+                          dataGraph.SetPoint(xbin, dataHist.GetXaxis().GetBinCenter(xbin), dataHist.GetBinContent(xbin))
+                          dataGraph.SetPointError(xbin, 0, dataHist.GetBinError(xbin))
+                    dataGraph.SetMarkerColor(r.kBlack)
+                    dataGraph.SetMarkerStyle(r.kFullDotLarge)
+                    dataGraph.SetLineColor(r.kBlack)
+                    dataGraph.SetLineWidth(2)
                     dataHist.SetMarkerColor(r.kBlack)
                     ratioHist = dataHist.Clone()
-                    theLegend.AddEntry(dataHist,"Data", "lep")
+                    #theLegend.AddEntry(dataHist,"Data", "lep")
+                    theLegend.AddEntry(dataGraph,"Data", "lep")
                 else:
                   newHisto = theHisto.Clone()
                   if separateHiggsBackgrounds:
@@ -189,7 +200,7 @@ def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,i
          
             # Draw the relevant data 
             if not mcOnly: 
-              dataHist.Draw("E0 SAME")
+              dataGraph.Draw("EP SAME")
             
             # Inject the relevant signals
             infile1 = r.TFile.Open(inDir  + signalDict.keys()[0] + '_' + selection + '.root')
@@ -274,10 +285,15 @@ def main(UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,i
             if mcOnly: extra = '_SumMC'
             if separateHiggsBackgrounds: extra = '_separateSingleHiggsBkgs'
             if separateHiggsBackgrounds and mcOnly : extra = '_separateSingleHiggsBkgs_SumMC'
-            #canv.Print(outDir + histo + extra + ".C", "C")
-            #canv.Print(outDir + histo + extra + ".png", "png")
-            canv.Print(outDir + histo + extra + ".pdf", "pdf")
-            #canv.Print(outDir + histo + extra + ".eps", "eps")
+            
+            if plotDump:
+                canv.Print(outDir + histo + extra + ".C", "C")
+                canv.Print(outDir + histo + extra + ".png", "png")
+                canv.Print(outDir + histo + extra + ".pdf", "pdf")
+                canv.Print(outDir + histo + extra + ".eps", "eps")
+                canv.Print(outDir + histo + extra + ".root", "root")
+            else:
+                canv.Print(outDir + histo + extra + ".pdf", "pdf")
         
 if __name__ == "__main__":
     
@@ -289,6 +305,7 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--logOn", help="", action="store_true", default=False)
     parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="")
     parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
+    parser.add_argument("-p", "--plotDump", help="Option for making plots in different formats.", action="store_true", default=False) 
     parser.add_argument("-UB", "--UNBLIND", help="",action="store_true",default=False) 
   
     options = parser.parse_args()
