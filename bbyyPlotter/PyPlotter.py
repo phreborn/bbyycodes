@@ -48,6 +48,12 @@ def addStack(histo, stack, color, legend, legendText):
     stack.Add(histo)
     legend.AddEntry(histo, legendText, "f")
 
+def addSignalStack(histo, stack, color, legend, legendText):
+    histo.SetLineWidth(5)
+    histo.SetLineColor(color)
+    stack.Add(histo)
+    legend.AddEntry(histo, legendText, "l")
+
 def addRatio(ratioHist, numeratorHist, denominatorHist):
     ratioHist = numeratorHist.Clone()
     ratioHist.Divide(denominatorHist)
