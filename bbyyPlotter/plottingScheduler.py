@@ -34,6 +34,7 @@ histosToPlot = [
                   'sumHisto_m_yy_',
                   'sumHisto_m_jj_',
                   'sumHisto_m_yyjj_tilde_',
+                  'sumHisto_m_yyjj_tilde_HM_',
                   'sumHisto_deltaR_yy_',
                   'sumHisto_deltaR_jj_',
                   'sumHisto_deltaR_yyjj_',
@@ -41,16 +42,18 @@ histosToPlot = [
                   'sumHisto_N_j_central_',
                   'sumHisto_btag_score_',
                   'sumHisto_MET_',
+#                  'sumHisto_m_yyjj_',
+#                  'sumHisto_m_yyjj_HM_',
+#                  'sumHisto_m_yyjj_cnstrnd_',
+#                  'sumHisto_m_yyjj_cnstrnd_HM_',
                ]
 
 # List of keys from the samples dictionary
 samplesToStack = [
                     '15_to_18_data',
-                    'tty_nohad',
                     'ttyy_nohad',
                     'ttyy_had',
                     'yy',
-                    'yybb',
                     'HH',
                     # Then all of the single H backgrounds (these are combined, by default)
                     'ggH',
@@ -67,6 +70,7 @@ samplesToStack = [
 
 # List of selections to plot
 selections = [
+                'Continuum_CR', # For the continuum CR
                 'Continuum', # For the continuum backgrounds
                 'LM_A', # Category 1
                 'LM_B', # Category 2
@@ -77,12 +81,32 @@ selections = [
 # List of signals to plot
 signals = [
             'HHlamPlus10',
+#            'HHlamMinus10',
+#            'HHlamPlus4',
+#            'HHlamMinus4',
+#            'HHlamPlus2',   
+#            'HHlamMinus2',
+#            'X1000toHH',
+#            'X2000toHH',
+#            'X251toHH',
+#            'X260toHH',
+#            'X280toHH',
+#            'X3000toHH',
+#            'X300toHH',
+#            'X325toHH',
+#            'X350toHH',
             'X400toHH',
+#            'X450toHH',
+#            'X500toHH',
+#            'X550toHH',
+#            'X600toHH',
             'X700toHH',
-          ]
+#            'X800toHH',
+#            'X900toHH',
+             ]
 
 # Global path to histos within input file
-path = ''
+path = ""
 
 # Get the histo and sample dictionaries 
 histoDict = PlottingDict()
@@ -117,16 +141,17 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
 
             theHisto = r.TH1F()
             stackHist = r.THStack()
-            signalHist = r.THStack()
+            sigHist = r.THStack()
             ratioHist = r.TH1F()
             dataHist = r.TH1F() # For the ratio
             dataGraph = r.TGraphErrors()
 
-            x1, y1, x2, y2 = 0.10, 0.55, 0.90, 0.95
-            if separateHiggsBackgrounds: x1, y1, x2, y2 = 0.10, 0.35, 0.90, 0.95
+            x1, y1, x2, y2 = 0.10, 0.55, 0.90, 0.95 
+            if separateHiggsBackgrounds or len(signals)>6: y1 = 0.35
+            if len(signals)>10: y1 = 0.15
             theLegend = initializeLegend(x1, y1, x2, y2)
             sumHist = r.TH1F()
-            
+
             # Combine the single Higgs backgrounds, unless specified otherwise
             if not separateHiggsBackgrounds: 
                 higgsHist = r.TH1F()
@@ -173,6 +198,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                   else:                                                                                         
                       addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])   
                       getSumHist(newHisto, sumHist)
+                      
 
             # Add the combined single Higgs backgrounds back in, unless specified otherwise
             if not separateHiggsBackgrounds:
@@ -203,27 +229,16 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
               dataGraph.Draw("EP SAME")
             
             # Inject the relevant signals
-            infile1 = r.TFile.Open(inDir  + signalDict.keys()[0] + '_' + selection + '.root')
-            signalHist1 = infile1.Get(path + histo)
-            signalHist1.SetLineWidth(5)
-            signalHist1.SetLineColor(signalDict[signalDict.keys()[0]]['color'])
-            theLegend.AddEntry(signalHist1, signalDict[signalDict.keys()[0]]['legend description'], "l")
-            signalHist1.Draw("HIST SAME")
-            
-            infile2 = r.TFile.Open(inDir  + signalDict.keys()[1] + '_' + selection + '.root')
-            signalHist2 = infile2.Get(path + histo)
-            signalHist2.SetLineWidth(5)
-            signalHist2.SetLineColor(signalDict[signalDict.keys()[1]]['color'])
-            theLegend.AddEntry(signalHist2, signalDict[signalDict.keys()[1]]['legend description'], "l")
-            signalHist2.Draw("HIST SAME")
+            for sample in signals:                
+                infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
+                theHisto = infile.Get(path + histo)
+                r.gROOT.cd()
+                newHisto = theHisto.Clone()
+                addSignalStack(newHisto, sigHist, signalDict[str(sample)]['color'], theLegend, signalDict[str(sample)]['legend description'])
+                getSumHist(newHisto, sumHist)
 
-            infile3 = r.TFile.Open(inDir  + signalDict.keys()[2] + '_' + selection + '.root')
-            signalHist3 = infile3.Get(path + histo)
-            signalHist3.SetLineWidth(5)
-            signalHist3.SetLineColor(signalDict[signalDict.keys()[2]]['color'])
-            theLegend.AddEntry(signalHist3, signalDict[signalDict.keys()[2]]['legend description'], "l")
-            signalHist3.Draw("HIST SAME")
-            
+            sigHist.Draw("HIST nostack SAME")
+
             # Set up latex and the ATLAS label
             l = r.TLatex()
             l.SetNDC()
@@ -247,7 +262,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
             padside.Draw()
             padside.cd()
             theLegend.Draw("SAME")
-            
+
             # Set up the lower pad
             if not mcOnly:
               canv.cd()
@@ -273,7 +288,6 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
               ratioHist.GetXaxis().SetLabelSize(20)
               ratioHist.Draw("EP") 
 
-
             # Add line to the ratio plot
             rl = r.TLine()
             rl.SetLineColor(r.kRed)
@@ -285,7 +299,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
             if mcOnly: extra = '_SumMC'
             if separateHiggsBackgrounds: extra = '_separateSingleHiggsBkgs'
             if separateHiggsBackgrounds and mcOnly : extra = '_separateSingleHiggsBkgs_SumMC'
-            
+
             if plotDump:
                 canv.Print(outDir + histo + extra + ".C", "C")
                 canv.Print(outDir + histo + extra + ".png", "png")
@@ -294,7 +308,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                 canv.Print(outDir + histo + extra + ".root", "root")
             else:
                 canv.Print(outDir + histo + extra + ".pdf", "pdf")
-        
+                    
 if __name__ == "__main__":
     
     # Adding an argument parser, which we might want to use 
@@ -303,7 +317,7 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--mcOnly", help="", action="store_true", default=False)
     parser.add_argument("-H", "--separateHiggsBackgrounds", help="", action="store_true", default=False)
     parser.add_argument("-l", "--logOn", help="", action="store_true", default=False)
-    parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="")
+    parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="../AnalysisFramework/run/plots/")
     parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
     parser.add_argument("-p", "--plotDump", help="Option for making plots in different formats.", action="store_true", default=False) 
     parser.add_argument("-UB", "--UNBLIND", help="",action="store_true",default=False) 
@@ -315,9 +329,12 @@ if __name__ == "__main__":
     outDir = options.outputPath
     if not os.path.exists(outDir):
            os.makedirs(outDir)
-           print "The output directlory did not exist, I have just created one: ", outDir   
- 
+           print "The output directory did not exist, I have just created one: ", outDir   
+
+
     # Defining dictionary to be passed to the main function
     option_dict = dict( (k, v) for k, v in vars(options).iteritems() if v is not None)
     print option_dict
     main(**option_dict)
+
+#  LocalWords:  TFile
