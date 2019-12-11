@@ -336,5 +336,3 @@ if __name__ == "__main__":
     option_dict = dict( (k, v) for k, v in vars(options).iteritems() if v is not None)
     print option_dict
     main(**option_dict)
-
-#  LocalWords:  TFile
