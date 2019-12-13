@@ -47,7 +47,23 @@
 
     "samples" : {
 
-      "yy": 	{
+      "yybj": 	{
+        "datafiles" : { 
+          "mc16a" : "yy_mc16a.root",
+          "mc16d" : "yy_mc16d.root",
+          "mc16e" : "yy_mc16e.root"
+        },
+        "histoName" : "CutFlow_Sherpa2_myy_90_175_noDalitz_weighted"
+      },
+      "yycj": 	{
+        "datafiles" : { 
+          "mc16a" : "yy_mc16a.root",
+          "mc16d" : "yy_mc16d.root",
+          "mc16e" : "yy_mc16e.root"
+        },
+        "histoName" : "CutFlow_Sherpa2_myy_90_175_noDalitz_weighted"
+      },
+      "yyjj": 	{
         "datafiles" : { 
           "mc16a" : "yy_mc16a.root",
           "mc16d" : "yy_mc16d.root",
