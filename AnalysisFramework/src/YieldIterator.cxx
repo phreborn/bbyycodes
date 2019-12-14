@@ -35,6 +35,26 @@ void YieldIterator::execute()
 
   // For logging purposes, used later
   std::string logging;
+  
+  // Add a map for the resonant singnal x-section * BR
+  std::map<std::string, float> XStimesBR; // in fb, and normalised to 1 fb^-1
+  XStimesBR["X251toHH"] = 0.960;
+  XStimesBR["X260toHH"] = 0.960;
+  XStimesBR["X280toHH"] = 1.039;
+  XStimesBR["X300toHH"] = 0.964;
+  XStimesBR["X325toHH"] = 0.718;
+  XStimesBR["X350toHH"] = 0.553;
+  XStimesBR["X400toHH"] = 0.411;
+  XStimesBR["X450toHH"] = 0.228;
+  XStimesBR["X500toHH"] = 0.182;
+  XStimesBR["X550toHH"] = 0.156;
+  XStimesBR["X600toHH"] = 0.104;
+  XStimesBR["X700toHH"] = 0.068;
+  XStimesBR["X800toHH"] = 0.052;
+  XStimesBR["X900toHH"] = 0.041;
+  XStimesBR["X1000toHH"] = 0.033;
+  XStimesBR["X2000toHH"] = 0.009;
+  XStimesBR["X3000toHH"] = 0.008;
 
   for (auto iSample:document.samples.samples) {
     mytest::aSample thisSample=document.samples.samples[iSample.first];
@@ -44,12 +64,19 @@ void YieldIterator::execute()
       double xsec_br_eff=0;
       double total_yield=0;
 
+      // Adding an additional truth-matching feature, which we only need when
+      // running on the yy samples to get the yycj, yybj, yyjj separation
+      std::string truthMatch = "";        
+      if (sampleName == "yybj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
+      if (sampleName == "yycj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
+      if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
       for (auto iMC: mcCampaigns){
         const std::string mc=iMC;
         logging=sampleName+"_"+mc+"_"+iCut;
         
         // Specify the actual selection string
         std::string select=document.selections.selMap[iCut];
+        select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed"+truthMatch);
         // Get luminosity from the MC information
         double lumi=document.luminosity.lumiMap[iMC];
         // Data and MC directories from JSON
@@ -107,6 +134,10 @@ void YieldIterator::execute()
           // Draw histogram and apply luminosity scaling
           tree->Draw(vvar.c_str(),select.c_str(),"HIST");
           his->Scale(lumi/sum_weights);
+          float theXStimesBR = 1.0;
+          // Have a specific XStimesBR if we are running on a resonant signal
+          if (sampleName.find("toHH") != std::string::npos) theXStimesBR = XStimesBR[sampleName];
+          his->Scale(lumi*theXStimesBR/sum_weights);
           double integ=his->Integral();
           integrals[varName].push_back(integ);
         }

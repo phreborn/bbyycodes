@@ -28,11 +28,31 @@ void VariablePlotter::execute()
     std::cout << " MC campaigns being added to the list "<<is.first<<std::endl;
     mcCampaigns.push_back(is.first);
   }
-  
+
   // For logging purposes, used later
   std::string logging;
 
   std::map<std::string,TH1F*,std::less<std::string> > sumhistoMap;
+
+  // Add a map for the resonant singnal x-section * BR
+  std::map<std::string, float> XStimesBR; // in fb, and normalised to 1 fb^-1
+  XStimesBR["X251toHH"] = 0.960;
+  XStimesBR["X260toHH"] = 0.960;
+  XStimesBR["X280toHH"] = 1.039;
+  XStimesBR["X300toHH"] = 0.964;
+  XStimesBR["X325toHH"] = 0.718;
+  XStimesBR["X350toHH"] = 0.553;
+  XStimesBR["X400toHH"] = 0.411;
+  XStimesBR["X450toHH"] = 0.228;
+  XStimesBR["X500toHH"] = 0.182;
+  XStimesBR["X550toHH"] = 0.156;
+  XStimesBR["X600toHH"] = 0.104;
+  XStimesBR["X700toHH"] = 0.068;
+  XStimesBR["X800toHH"] = 0.052;
+  XStimesBR["X900toHH"] = 0.041;
+  XStimesBR["X1000toHH"] = 0.033;
+  XStimesBR["X2000toHH"] = 0.009;
+  XStimesBR["X3000toHH"] = 0.008;
 
   for (auto iSample:document.samples.samples) {
     mytest::aSample thisSample=document.samples.samples[iSample.first];
@@ -50,23 +70,29 @@ void VariablePlotter::execute()
         sumhistoMap[his]=sumHisto;
       }
 
+      // Adding an additional truth-matching feature, which we only need when
+      // running on the yy samples to get the yycj, yybj, yyjj separation
+      std::string truthMatch = "";        
+      if (sampleName == "yybj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
+      if (sampleName == "yycj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
+      if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
       for (auto iMC: mcCampaigns){
         const std::string mc=iMC;
         logging=sampleName+"_"+mc+"_"+iCut;
 
         // Pick up the selections for each of the different categories
         std::string select=document.selections.selMap[iCut];
-        
+        select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed"+truthMatch);
         if (sampleName=="data") select=document.selections.dataSel;
         // Below removed to now
         //if (document.selections.weight.empty()) select+="*"+document.selections.weight;
-        
+
         // Pick up the luminosity 
         double lumi=document.luminosity.lumiMap[iMC];
         // Data and MC directories from JSON
         std::string dataDir=document.directories.dirMap[iMC];
         if (sampleName=="data") dataDir=document.directories.dataDir;
-        
+
         // File name
         std::string fileName=thisSample.sampleMap[iMC];
 
@@ -87,9 +113,7 @@ void VariablePlotter::execute()
         if (fileName=="15_16_data.root" || fileName=="17_data.root" || fileName=="18_data.root")
           dataDir="root://eosatlas.cern.ch//eos/atlas/user/a/altaylor/bbgg/h024/";
         ////////////////
-       
-       
- 
+
         TFile* file=ROOTHelper::GetTFile(sampleName,mc,dataDir+fileName);
         std::string histoName=thisSample.histoName;
         TH1* histo=dynamic_cast<TH1*>(file->Get(histoName.c_str()));
@@ -102,7 +126,7 @@ void VariablePlotter::execute()
         // First, determine the sum of weights from the MxAOD object
         double sum_weights=(sum1/sum2)*sum3;
         TTree* tree=(TTree*)file->Get("CollectionTree");
-  
+
         // Now loop over the variables, scale to the appropriate lumi, and add the histogram
         // to the histo map.
         for(auto iVar : document.variables.varMap){
@@ -118,22 +142,25 @@ void VariablePlotter::execute()
           std::cout<<"   ++++ bins "<<nbins<<" "<<lowerBin<<" "<<upperBin<<" hname "<<hName<<std::endl;
           TH1F *his=new TH1F(hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin);
           std::string vvar=var+" >> "+hName;
+          std::cout << "Drawing with selection: " << select.c_str() << std::endl;
           tree->Draw(vvar.c_str(),select.c_str(),"HIST");
-          his->Scale(lumi/sum_weights);
+          float theXStimesBR = 1.0;
+          // Have a specific XStimesBR if we are running on a resonant signal
+          if (sampleName.find("toHH") != std::string::npos) theXStimesBR = XStimesBR[sampleName];
+          his->Scale(lumi*theXStimesBR/sum_weights);
           sumhistoMap[hN]->Add(his);
         }
       }
-
       // Write to the plotting directory 
       DIR* dir = opendir("plots");
       if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);                   
-      TFile outfile (("plots/"+sampleName+"_"+iCut+".root").c_str(),"recreate");
+      TFile outfile (("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
       for (auto iy:sumhistoMap)
         iy.second->Write();
       sumhistoMap.clear();
       outfile.ls();
       outfile.Close();
-    }
+    } 
   }
 
   std::cout<<std::endl<<std::endl<<" VariablePlotter::execute() done !!!! "<<std::endl<<std::endl;
