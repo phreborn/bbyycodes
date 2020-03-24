@@ -20,6 +20,17 @@ cmake ../
 
 make -j
 
+Voluntary:
+
+mkdir run
+
+cd run
+
+ln -s ../build/hhbbyy
+ln -s ../json/*.js (You can choose which specific json files you need to use. Remember, the standard json files will be automatically copied to the build directory during make)
+
+You can either run from build or run direcotires:
+
 ./hhbbyy computeYieldsEffs_allSelections_HHNLOBugFix.js
 
 ========================================

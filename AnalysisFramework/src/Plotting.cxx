@@ -3,9 +3,9 @@
 #include "Plotting.h"
 #include "JSONDoc.h"
 #include "Controller.h"
-#include "/afs/cern.ch/work/a/altaylor/public/forMarc/AtlasStyle.C"
-#include "/afs/cern.ch/work/a/altaylor/public/forMarc/AtlasLabels.C"
-#include "/afs/cern.ch/work/a/altaylor/public/forMarc/AtlasUtils.C"
+#include "../../bbyyPlotter/atlasstyle-00-03-05/AtlasStyle.C"
+#include "../../bbyyPlotter/atlasstyle-00-03-05/AtlasLabels.C"
+#include "../../bbyyPlotter/atlasstyle-00-03-05/AtlasUtils.C"
 
 
 
