@@ -32,6 +32,9 @@ set(hhbbyy_SCRIPTS
         computeYieldsEffs_allSelections.js
         computeYieldsEffs_allSelections_HHNLOBugFix.js
         computeYieldsEffs_photonJetBkg.js
+        computeYieldsEffs_allSelections_resonantSignals.js
+        computeYieldsEffs_allSelections_nonResonantSignals.js
+
    )
 foreach(_script ${hhbbyy_SCRIPTS})
   configure_file(
