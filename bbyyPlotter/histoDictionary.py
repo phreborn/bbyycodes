@@ -72,7 +72,6 @@ def PlottingDict():
             'x-max' : 5000,
             'nBinsX' : 100
         },
-
         'sumHisto_deltaR_yy_': { 
             'x-axis title': '#Delta#it{R}(#gamma,#gamma)',
             'y-axis title': 'Events / 0.2',
@@ -129,6 +128,38 @@ def PlottingDict():
             'x-max' : 500,
             'nBinsX' : 20
         },
+
+        'sumHisto_m_yyjj_': {
+            'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (std) [GeV]',
+            'y-axis title': 'Events / 25 GeV',
+            'x-min' : 200,
+            'x-max' : 500,
+            'nBinsX' : 15
+        },
+        'sumHisto_m_yyjj_HM_': {
+            'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (std, High-mass) [GeV]',
+            'y-axis title': 'Events / 25 GeV',
+            'x-min' : 200,
+            'x-max' : 500,
+            'nBinsX' : 30
+        },
+
+        'sumHisto_m_yyjj_cnstrnd_': {
+            'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (constr) [GeV]',
+            'y-axis title': 'Events / 25 GeV',
+            'x-min' : 200,
+            'x-max' : 500,
+            'nBinsX' : 15
+        },
+        'sumHisto_m_yyjj_cnstrnd_HM_': {
+            'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (constr, High-mass) [GeV]',
+            'y-axis title': 'Events / 25 GeV',
+            'x-min' : 200,
+            'x-max' : 500,
+            'nBinsX' : 30
+        },
+
+
     }
 
     return dict
@@ -198,13 +229,122 @@ def SampleDict():
         'tHjb': { 
             'color': 43,
             'legend description': '#it{tHb}+#it{j}',
-        },
+        }
     }
-
     return dict
+
+def SignalDict():
+    dict = {
+        'HHlamPlus10': {
+            'color': 4,
+            'legend description': '#it{HH} #kappa_{#lambda} = 10',
+        },
+        'HHlamMinus10': {
+            'color': 64,
+            'legend description': '#it{HH} #kappa_{#lambda} = -10',
+        },
+        'HHlamPlus4': {
+            'color': 51,
+            'legend description': '#it{HH} #kappa_{#lambda} = 4',
+        },
+        'HHlamMinus4': {
+            'color': 87,
+            'legend description': '#it{HH} #kappa_{#lambda} = -4',
+        },
+        'HHlamPlus2': {
+            'color': 92,
+            'legend description': '#it{HH} #kappa_{#lambda} = 2',
+        },
+        'HHlamMinus2': {
+            'color': 97,
+            'legend description': '#it{HH} #kappa_{#lambda} = -2',
+        },
+
+        'X251toHH': {
+            'color': 6,
+            'legend description': '#it{X}(251)#it{HH} ',
+            },
+         
+        'X260toHH': {
+            'color': 12,
+            'legend description': '#it{X}(260)#it{HH} ',
+            },
+
+        'X280toHH': {
+            'color': 11,
+            'legend description': '#it{X}(280)#it{HH} ',
+            },
+
+        'X300toHH': {
+            'color': 1,
+            'legend description': '#it{X}(300)#it{HH} ',
+            },
+
+        'X325toHH': {
+            'color': 40,
+            'legend description': '#it{X}(325)#it{HH} ',
+            },
+
+        'X350toHH': {
+            'color': 36,
+            'legend description': '#it{X}(350)#it{HH} ',
+            },
+
+        'X400toHH': {
+            'color': 3,
+            'legend description': '#it{X}(400)#it{HH} ',
+        },
+        'X450toHH': {
+            'color': 30,
+            'legend description': '#it{X}(450)#it{HH} ',
+        },
+        'X500toHH': {
+            'color': 7,
+            'legend description': '#it{X}(500)#it{HH} ',
+        },
+        'X550toHH': {
+            'color': 28,
+            'legend description': '#it{X}(550)#it{HH} ',
+        },
+        'X600toHH': {
+            'color': 8,
+            'legend description': '#it{X}(600)#it{HH} ',
+        },
+        'X700toHH': {
+            'color': 2,
+            'legend description': '#it{X}(700)#it{HH} ',
+        },
+       'X800toHH': {
+            'color': 9,
+            'legend description': '#it{X}(800)#it{HH} ',
+        },
+
+       'X900toHH': {
+            'color': 16,
+            'legend description': '#it{X}(900)#it{HH} ',
+        },
+
+        'X1000toHH': {
+            'color': 5,
+            'legend description': '#it{X}(1000)#it{HH} ',
+        },
+        'X2000toHH': {
+            'color': 29,
+            'legend description': '#it{X}(2000)#it{HH} ',
+        },
+        'X3000toHH': {
+            'color': 46,
+            'legend description': '#it{X}(3000)#it{HH} ',
+        }
+    }
+    return dict 
 
 def SelectionDict():
     dict = {
+        'Continuum_CR': {
+            'legend upper': 'Continuum bkg. CR selection',
+            'legend lower': '',
+        },
         'Continuum': { 
             'legend upper': 'Continuum bkg. selection',
             'legend lower': '',
