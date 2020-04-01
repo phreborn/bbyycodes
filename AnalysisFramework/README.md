@@ -30,11 +30,11 @@ ln -s ../build/hhbbyy
 ln -s ../json/* (You can choose which specific json files you need to use. Remember, the standard json files will be automatically copied to the build directory during make)
 
 ## Produce histograms
-You can either run from build or run direcotires:
+You can either run from build or run directories:
 
 ./hhbbyy computeYieldsEffs_allSelections_HHNLOBugFix.js
 
-========================================
+## ========================================
 
 
 To check if the samples used in the early Run 2 results (https://cds.cern.ch/record/2305127) still exist use utils/checkFile.cxx
