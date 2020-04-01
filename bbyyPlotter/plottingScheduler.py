@@ -14,6 +14,7 @@ import collections
 from math import sqrt
 from PyPlotter import *
 from histoDictionary import *
+from PlottingList import*
 
 # ROOT global plot settings
 r.gROOT.LoadMacro("./atlasstyle-00-03-05/AtlasStyle.C")
@@ -29,81 +30,7 @@ r.gStyle.SetPadBottomMargin(0.15)
 r.gStyle.SetPadTopMargin(0.05)
 r.gStyle.SetNumberContours(999)
 
-# List of keys from the histogramming dictionary
-histosToPlot = [
-                  'sumHisto_m_yy_',
-                  'sumHisto_m_jj_',
-                  'sumHisto_m_yyjj_tilde_',
-                  'sumHisto_m_yyjj_tilde_HM_',
-                  'sumHisto_deltaR_yy_',
-                  'sumHisto_deltaR_jj_',
-                  'sumHisto_deltaR_yyjj_',
-                  'sumHisto_N_j_',
-                  'sumHisto_N_j_central_',
-                  'sumHisto_btag_score_',
-                  'sumHisto_MET_',
-#                  'sumHisto_m_yyjj_',
-#                  'sumHisto_m_yyjj_HM_',
-#                  'sumHisto_m_yyjj_cnstrnd_',
-#                  'sumHisto_m_yyjj_cnstrnd_HM_',
-               ]
-
-# List of keys from the samples dictionary
-samplesToStack = [
-                    '15_to_18_data',
-                    'ttyy_nohad',
-                    'ttyy_had',
-                    'yy',
-                    'HH',
-                    # Then all of the single H backgrounds (these are combined, by default)
-                    'ggH',
-                    'VBF',
-                    'WpH',
-                    'WmH',
-                    'ZH',
-                    'ggZH',
-                    'ttH',
-                    'bbH',
-                    'tWH',
-                    'tHjb',
-                 ]
-
-# List of selections to plot
-selections = [
-                'Continuum_CR', # For the continuum CR
-                'Continuum', # For the continuum backgrounds
-                'LM_A', # Category 1
-                'LM_B', # Category 2
-                'HM_A', # Category 3
-                'HM_B', # Category 4
-             ]
-
-# List of signals to plot
-signals = [
-            'HHlamPlus10',
-#            'HHlamMinus10',
-#            'HHlamPlus4',
-#            'HHlamMinus4',
-#            'HHlamPlus2',   
-#            'HHlamMinus2',
-#            'X1000toHH',
-#            'X2000toHH',
-#            'X251toHH',
-#            'X260toHH',
-#            'X280toHH',
-#            'X3000toHH',
-#            'X300toHH',
-#            'X325toHH',
-#            'X350toHH',
-            'X400toHH',
-#            'X450toHH',
-#            'X500toHH',
-#            'X550toHH',
-#            'X600toHH',
-            'X700toHH',
-#            'X800toHH',
-#            'X900toHH',
-             ]
+# Lists of keys (samples, variables & regions) can be found in PlottingList.py
 
 # Global path to histos within input file
 path = ""
@@ -114,7 +41,7 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 signalDict = SignalDict()
 
-def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
+def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackgrounds=True,inputPath="",outputPath="./Plots/"):
     
     if UNBLIND: print 'WARNING: You have unblinded the analysis! Are you sure you want to do this?'
 
@@ -156,17 +83,21 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
             if not separateHiggsBackgrounds: 
                 higgsHist = r.TH1F()
                 for sample in samplesToStack:
+                    print sample
                     if ('H' in sample and 'HH' not in sample) or sample == 'VBF':
                       infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
                       theHisto = infile.Get(path + histo)
+                      print theHisto.GetNbinsX()/histoDict[str(histoOrig)]['nBinsX']
                       newHisto = theHisto.Clone()
                       getSumHist(newHisto, higgsHist)
 
             for sample in samplesToStack:
+                print sample
                 # Loop over the samples, adding them to the THStack
                 infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
                 if mcOnly and sample == '15_to_18_data': continue # Skip the data if running on MC only
                 theHisto = infile.Get(path + histo)
+                print theHisto.GetNbinsX()/histoDict[str(histoOrig)]['nBinsX']
                 r.gROOT.cd()
                 if sample == '15_to_18_data': 
                     dataHist = theHisto.Clone()  # Get the data
@@ -184,7 +115,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                     dataGraph.SetMarkerStyle(r.kFullDotLarge)
                     dataGraph.SetLineColor(r.kBlack)
                     dataGraph.SetLineWidth(2)
-                    dataHist.SetMarkerColor(r.kBlack)
+                    dataHist.SetMarkerColor(r.kBlack)                    
                     ratioHist = dataHist.Clone()
                     #theLegend.AddEntry(dataHist,"Data", "lep")
                     theLegend.AddEntry(dataGraph,"Data", "lep")
@@ -203,7 +134,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
             # Add the combined single Higgs backgrounds back in, unless specified otherwise
             if not separateHiggsBackgrounds:
                 addStack(higgsHist, stackHist, 4, theLegend, 'Single Higgs')   
-                getSumHist(higgsHist, sumHist)
+                #getSumHist(higgsHist, sumHist)
             
             # Divide and get the ratio
             ratioHist.Divide(sumHist)
@@ -216,6 +147,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
             #stackHist.GetXaxis().Set(histoDict[str(histoOrig)]['nBinsX']+2, histoDict[str(histoOrig)]['x-min'], histoDict[str(histoOrig)]['x-max'])
             stackHist.GetXaxis().SetNdivisions(306)
             stackHist.SetMaximum(1.45*stackHist.GetMaximum())
+
             if not mcOnly : 
                    stackHist.GetXaxis().SetLabelOffset(999)
                    stackHist.GetXaxis().SetLabelSize(0)
@@ -223,22 +155,34 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                       stackHist.SetMaximum(1.45*stackHist.GetMaximum())
                    else:
                       stackHist.SetMaximum(1.45*dataHist.GetMaximum())
-         
+
+
+            #for nbin in range(0,sumHist.GetNbinsX()):
+                #sumHist.SetBinError(nbin, sumHist.GetBinError(nbin)) #Laura
+
+            sumHist.SetMarkerSize(0)
+            sumHist.SetFillColor(12)
+            sumHist.SetFillStyle(3357)
+            theLegend.AddEntry(sumHist,"Total SM", "f")
+
+            sumHist.Draw("E2 SAME") #E2
             # Draw the relevant data 
             if not mcOnly: 
-              dataGraph.Draw("EP SAME")
+                dataGraph.Draw("EP SAME")
             
             # Inject the relevant signals
             for sample in signals:                
+                print ("Signal = ",sample)
                 infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
                 theHisto = infile.Get(path + histo)
+                print theHisto.GetNbinsX()/histoDict[str(histoOrig)]['nBinsX']
+                print( "ZH signal integral: ",theHisto.Integral())
                 r.gROOT.cd()
                 newHisto = theHisto.Clone()
                 addSignalStack(newHisto, sigHist, signalDict[str(sample)]['color'], theLegend, signalDict[str(sample)]['legend description'])
-                getSumHist(newHisto, sumHist)
+                #getSumHist(newHisto, sumHist)
 
             sigHist.Draw("HIST nostack SAME")
-
             # Set up latex and the ATLAS label
             l = r.TLatex()
             l.SetNDC()
@@ -315,8 +259,8 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("-m", "--mcOnly", help="", action="store_true", default=False)
-    parser.add_argument("-H", "--separateHiggsBackgrounds", help="", action="store_true", default=False)
-    parser.add_argument("-l", "--logOn", help="", action="store_true", default=False)
+    parser.add_argument("-H", "--separateHiggsBackgrounds", help="", action="store_true", default=True)
+    parser.add_argument("-l", "--logOn", help="", action="store_true", default=True)
     parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="../AnalysisFramework/run/plots/")
     parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
     parser.add_argument("-p", "--plotDump", help="Option for making plots in different formats.", action="store_true", default=False) 
