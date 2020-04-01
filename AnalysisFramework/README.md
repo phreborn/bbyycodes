@@ -1,6 +1,6 @@
-#AnalysisFramework for HH->bbyy analysis - SLAC group
+# AnalysisFramework for HH->bbyy analysis - SLAC group
 
-#If you have any questions, please contact me valentina.maria.cairo@cern.ch
+## If you have any questions, please contact me valentina.maria.cairo@cern.ch
 
 
 To run the main program which produces yields.txt and plots/sample\_Low/HighMass\_Loose/TightBtagging:
@@ -20,14 +20,14 @@ cmake ../
 
 make -j
 
-Voluntary:
+## Voluntary:
 
 mkdir run
 
 cd run
 
 ln -s ../build/hhbbyy
-ln -s ../json/*.js (You can choose which specific json files you need to use. Remember, the standard json files will be automatically copied to the build directory during make)
+ln -s ../json/* (You can choose which specific json files you need to use. Remember, the standard json files will be automatically copied to the build directory during make)
 
 You can either run from build or run direcotires:
 

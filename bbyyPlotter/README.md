@@ -11,6 +11,7 @@ histoDictionary.py = A python directory summarising the plotting properties of e
 
 plottingScheduler.py = Script to stage the various different plots and plotting confirguriations, based on the other dictionaries and functions defined in this package. It reads 3 arguments from command line: -m for mcOnly usage (defaulted to false), -i for path_to_inputs (defaulted to ""), -o for path_to_output (defaulted to "./Plots/")
 
+PlottingList.py = List of backgrounds, regions and variables to be plotted by plottingScheduler.py.
 
 #Instructions:
 
