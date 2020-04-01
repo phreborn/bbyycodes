@@ -108,12 +108,13 @@ void YieldIterator::execute()
         TH1* histo=dynamic_cast<TH1*>(file->Get(histoName.c_str()));
         double sum1=0,sum2=0,sum3=0;
         if (histo) {
-          sum1=histo->GetBinContent(1);
-          sum2=histo->GetBinContent(2);
-          sum3=histo->GetBinContent(3);
+          sum1=histo->GetBinContent(1);//“N_{xAOD}
+          //sum1=histo->GetBinContent(4);//No_Duplicate -- this is a temporary solution to avoid usage of duplicate events which are present both in h024 and h025
+          sum2=histo->GetBinContent(2);//N_{DxAOD}
+          sum3=histo->GetBinContent(3);//AllEvents
         }
         // First, determine the sum of weights from the MxAOD object
-        double sum_weights=(sum1/sum2)*sum3;
+        double sum_weights=(sum1/sum2)*sum3; //AllEvent*(NxAOD/DxAOD) -- for signal samples it does not matter since the number of events in the DxAOD is the same as the number in MxAOD, but it does matter for backgrounds, which have skimming applied at the DxAOD level 
         TTree* tree=(TTree*)file->Get("CollectionTree");
 
         // Now loop over the variables specified in the JSON
