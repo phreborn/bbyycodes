@@ -5,159 +5,201 @@
   M. Nelson, 2019 <michael.edward.nelson@cern.ch>
 '''
 
+
 import ROOT as r 
 
 def PlottingDict():
+    # y-axis title is not being used in plottingScheduler.py
     dict = {
         'sumHisto_m_yy_': { # Name of histogram as defined in input root file
             'x-axis title': '#it{m}_{#gamma#gamma} [GeV]',
             'y-axis title': 'Events / GeV',
+            'units' : 'GeV',
             'x-min' : 105,
             'x-max' : 160,
-            'nBinsX' : 10 # Might want to perform a rebinning
+            'rebin' : 1
         },
         'sumHisto_m_jj_': { 
             'x-axis title': '#it{m_{jj}} [GeV]',
             'y-axis title': 'Events / 5 GeV',
+            'units' : 'GeV',
             'x-min' : 105,
             'x-max' : 160,
-            'nBinsX' : 10
+            'rebin' : 1
+
         },
         'sumHisto_pT_yy_': {
             'x-axis title': '#it{p_{T}}_{#gamma#gamma} [GeV]',
             'y-axis title': 'Events / 5 GeV',
+            'units' : 'GeV',
             'x-min' : 500,
             'x-max' : 500500,
-            'nBinsX' : 100
+            'rebin' : 5,
+
         },
         'sumHisto_pT_jj_': {
             'x-axis title': '#it{p_{T}}_{jj} [GeV]',
             'y-axis title': 'Events / 5 GeV',
+            'units' : 'GeV',
             'x-min' : 500,
             'x-max' : 500500,
-            'nBinsX' : 100
+            'rebin' : 5
+
         },
         'sumHisto_m_yyjj_tilde_': { 
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} [GeV]',
             'y-axis title': 'Events / 25 GeV',
+            'units' : 'GeV',
             'x-min' : 200,
             'x-max' : 500,
-            'nBinsX' : 15
+            'rebin' : 5
+
         },
         'sumHisto_pT_yy_div_m_yyjj_tilde_': {
             'x-axis title': '#it{p_{T}}_{#gamma#gamma} / Mtilde',
             'y-axis title': 'Events / 5 GeV',
+            'units' : 'GeV',
             'x-min' : 0,
             'x-max' : 1000,
-            'nBinsX' : 100
+            'rebin' : 5
+
         },
         'sumHisto_pT_jj_div_m_yyjj_tilde_': {
             'x-axis title': '#it{p_{T}}_{jj} / Mtilde',
             'y-axis title': 'Events / 5 GeV',
+            'units' : 'GeV', 
             'x-min' : 0,
-            'x-max' : 1000,
-            'nBinsX' : 100
+            'x-max' : 5000,
+            'rebin' : 5
+
         },
         'sumHisto_pT_yy_div_m_yy_': {
             'x-axis title': '#it{p_{T}}_{#gamma#gamma} / #it{m}_{#gamma#gamma}',
             'y-axis title': 'Events',
-            'x-min' : 0,
-            'x-max' : 5000,
-            'nBinsX' : 100
+            'units' : '',
+            'x-min' : 1,
+            'x-max' : 1500,
+            'rebin' : 5
+
         },
         'sumHisto_pT_jj_div_m_jj_': {
             'x-axis title': '#it{p_{T}}_{jj} / #it{m}_{jj}',
             'y-axis title': 'Events',
+            'units' : '',
             'x-min' : 0,
             'x-max' : 5000,
-            'nBinsX' : 100
+            'rebin' : 5
+
         },
         'sumHisto_deltaR_yy_': { 
             'x-axis title': '#Delta#it{R}(#gamma,#gamma)',
             'y-axis title': 'Events / 0.2',
+            'units' : '',
             'x-min' : 0.0,
             'x-max' : 3.0,
-            'nBinsX' : 10
+            'rebin' : 5
+
         },
         'sumHisto_deltaR_jj_': { 
             'x-axis title': '#Delta#it{R}(j,j)',
             'y-axis title': 'Events / 0.2',
+            'units' : '',
             'x-min' : 0.0,
             'x-max' : 3.0,
-            'nBinsX' : 10
+            'rebin' : 1
+
         },
         'sumHisto_deltaR_yyjj_': { 
             'x-axis title': '#Delta#it{R}(#gamma,#gamma,j,j)',
             'y-axis title': 'Events / 0.2',
+            'units' : '',
             'x-min' : 0.0,
-            'x-max' : 3.0,
-            'nBinsX' : 10
+            'x-max' : 3.0,            
+            'rebin' : 1
         },
         'sumHisto_N_j_': { 
             'x-axis title': '#it{N}_{jets}',
             'y-axis title': 'Events',
+            'units' : '',
             'x-min' : 0,
             'x-max' : 15,
-            'nBinsX' : 15
+            'rebin' : 1
+
         },
         'sumHisto_N_j_central_': { 
             'x-axis title': '#it{N}_{central jets}',
             'y-axis title': 'Events',
+            'units' : '',
             'x-min' : 0,
             'x-max' : 15,
-            'nBinsX' : 15
+            'rebin' : 1
+
         },
         'sumHisto_btag_score_': { 
             'x-axis title': 'Sum of #it{b}-tag scores of 2 jets',
             'y-axis title': 'Events',
+            'units' : '',
             'x-min' : 0,
             'x-max' : 20,
-            'nBinsX' : 40 
+            'rebin' : 2
+
         },
         'sumHisto_m_yyjj_tilde_HM_': { 
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (High-mass) [GeV]',
             'y-axis title': 'Events / 25 GeV',
+            'units' : 'GeV',
             'x-min' : 200,
             'x-max' : 500,
-            'nBinsX' : 30
+            'rebin' : 2
+
         },
         'sumHisto_MET_': { 
             'x-axis title': '#it{E}_{T}^{miss} [GeV]',
             'y-axis title': 'Events / 25 GeV',
+            'units' : 'GeV',
             'x-min' : 0,
             'x-max' : 500,
-            'nBinsX' : 20
+            'rebin' : 1
+
         },
 
         'sumHisto_m_yyjj_': {
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (std) [GeV]',
             'y-axis title': 'Events / 25 GeV',
+            'units' : 'GeV',
             'x-min' : 200,
             'x-max' : 500,
-            'nBinsX' : 15
+            'rebin' : 1
+
         },
         'sumHisto_m_yyjj_HM_': {
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (std, High-mass) [GeV]',
             'y-axis title': 'Events / 25 GeV',
+            'units' : 'GeV',
             'x-min' : 200,
             'x-max' : 500,
-            'nBinsX' : 30
+            'rebin' : 1
+
         },
 
         'sumHisto_m_yyjj_cnstrnd_': {
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (constr) [GeV]',
             'y-axis title': 'Events / 25 GeV',
+            'units' : 'GeV',
             'x-min' : 200,
             'x-max' : 500,
-            'nBinsX' : 15
+            'rebin' : 1
+
         },
         'sumHisto_m_yyjj_cnstrnd_HM_': {
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (constr, High-mass) [GeV]',
             'y-axis title': 'Events / 25 GeV',
+            'units' : 'GeV',
             'x-min' : 200,
             'x-max' : 500,
-            'nBinsX' : 30
-        },
+            'rebin' : 1
+
+        }
 
 
     }
@@ -178,13 +220,22 @@ def SampleDict():
             'color': 1,
             'legend description': 'Hadronic #it{t#bar{t}#gamma#gamma}',
         },
-        'yy': { 
+        'yy': {
             'color': 5,
             'legend description': 'SM #it{#gamma#gamma}',
         },
-        'yybb': { 
-            'color': 8,
-            'legend description': 'SM #it{#gamma#gammab#bar{b}}',
+
+        'yycj': {
+            'color': 46,
+            'legend description': '#it{#gamma#gammacj}',
+        },
+        'yyjj': {
+            'color': 5,
+            'legend description': '#it{#gamma#gamma+jj}',
+        },
+        'yybj': {
+            'color': 38,
+            'legend description': '#it{#gamma#gammabj}',
         },
         'HH': { 
             'color': 7,

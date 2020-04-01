@@ -6,6 +6,8 @@
   M. Nelson, 2019 <michael.edward.nelson@cern.ch>
 '''
 
+# Laura: XsubRange is not yet fully implemented - leave commented out. I am trying to make it zoom in some part of the plot with new xmin, xmax if needed 
+
 import os
 import sys
 import ROOT as r
@@ -41,7 +43,10 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 signalDict = SignalDict()
 
-def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackgrounds=True,inputPath="",outputPath="./Plots/"):
+debug = True
+#XsubRange = False
+ 
+def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
     
     if UNBLIND: print 'WARNING: You have unblinded the analysis! Are you sure you want to do this?'
 
@@ -53,14 +58,17 @@ def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackg
             if mcOnly and logOn : canv.SetLogy()
             canv.cd()
             
-            if mcOnly: r.gStyle.SetPadRightMargin(0.23)
-            if not mcOnly:
-              padhigh = r.TPad("padhigh","padhigh",0.,0.30,0.85,1.)
-              padhigh.SetBottomMargin(0.02)
-              padhigh.SetGrid(0,0)
-              if logOn: padhigh.SetLogy()
-              padhigh.Draw()
-              padhigh.cd()
+            if mcOnly: 
+                r.gStyle.SetPadLeftMargin(0.20)
+                padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
+                padhigh.SetBottomMargin(0.15)
+            if not mcOnly: 
+                padhigh = r.TPad("padhigh","padhigh",0.,0.30,0.85,1.)
+                padhigh.SetBottomMargin(0.02)
+            padhigh.SetGrid(0,0)
+            if logOn: padhigh.SetLogy()
+            padhigh.Draw()
+            padhigh.cd()
             
             # Add the selection
             histoOrig = histo
@@ -79,27 +87,19 @@ def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackg
             theLegend = initializeLegend(x1, y1, x2, y2)
             sumHist = r.TH1F()
 
-            # Combine the single Higgs backgrounds, unless specified otherwise
-            if not separateHiggsBackgrounds: 
-                higgsHist = r.TH1F()
-                for sample in samplesToStack:
-                    print sample
-                    if ('H' in sample and 'HH' not in sample) or sample == 'VBF':
-                      infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
-                      theHisto = infile.Get(path + histo)
-                      print theHisto.GetNbinsX()/histoDict[str(histoOrig)]['nBinsX']
-                      newHisto = theHisto.Clone()
-                      getSumHist(newHisto, higgsHist)
-
             for sample in samplesToStack:
-                print sample
                 # Loop over the samples, adding them to the THStack
                 infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
                 if mcOnly and sample == '15_to_18_data': continue # Skip the data if running on MC only
-                theHisto = infile.Get(path + histo)
-                print theHisto.GetNbinsX()/histoDict[str(histoOrig)]['nBinsX']
-                r.gROOT.cd()
-                if sample == '15_to_18_data': 
+                theHisto = infile.Get(path + histo)                
+                if ((sample == samplesToStack[0]) or (mcOnly and sample == samplesToStack[1])):                     
+                    y_title = GetYtitle(theHisto, histoDict[str(histoOrig)]['rebin'], histoDict[histoOrig]['units'])                    
+                #XsubRange = CheckXrange(theHisto, histoDict[histoOrig]['x-min'], histoDict[histoOrig]['x-max'])
+                theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])                
+                #if XsubRange: theHisto.GetXaxis().SetRangeUser(histoDict[histoOrig]['x-min'],histoDict[histoOrig]['x-max'])            
+
+                r.gROOT.cd()                
+                if sample == '15_to_18_data':                    
                     dataHist = theHisto.Clone()  # Get the data
                     if not UNBLIND and 'm_yyjj' in histo: # Blind the m_yyjj for the resonant search
                         for xbin in range(0, dataHist.GetNbinsX()+1):
@@ -111,6 +111,9 @@ def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackg
                         if dataHist.GetBinContent(xbin) > 0.: # Don't plot markers for zero-valued data points
                           dataGraph.SetPoint(xbin, dataHist.GetXaxis().GetBinCenter(xbin), dataHist.GetBinContent(xbin))
                           dataGraph.SetPointError(xbin, 0, dataHist.GetBinError(xbin))
+
+                    #if XsubRange :dataGraph.GetXaxis().SetRangeUser(histoDict[histoOrig]['x-min'],histoDict[histoOrig]['x-max'])
+                    
                     dataGraph.SetMarkerColor(r.kBlack)
                     dataGraph.SetMarkerStyle(r.kFullDotLarge)
                     dataGraph.SetLineColor(r.kBlack)
@@ -122,29 +125,43 @@ def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackg
                 else:
                   newHisto = theHisto.Clone()
                   if separateHiggsBackgrounds:
-                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])   
+                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                       getSumHist(newHisto, sumHist)
                       continue 
                   elif ('H' in sample and 'HH' not in sample) or sample == 'VBF': continue # To avoid double-counting the single Higgs backgrounds
                   else:                                                                                         
-                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])   
+
+                      if debug : print "Adding "+sample
+                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description']) 
                       getSumHist(newHisto, sumHist)
                       
 
-            # Add the combined single Higgs backgrounds back in, unless specified otherwise
+            # Combine the single Higgs backgrounds, unless specified otherwise                                                                    
             if not separateHiggsBackgrounds:
+                higgsHist = r.TH1F()
+                for sample in samplesToStack:
+                    if ('H' in sample and 'HH' not in sample) or sample == 'VBF':
+                        infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
+                        theHisto = infile.Get(path + histo)
+                        theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
+                        #if XsubRange: theHisto.GetXaxis().SetRangeUser(histoDict[histoOrig]['x-min'],histoDict[histoOrig]['x-max'])
+                        newHisto = theHisto.Clone()
+                        getSumHist(newHisto, higgsHist)                        
+                # Add the combined single Higgs backgrounds back in, unless specified otherwise
+                if debug : print "Adding single Higgs"
                 addStack(higgsHist, stackHist, 4, theLegend, 'Single Higgs')   
-                #getSumHist(higgsHist, sumHist)
+                getSumHist(higgsHist, sumHist)
             
             # Divide and get the ratio
-            ratioHist.Divide(sumHist)
+            if not mcOnly: ratioHist.Divide(sumHist)
 
             # Apply nice ATLAS-style plotting here
             stackHist.ls()
             stackHist.Draw("HIST")
-            if mcOnly: stackHist.GetXaxis().SetTitle(histoDict[str(histoOrig)]['x-axis title'])
-            stackHist.GetYaxis().SetTitle(histoDict[str(histoOrig)]['y-axis title'])
-            #stackHist.GetXaxis().Set(histoDict[str(histoOrig)]['nBinsX']+2, histoDict[str(histoOrig)]['x-min'], histoDict[str(histoOrig)]['x-max'])
+            if mcOnly: 
+                stackHist.GetXaxis().SetTitle(histoDict[str(histoOrig)]['x-axis title'])
+                stackHist.GetYaxis().SetTitleOffset(2)
+            stackHist.GetYaxis().SetTitle(y_title)
             stackHist.GetXaxis().SetNdivisions(306)
             stackHist.SetMaximum(1.45*stackHist.GetMaximum())
 
@@ -165,22 +182,23 @@ def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackg
             sumHist.SetFillStyle(3357)
             theLegend.AddEntry(sumHist,"Total SM", "f")
 
-            sumHist.Draw("E2 SAME") #E2
+            sumHist.Draw("E2 SAME") 
             # Draw the relevant data 
             if not mcOnly: 
                 dataGraph.Draw("EP SAME")
             
             # Inject the relevant signals
             for sample in signals:                
-                print ("Signal = ",sample)
+                if debug: print ("Signal = ",sample)
                 infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
                 theHisto = infile.Get(path + histo)
-                print theHisto.GetNbinsX()/histoDict[str(histoOrig)]['nBinsX']
-                print( "ZH signal integral: ",theHisto.Integral())
+                if (sample == signals[0]):
+                    y_title = GetYtitle(theHisto, histoDict[str(histoOrig)]['rebin'], histoDict[histoOrig]['units'])
+                theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
+                #if XsubRange : theHisto.GetXaxis().SetRangeUser(histoDict[histoOrig]['x-min'],histoDict[histoOrig]['x-max'])
                 r.gROOT.cd()
                 newHisto = theHisto.Clone()
                 addSignalStack(newHisto, sigHist, signalDict[str(sample)]['color'], theLegend, signalDict[str(sample)]['legend description'])
-                #getSumHist(newHisto, sumHist)
 
             sigHist.Draw("HIST nostack SAME")
             # Set up latex and the ATLAS label
@@ -189,7 +207,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackg
             l.SetTextColor(r.kBlack)
 
             l1, l2 = 0.55, 0.88
-            if mcOnly: l1, l2 = 0.35, 0.88
+            if mcOnly: l1, l2 = 0.45, 0.88
             r.ATLASLabel(l1,l2,"Internal")
             l.SetTextFont(42)
             l.SetTextSize(0.04)
@@ -200,7 +218,6 @@ def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackg
             # Add the legend to a separare, sideways pad
             canv.cd()
             padside = r.TPad("padside","padside",0.75,0.0,0.98,1.)
-            #if mcOnly : padside = r.TPad("padside","padside",0.85,0.0,0.98,1.)
             padside.SetFillStyle(4000)
             padside.SetGrid(0,0)
             padside.Draw()
@@ -240,7 +257,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=True,logOn=False,separateHiggsBackg
             
             # Save canvas to png, pdf, eps, and C
             extra = ''
-            if mcOnly: extra = '_SumMC'
+            if mcOnly: extra = '_onlyMC'
             if separateHiggsBackgrounds: extra = '_separateSingleHiggsBkgs'
             if separateHiggsBackgrounds and mcOnly : extra = '_separateSingleHiggsBkgs_SumMC'
 
@@ -259,8 +276,8 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("-m", "--mcOnly", help="", action="store_true", default=False)
-    parser.add_argument("-H", "--separateHiggsBackgrounds", help="", action="store_true", default=True)
-    parser.add_argument("-l", "--logOn", help="", action="store_true", default=True)
+    parser.add_argument("-H", "--separateHiggsBackgrounds", help="", action="store_true", default=False)
+    parser.add_argument("-l", "--logOn", help="", action="store_true", default=False)
     parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="../AnalysisFramework/run/plots/")
     parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
     parser.add_argument("-p", "--plotDump", help="Option for making plots in different formats.", action="store_true", default=False) 

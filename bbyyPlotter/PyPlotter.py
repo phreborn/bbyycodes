@@ -89,3 +89,27 @@ def rebin_THStack(stack, bins_array):
         tempStack.Add(tempHist)
     
     return tempStack
+
+def GetYtitle(theHisto, rebin, units):
+    bins = theHisto.GetNbinsX()
+    xmin = theHisto.GetXaxis().GetXmin()
+    xmax = theHisto.GetXaxis().GetXmax()
+    res = (xmax-xmin)/bins*rebin
+    if (res >= 1): res = int(res)
+    y_title = "Events / "
+    y_title += str(res)+" "+units
+
+    return y_title
+
+def CheckXrange(theHisto, new_xmin, new_xmax):
+    xmin = theHisto.GetXaxis().GetXmin()
+    xmax = theHisto.GetXaxis().GetXmax()
+    status = False
+    if ((new_xmin < xmin) or (new_xmax > xmax)):
+        print("WARNING x-min and/or x-max is outside the histogram range. Using TH1F edges instead")
+    elif ((new_xmin > xmin) or (new_xmax < xmax)):
+        print("Zooming in a sub-range of the original TH1F using x-min and x-max edges")
+        status = True
+
+    return status
+
