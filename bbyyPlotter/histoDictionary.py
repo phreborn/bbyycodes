@@ -183,7 +183,7 @@ def SampleDict():
             'legend description': 'SM #it{#gamma#gamma}',
         },
         'yybb': { 
-            'color': 6,
+            'color': 8,
             'legend description': 'SM #it{#gamma#gammab#bar{b}}',
         },
         'HH': { 
@@ -207,7 +207,7 @@ def SampleDict():
             'legend description': '#it{W^{-}H}',
         },
         'ZH': { 
-            'color': 8,
+            'color': 6,
             'legend description': '#it{ZH}',
         },
         'ggZH': { 
@@ -235,6 +235,12 @@ def SampleDict():
 
 def SignalDict():
     dict = {
+
+        'ZH': {
+            'color': 6,
+            'legend description': '#it{ZH}',
+            },
+
         'HHlamPlus10': {
             'color': 4,
             'legend description': '#it{HH} #kappa_{#lambda} = 10',
@@ -365,6 +371,31 @@ def SelectionDict():
             'legend upper': '#it{M_{X}} #geq 350 GeV',
             'legend lower': '#it{b}-tag tight',
         },
+
+       'Presel_Zbb_window': {
+            'legend upper': 'Presel for ZH',
+            'legend lower': '',
+
+        },
+
+       'Presel': {
+            'legend upper': 'Preselection',
+            'legend lower': '',
+
+        },
+
+
+        'Continuum_CR': {
+            'legend upper': 'Continuum bkg CR',
+            'legend lower': '',
+
+            },
+
+       'Continuum_CR_Zbb_window': {
+            'legend upper': 'Continuum bkg CR for ZH',
+            'legend lower': '',
+           }
+
     }
 
     return dict
