@@ -6,7 +6,6 @@
   M. Nelson, 2019 <michael.edward.nelson@cern.ch>
 '''
 
-# Laura: XsubRange is not yet fully implemented - leave commented out. I am trying to make it zoom in some part of the plot with new xmin, xmax if needed 
 
 import os
 import sys
@@ -43,11 +42,13 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 signalDict = SignalDict()
 
-debug = True
-#XsubRange = False
+debug = True # Set to true to see added samples
+DictOn = True # Set to false if you want to use the original binninb and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
  
 def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
-    
+                
+    XsubRange = False
+
     if UNBLIND: print 'WARNING: You have unblinded the analysis! Are you sure you want to do this?'
 
     for selection in selections:
@@ -92,38 +93,51 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                 infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
                 if mcOnly and sample == '15_to_18_data': continue # Skip the data if running on MC only
                 theHisto = infile.Get(path + histo)                
-                if ((sample == samplesToStack[0]) or (mcOnly and sample == samplesToStack[1])):                     
-                    y_title = GetYtitle(theHisto, histoDict[str(histoOrig)]['rebin'], histoDict[histoOrig]['units'])                    
-                #XsubRange = CheckXrange(theHisto, histoDict[histoOrig]['x-min'], histoDict[histoOrig]['x-max'])
-                theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])                
-                #if XsubRange: theHisto.GetXaxis().SetRangeUser(histoDict[histoOrig]['x-min'],histoDict[histoOrig]['x-max'])            
 
+                if DictOn: 
+                    theHisto.Rebin(histoDict[str(histoOrig)]['rebin']) 
+                    if ((sample == samplesToStack[0]) or (mcOnly and sample == samplesToStack[1])):                     
+                        XsubRange = CheckXrange(theHisto, histoDict[histoOrig]['x-min'], histoDict[histoOrig]['x-max'])
+                        if XsubRange:
+                            low = theHisto.GetXaxis().FindBin(histoDict[histoOrig]['x-min'])
+                            low_edge = theHisto.GetBinLowEdge(low)
+                            print low_edge
+                            high = theHisto.GetXaxis().FindBin(histoDict[histoOrig]['x-max'])
+                            high_edge = theHisto.GetBinLowEdge(high+1)
+                            print high_edge
+                    
+                if ((sample == samplesToStack[0]) or (mcOnly and sample == samplesToStack[1])):     
+                    y_title = GetYtitle(theHisto, histoDict[str(histoOrig)]['rebin'], histoDict[histoOrig]['units'])                    
+                                        
                 r.gROOT.cd()                
                 if sample == '15_to_18_data':                    
                     dataHist = theHisto.Clone()  # Get the data
+                    
                     if not UNBLIND and 'm_yyjj' in histo: # Blind the m_yyjj for the resonant search
                         for xbin in range(0, dataHist.GetNbinsX()+1):
                             if dataHist.GetXaxis().GetBinCenter(xbin) > 120: 
                                 dataHist.SetBinContent(xbin,0) 
                                 dataHist.SetBinError(xbin,0.0001) 
+
                     # Transfer the histo information to a TGraph for upper pad plotting
                     for xbin in range(0, dataHist.GetNbinsX()+1):
                         if dataHist.GetBinContent(xbin) > 0.: # Don't plot markers for zero-valued data points
                           dataGraph.SetPoint(xbin, dataHist.GetXaxis().GetBinCenter(xbin), dataHist.GetBinContent(xbin))
                           dataGraph.SetPointError(xbin, 0, dataHist.GetBinError(xbin))
 
-                    #if XsubRange :dataGraph.GetXaxis().SetRangeUser(histoDict[histoOrig]['x-min'],histoDict[histoOrig]['x-max'])
                     
                     dataGraph.SetMarkerColor(r.kBlack)
                     dataGraph.SetMarkerStyle(r.kFullDotLarge)
                     dataGraph.SetLineColor(r.kBlack)
                     dataGraph.SetLineWidth(2)
                     dataHist.SetMarkerColor(r.kBlack)                    
+
                     ratioHist = dataHist.Clone()
-                    #theLegend.AddEntry(dataHist,"Data", "lep")
+                    
                     theLegend.AddEntry(dataGraph,"Data", "lep")
                 else:
                   newHisto = theHisto.Clone()
+
                   if separateHiggsBackgrounds:
                       addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                       getSumHist(newHisto, sumHist)
@@ -143,8 +157,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                     if ('H' in sample and 'HH' not in sample) or sample == 'VBF':
                         infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
                         theHisto = infile.Get(path + histo)
-                        theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
-                        #if XsubRange: theHisto.GetXaxis().SetRangeUser(histoDict[histoOrig]['x-min'],histoDict[histoOrig]['x-max'])
+                        if DictOn: theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
                         newHisto = theHisto.Clone()
                         getSumHist(newHisto, higgsHist)                        
                 # Add the combined single Higgs backgrounds back in, unless specified otherwise
@@ -153,11 +166,16 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                 getSumHist(higgsHist, sumHist)
             
             # Divide and get the ratio
-            if not mcOnly: ratioHist.Divide(sumHist)
+            if not mcOnly: 
+                ratioHist.Divide(sumHist)
+                ratioHist.Rebin(histoDict[str(histoOrig)]['rebin'])
 
             # Apply nice ATLAS-style plotting here
             stackHist.ls()
             stackHist.Draw("HIST")
+            if XsubRange : stackHist.GetXaxis().SetLimits(low_edge,high_edge)
+            stackHist.Draw("HIST")
+
             if mcOnly: 
                 stackHist.GetXaxis().SetTitle(histoDict[str(histoOrig)]['x-axis title'])
                 stackHist.GetYaxis().SetTitleOffset(2)
@@ -185,6 +203,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
             sumHist.Draw("E2 SAME") 
             # Draw the relevant data 
             if not mcOnly: 
+                if XsubRange : dataGraph.GetXaxis().SetLimits(low_edge,high_edge)
                 dataGraph.Draw("EP SAME")
             
             # Inject the relevant signals
@@ -195,7 +214,6 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                 if (sample == signals[0]):
                     y_title = GetYtitle(theHisto, histoDict[str(histoOrig)]['rebin'], histoDict[histoOrig]['units'])
                 theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
-                #if XsubRange : theHisto.GetXaxis().SetRangeUser(histoDict[histoOrig]['x-min'],histoDict[histoOrig]['x-max'])
                 r.gROOT.cd()
                 newHisto = theHisto.Clone()
                 addSignalStack(newHisto, sigHist, signalDict[str(sample)]['color'], theLegend, signalDict[str(sample)]['legend description'])
@@ -247,13 +265,21 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
               ratioHist.GetXaxis().SetTitleSize(0.10)
               ratioHist.GetXaxis().SetLabelFont(43)
               ratioHist.GetXaxis().SetLabelSize(20)
-              ratioHist.Draw("EP") 
+              ratioHist.GetXaxis().SetLimits(low_edge,high_edge)
+              ratioHist.Draw("EP")
 
             # Add line to the ratio plot
             rl = r.TLine()
             rl.SetLineColor(r.kRed)
             rl.SetLineWidth(3)
-            if not mcOnly: rl.DrawLine(ratioHist.GetBinLowEdge(1), 1., ratioHist.GetBinLowEdge(ratioHist.GetNbinsX()+1), 1.)
+            if not mcOnly: 
+                if XsubRange : 
+                    print low_edge
+                    print high_edge
+                    rl.DrawLine(low_edge, 1., high_edge, 1.)
+                else: 
+                    print "nono"
+                    rl.DrawLine(ratioHist.GetBinLowEdge(1), 1., ratioHist.GetBinLowEdge(ratioHist.GetNbinsX()+1), 1.)
             
             # Save canvas to png, pdf, eps, and C
             extra = ''
