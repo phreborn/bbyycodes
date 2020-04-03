@@ -42,7 +42,7 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 signalDict = SignalDict()
 
-debug = True # Set to true to see added samples
+debug = False # Set to true to see added samples
 DictOn = True # Set to false if you want to use the original binninb and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
  
 def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
@@ -101,11 +101,9 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                         if XsubRange:
                             low = theHisto.GetXaxis().FindBin(histoDict[histoOrig]['x-min'])
                             low_edge = theHisto.GetBinLowEdge(low)
-                            print low_edge
                             high = theHisto.GetXaxis().FindBin(histoDict[histoOrig]['x-max'])
                             high_edge = theHisto.GetBinLowEdge(high)
-                            print high_edge
-                    
+                                                
                 if ((sample == samplesToStack[0]) or (mcOnly and sample == samplesToStack[1])):     
                     y_title = GetYtitle(theHisto, histoDict[str(histoOrig)]['rebin'], histoDict[histoOrig]['units'])                    
                                         
@@ -191,16 +189,18 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                    else:
                       stackHist.SetMaximum(1.45*dataHist.GetMaximum())
 
+            if DictOn: sumHist.SetAxisRange(low_edge,high_edge, 'X')
+
 
             #for nbin in range(0,sumHist.GetNbinsX()):
-                #sumHist.SetBinError(nbin, sumHist.GetBinError(nbin)*10) #Laura
+                #sumHist.SetBinError(nbin, sumHist.GetBinError(nbin)*20) 
 
-            sumHist.SetMarkerSize(0)
+            sumHist.SetMarkerSize(1)
             sumHist.SetFillColor(12)
-            sumHist.SetFillStyle(3357)
+            sumHist.SetFillStyle(3144)#3357)
             theLegend.AddEntry(sumHist,"Total SM", "f")
 
-            sumHist.Draw("E2 SAME") 
+            sumHist.Draw("E2 SAME") # "E2 SAME") 
             # Draw the relevant data 
             if not mcOnly: 
                 if XsubRange : dataGraph.GetXaxis().SetLimits(low_edge,high_edge)
@@ -266,7 +266,8 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
               ratioHist.GetXaxis().SetTitleSize(0.10)
               ratioHist.GetXaxis().SetLabelFont(43)
               ratioHist.GetXaxis().SetLabelSize(20)
-              ratioHist.SetAxisRange(low_edge,high_edge, 'X')
+              if DictOn: ratioHist.SetAxisRange(low_edge,high_edge, 'X')
+
               ratioHist.Draw("EP")
 
             # Add line to the ratio plot
