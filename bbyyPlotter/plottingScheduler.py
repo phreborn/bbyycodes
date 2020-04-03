@@ -103,7 +103,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                             low_edge = theHisto.GetBinLowEdge(low)
                             print low_edge
                             high = theHisto.GetXaxis().FindBin(histoDict[histoOrig]['x-max'])
-                            high_edge = theHisto.GetBinLowEdge(high+1)
+                            high_edge = theHisto.GetBinLowEdge(high)
                             print high_edge
                     
                 if ((sample == samplesToStack[0]) or (mcOnly and sample == samplesToStack[1])):     
@@ -160,15 +160,15 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                         if DictOn: theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
                         newHisto = theHisto.Clone()
                         getSumHist(newHisto, higgsHist)                        
+
                 # Add the combined single Higgs backgrounds back in, unless specified otherwise
                 if debug : print "Adding single Higgs"
                 addStack(higgsHist, stackHist, 4, theLegend, 'Single Higgs')   
                 getSumHist(higgsHist, sumHist)
             
             # Divide and get the ratio
-            if not mcOnly: 
-                ratioHist.Divide(sumHist)
-                ratioHist.Rebin(histoDict[str(histoOrig)]['rebin'])
+
+            if not mcOnly:  ratioHist.Divide(sumHist)
 
             # Apply nice ATLAS-style plotting here
             stackHist.ls()
@@ -193,7 +193,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
 
 
             #for nbin in range(0,sumHist.GetNbinsX()):
-                #sumHist.SetBinError(nbin, sumHist.GetBinError(nbin)) #Laura
+                #sumHist.SetBinError(nbin, sumHist.GetBinError(nbin)*10) #Laura
 
             sumHist.SetMarkerSize(0)
             sumHist.SetFillColor(12)
@@ -213,12 +213,13 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                 theHisto = infile.Get(path + histo)
                 if (sample == signals[0]):
                     y_title = GetYtitle(theHisto, histoDict[str(histoOrig)]['rebin'], histoDict[histoOrig]['units'])
-                theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
+                if DictOn: theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
                 r.gROOT.cd()
                 newHisto = theHisto.Clone()
                 addSignalStack(newHisto, sigHist, signalDict[str(sample)]['color'], theLegend, signalDict[str(sample)]['legend description'])
 
             sigHist.Draw("HIST nostack SAME")
+
             # Set up latex and the ATLAS label
             l = r.TLatex()
             l.SetNDC()
@@ -265,7 +266,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
               ratioHist.GetXaxis().SetTitleSize(0.10)
               ratioHist.GetXaxis().SetLabelFont(43)
               ratioHist.GetXaxis().SetLabelSize(20)
-              ratioHist.GetXaxis().SetLimits(low_edge,high_edge)
+              ratioHist.SetAxisRange(low_edge,high_edge, 'X')
               ratioHist.Draw("EP")
 
             # Add line to the ratio plot
@@ -274,11 +275,9 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
             rl.SetLineWidth(3)
             if not mcOnly: 
                 if XsubRange : 
-                    print low_edge
-                    print high_edge
+                    high_edge = ratioHist.GetBinLowEdge(high+1)
                     rl.DrawLine(low_edge, 1., high_edge, 1.)
-                else: 
-                    print "nono"
+                else:               
                     rl.DrawLine(ratioHist.GetBinLowEdge(1), 1., ratioHist.GetBinLowEdge(ratioHist.GetNbinsX()+1), 1.)
             
             # Save canvas to png, pdf, eps, and C
