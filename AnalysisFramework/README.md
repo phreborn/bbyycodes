@@ -8,9 +8,7 @@ To run the main program which produces yields.txt and plots/sample\_Low/HighMass
 
 cd AnalysisFramework
 
-setupATLAS
-
-lsetup "root 6.14.04-x86_64-slc6-gcc62-opt"
+source setup.sh
 
 mkdir build
 
@@ -22,11 +20,14 @@ make -j
 
 #Voluntary:
 
+cd ../
+
 mkdir run
 
 cd run
 
 ln -s ../build/hhbbyy
+
 ln -s ../json/* (You can choose which specific json files you need to use. Remember, the standard json files will be automatically copied to the build directory during make)
 
 ## Produce histograms

@@ -47,15 +47,6 @@
 
     "samples" : {
 
-      "HH": 	{
-        "datafiles" : { 
-          "mc16a" : "mc16a_hh_yybb_NLO.root",
-          "mc16d" : "mc16d_hh_yybb_NLO.root",
-          "mc16e" : "mc16e_hh_yybb_NLO.root"
-        },
-        "histoName" : "CutFlow_aMCnlo_Hwpp_hh_yybb_noDalitz_weighted"
-      },
-
       "ggH": 	{
         "datafiles" : { 
           "mc16a" : "mc16a.PowhegPy8_NNLOPS_ggH125.MxAODDetailed.e5607_s3126_r9364_p3665.h024.root",

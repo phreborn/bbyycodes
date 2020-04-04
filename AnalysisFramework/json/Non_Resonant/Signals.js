@@ -51,6 +51,14 @@
 
     "samples" : {
 
+      "HH":     {
+        "datafiles" : {
+          "mc16a" : "mc16a_hh_yybb_NLO.root",
+          "mc16d" : "mc16d_hh_yybb_NLO.root",
+          "mc16e" : "mc16e_hh_yybb_NLO.root"
+        },
+        "histoName" : "CutFlow_aMCnlo_Hwpp_hh_yybb_noDalitz_weighted" 
+
       "HHlamMinus2": 	{
         "datafiles" : { 
           "mc16a" : "mc16a.MGPy8_hh_yybb_minus_lambda02_AF2.MxAODDetailed.e5504_a875_r9364_p3629.h024.root",
