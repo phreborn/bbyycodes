@@ -9,7 +9,7 @@ PyPlotter.py =  A collection of functions for making stack plots from root input
 
 histoDictionary.py = A python directory summarising the plotting properties of each histogram produced for the final plots (add your new histograms here)
 
-plottingScheduler.py = Script to stage the various different plots and plotting confirguriations, based on the other dictionaries and functions defined in this package. It reads 3 arguments from command line: -m for mcOnly usage (defaulted to false), -i for path_to_inputs (defaulted to ""), -o for path_to_output (defaulted to "./Plots/")
+plottingScheduler.py = Script to stage the various different plots and plotting confirguriations, based on the other dictionaries and functions defined in this package. It reads various arguments from command line (please see below for details and defaults)
 
 PlottingList.py = List of backgrounds, regions and variables to be plotted by plottingScheduler.py.
 

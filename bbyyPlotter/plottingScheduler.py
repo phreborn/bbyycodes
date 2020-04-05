@@ -43,7 +43,7 @@ selectionDict = SelectionDict()
 signalDict = SignalDict()
 
 debug = False # Set to true to see added samples
-DictOn = True # Set to false if you want to use the original binninb and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
+DictOn = False # Set to false if you want to use the original binninb and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
  
 def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
                 

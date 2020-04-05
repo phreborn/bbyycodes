@@ -4,7 +4,7 @@
 
 # List of keys from the histogramming dictionary                                                                                                               
 histosToPlot = [
-#                  'sumHisto_m_yy_',
+                  'sumHisto_m_yy_',
                   'sumHisto_m_jj_',
                   #'sumHisto_m_yyjj_tilde_',
                   #'sumHisto_m_yyjj_tilde_HM_',
@@ -32,10 +32,10 @@ samplesToStack = [
                     '15_to_18_data',
                     'ttyy_nohad',
                     'ttyy_had',
-                    'tty_nohad',
-                    'yybj',
-                    'yycj',
-                    'yyjj',
+                    #'tty_nohad',
+                    #'yybj',
+                    #'yycj',
+                    #'yyjj',
                     'HH',
                     # Then all of the single H backgrounds (these are combined, by default)     
                     'ggH',
@@ -56,10 +56,10 @@ selections = [
 #                'Continuum_CR_Zbb_window', # For the continuum CR        
 #                'Resonant_Zbb_window',
 #                'Presel_Zbb_window',
-                'Presel'
+#                'Presel'
 #                 'Continuum', # For the continuum backgrounds  (2-btag region)
 #                 'Resonant',
-#                'LM_A', # Category 1                                         
+                'LM_A', # Category 1                                         
                
 #                'LM_B', # Category 2                                          
          

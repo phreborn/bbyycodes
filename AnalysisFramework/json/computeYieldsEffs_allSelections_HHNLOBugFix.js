@@ -148,6 +148,17 @@
         "histoName" : "CutFlow_aMCnloHwpp_tWH125_yt_plus1_noDalitz_weighted"
       },
 
+      "tty_nohad":      {
+        "datafiles" : {
+          "mc16a" : "mc16a.MGPy8_ttgamma_nonallhadronic_AF2.MxAODDetailed.e6155_a875_r9364_p3703.h024.root",
+          "mc16d" : "mc16d.MGPy8_ttgamma_nonallhadronic_AF2.MxAODDetailed.e6155_a875_r10201_p3703.h024.root",
+          "mc16e" : "mc16d.MGPy8_ttgamma_nonallhadronic_AF2.MxAODDetailed.e6155_a875_r10201_p3703.h024.root"
+        },
+        "histoName" : "CutFlow_MGPy8_ttgamma_nonallhadronic_noDalitz_weighted",
+        "color" : "4",
+        "legendEntry" : "#it{tty}"
+      },
+
       "ttyy_nohad":	{
         "datafiles" : { 	
           "mc16a" : "mc16a.MGPy8_ttgammagamma_noallhad_AF2.MxAODDetailed.e6542_a875_r9364_p3703.h024.root",

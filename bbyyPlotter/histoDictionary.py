@@ -423,6 +423,18 @@ def SelectionDict():
             'legend lower': '#it{b}-tag tight',
         },
 
+       'Resonant': {
+            'legend upper': 'Resonant selection',
+            'legend lower': '',
+
+        },        
+
+       'Resonant_Zbb_window': {
+            'legend upper': 'Resonant for ZH',
+            'legend lower': '',
+
+        },
+
        'Presel_Zbb_window': {
             'legend upper': 'Presel for ZH',
             'legend lower': '',
