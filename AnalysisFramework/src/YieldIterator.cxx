@@ -11,7 +11,10 @@ void YieldIterator::execute()
 
   std::cout<<" Entering YieldIterator::execute() "<<std::endl;
   std::ofstream fileOut;
+  std::ofstream jsonOut;
   fileOut.open("yields.txt");
+  jsonOut.open("yields.js");
+  jsonOut<<"{"<<std::endl;
 
   // Fetch the JSON 
   mytest::JSONData& document=Controller::GetDocument();
@@ -39,17 +42,26 @@ void YieldIterator::execute()
   for (auto iSample:document.samples.samples) {
     mytest::aSample thisSample=document.samples.samples[iSample.first];
     const std::string sampleName=iSample.first;
-    for (auto iCut: cutFlows){
+    std::string commaIfInternal = ",";
+    for (auto iCut=cutFlows.begin();iCut!=cutFlows.end();++iCut){ //Remaking this into iterator loop to be able to construct the json
+      if (std::next(iCut) == cutFlows.end()){
+	commaIfInternal = ""; //Through this trick
+      }
+      //for (auto iCut: cutFlows){
+      int total_counts = 0;
       std::map<std::string,std::vector<double>,std::less<std::string> >  integrals;
       double xsec_br_eff=0;
       double total_yield=0;
 
       for (auto iMC: mcCampaigns){
         const std::string mc=iMC;
-        logging=sampleName+"_"+mc+"_"+iCut;
+        logging=sampleName+"_"+mc+"_"+(*iCut);
         
         // Specify the actual selection string
-        std::string select=document.selections.selMap[iCut];
+        std::string select=document.selections.selMap[(*iCut)];
+	// Specify weight
+	std::string weight=document.selections.weight;
+	std::string weighted_selection="("+select+")*("+weight+")";
         // Get luminosity from the MC information
         double lumi=document.luminosity.lumiMap[iMC];
         // Data and MC directories from JSON
@@ -88,7 +100,6 @@ void YieldIterator::execute()
         // First, determine the sum of weights from the MxAOD object
         double sum_weights=(sum1/sum2)*sum3;
         TTree* tree=(TTree*)file->Get("CollectionTree");
-
         // Now loop over the variables specified in the JSON
         int nC=0;
         for(auto iVar : document.variables.varMap){
@@ -97,17 +108,21 @@ void YieldIterator::execute()
           std::string var = iVar.second.first;
           std::string varName = iVar.first;
           std::string hName=varName+logging;
-          std::string hN="sumHisto_"+varName+"_"+sampleName+"_"+iCut;					
+          std::string hN="sumHisto_"+varName+"_"+sampleName+"_"+(*iCut);					
          
+	  
           int nbins=(iVar.second).second.nBins;
           double lowerBin=(iVar.second).second.lowerBin;
           double upperBin=(iVar.second).second.upperBin;
           TH1F *his=new TH1F(hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin);
+	  std::cout<<hName.c_str()<<nbins<<" "<<lowerBin<<" "<<upperBin<<std::endl;
           std::string vvar=var+" >> "+hName;
           // Draw histogram and apply luminosity scaling
-          tree->Draw(vvar.c_str(),select.c_str(),"HIST");
-          his->Scale(lumi/sum_weights);
-          double integ=his->Integral();
+          tree->Draw(vvar.c_str(),weighted_selection.c_str(),"HIST");
+
+          his->Scale(lumi /sum_weights);
+	  total_counts+=tree->GetEntries(select.c_str());
+	  double integ=his->Integral();
           integrals[varName].push_back(integ);
         }
         if (sampleName=="data") continue;
@@ -119,13 +134,16 @@ void YieldIterator::execute()
           xsec_br_eff = xsec_br_eff_array[0];
         }
         total_yield+= lumi*xsec_br_eff;
+
       }
       // Finally, get and store the yields and efficiencies
       std::map<std::string,double,std::less<std::string> >  Yield;
       double acceptance_efficiency=0;
       fileOut<< "----------------------------------------- "<<std::endl;
       fileOut<<" Sample + cut flow : "<<logging<<std::endl;
-      int nCount=0;
+      fileOut<<" Total counts : "<< total_counts<<std::endl;
+
+      int nCount = 0;
       for (auto ikx:integrals)
       {
         if (nCount) break;
@@ -134,13 +152,15 @@ void YieldIterator::execute()
         for (int i=0;i<ikx.second.size();i++)
           Yield[vnam]+=ikx.second.at(i);
         acceptance_efficiency=Yield[vnam]/total_yield;
-        fileOut<<" Yield "<<Yield[vnam]<<" efficiency "<<acceptance_efficiency<<std::endl;
+        fileOut <<" Yield "<<Yield[vnam]<<" efficiency "<<acceptance_efficiency<<std::endl;
+	jsonOut <<"\""<<(*iCut)<<"\":"<<Yield[vnam]<<commaIfInternal<<std::endl;
       }
       Yield.clear();
       integrals.clear();
     }
   }
-  fileOut.close();	
-
+  fileOut.close();
+  jsonOut<<"}"<<std::endl;
+  jsonOut.close();
 }
 

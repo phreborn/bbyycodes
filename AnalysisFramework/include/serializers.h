@@ -64,13 +64,15 @@ namespace mytest {
     }
 
     for (auto ik= j.begin(); ik != j.end(); ++ik) {
-      std::cout<<" selection found "<<std::endl;
-      std::cout<<" \t selection "<<ik.key()<<std::endl;
-      std::cout<<" \t\t "<<ik.value()<<std::endl<<std::endl;
-      if (ik.key()=="data")
-        p.dataSel=ik.value();
-      else
-        p.selMap[ik.key()]=ik.value();
+      if(ik.key()!="weight"){
+	std::cout<<" selection found "<<std::endl;
+	std::cout<<" \t selection "<<ik.key()<<std::endl;
+	std::cout<<" \t\t "<<ik.value()<<std::endl<<std::endl;
+	if (ik.key()=="data")
+	  p.dataSel=ik.value();
+	else
+	  p.selMap[ik.key()]=ik.value();
+      }
     }
   }
 
