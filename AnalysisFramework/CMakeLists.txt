@@ -34,12 +34,22 @@ set(hhbbyy_SCRIPTS
         computeYieldsEffs_photonJetBkg.js
         computeYieldsEffs_allSelections_resonantSignals.js
         computeYieldsEffs_allSelections_nonResonantSignals.js
-
    )
+
 foreach(_script ${hhbbyy_SCRIPTS})
   configure_file(
     ${PROJECT_SOURCE_DIR}/json/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
+    ${PROJECT_BINARY_DIR}/../run/${_script}
     COPYONLY
     )
 endforeach()
+
+set_target_properties(hhbbyy PROPERTIES
+                      RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/run/
+)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ln -sf -t ${PROJECT_SOURCE_DIR}/run/ ${PROJECT_SOURCE_DIR}/json/
+)
+

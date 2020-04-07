@@ -3,12 +3,13 @@
 ## If you have any questions, please contact me valentina.maria.cairo@cern.ch
 
 
-To run the main program which produces yields.txt and plots/sample\_Low/HighMass\_Loose/TightBtagging:
-
+**To run the main program which produces yields.txt and histograms (based on the configurations applied in the JSON files) in a folder *plots*, please follow the instructions below after cloning this project:**
 
 cd AnalysisFramework
 
 source setup.sh
+
+**Build the project:**
 
 mkdir build
 
@@ -18,22 +19,17 @@ cmake ../
 
 make -j
 
-#Voluntary:
+**This will create a *run* folder which contains the executable *hhbbyy*. Now go in the folder**
 
-cd ../
+cd ../run
 
-mkdir run
-
-cd run
-
-ln -s ../build/hhbbyy
-
-ln -s ../json/* (You can choose which specific json files you need to use. Remember, the standard json files will be automatically copied to the build directory during make)
-
-## Produce histograms
-You can either run from build or run directories:
+**You can now produce histograms by typing, for example:**
 
 ./hhbbyy computeYieldsEffs_allSelections_HHNLOBugFix.js
+
+**or by using any of the JSON files linked through the *json* soft link (you will find two folders, namely H024 and H025, which contain configurations for the 2 production campaigns).**
+
+
 
 ## ========================================
 
