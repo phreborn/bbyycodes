@@ -46,7 +46,7 @@ void YieldIterator::execute()
     if (std::next(iSample) == document.samples.samples.end()){
       sampleCommaIfInternal = "";
     }
-    jsonOut<<(sampleName)<<":{"<<std::endl;
+    jsonOut<<"\""<<(sampleName)<<"\":{"<<std::endl;
     mytest::aSample thisSample=document.samples.samples[iSample->first];
     std::string cutCommaIfInternal = ",";
     for (auto iCut=cutFlows.begin();iCut!=cutFlows.end();++iCut){ //Remaking this into iterator loop to be able to construct the json
