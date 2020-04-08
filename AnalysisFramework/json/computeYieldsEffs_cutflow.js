@@ -44,6 +44,15 @@
           "mc16e" : "mc16e.MGH7_X300tohh_bbyy_AF2.MxAOD-yybbDetailed.e7251_a875_r10724_p3714.h024.root"
         },
         "histoName" : "CutFlow_MGH7_X300tohh_bbyy_AF2_noDalitz_weighted"
-      }
+      },
+      "ZH":	{
+        "datafiles" : { 
+          "mc16a" : "mc16a.PowhegPy8_ZH125J.MxAODDetailed.e5743_s3126_r9364_p3665.h024.root",
+          "mc16d" : "mc16d.PowhegPy8_ZH125J.MxAODDetailed.e5743_s3126_r10201_p3665.h024.root",
+          "mc16e" : "mc16e.PowhegPy8_ZH125J.MxAODDetailed.e5743_s3126_r10724_p3665.h024.root"
+        },
+        "histoName" : "CutFlow_PowhegPy8_ZH125J_noDalitz_weighted"
+      }   
+
 }
 }
