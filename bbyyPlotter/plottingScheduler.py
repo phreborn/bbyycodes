@@ -6,6 +6,7 @@
   M. Nelson, 2019 <michael.edward.nelson@cern.ch>
 '''
 
+
 import os
 import sys
 import ROOT as r
@@ -14,6 +15,7 @@ import collections
 from math import sqrt
 from PyPlotter import *
 from histoDictionary import *
+from PlottingList import*
 
 # ROOT global plot settings
 r.gROOT.LoadMacro("./atlasstyle-00-03-05/AtlasStyle.C")
@@ -29,63 +31,26 @@ r.gStyle.SetPadBottomMargin(0.15)
 r.gStyle.SetPadTopMargin(0.05)
 r.gStyle.SetNumberContours(999)
 
-# List of keys from the histogramming dictionary
-histosToPlot = [
-                  'sumHisto_m_yy_',
-                  'sumHisto_m_jj_',
-                  'sumHisto_m_yyjj_tilde_',
-                  'sumHisto_deltaR_yy_',
-                  'sumHisto_deltaR_jj_',
-                  'sumHisto_deltaR_yyjj_',
-                  'sumHisto_N_j_',
-                  'sumHisto_N_j_central_',
-                  'sumHisto_btag_score_',
-                  'sumHisto_m_yyjj_tilde_',
-                  'sumHisto_MET_',
-               ]
-
-# List of keys from the samples dictionary
-samplesToStack = [
-                    '15_to_18_data',
-                    'tty_nohad',
-                    'ttyy_nohad',
-                    'ttyy_had',
-                    'yy',
-                    'yybb',
-                    'HH',
-                    # Then all of the single H backgrounds (these are combined, by default)
-                    'ggH',
-                    'VBF',
-                    'WpH',
-                    'WmH',
-                    'ZH',
-                    'ggZH',
-                    'ttH',
-                    'bbH',
-                    'tWH',
-                    'tHjb',
-                 ]
-
-# List of selections to plot
-selections = [
-                'Continuum', # For the continuum backgrounds
-                'LM_A', # Category 1
-                'LM_B', # Category 2
-                'HM_A', # Category 3
-                'HM_B', # Category 4
-             ]
+# Lists of keys (samples, variables & regions) can be found in PlottingList.py
 
 # Global path to histos within input file
-path = ''
+path = ""
 
 # Get the histo and sample dictionaries 
 histoDict = PlottingDict()
 sampleDict = SampleDict()
 selectionDict = SelectionDict()
+signalDict = SignalDict()
 
+debug = False # Set to true to see added samples
+DictOn = False # Set to false if you want to use the original binninb and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
+ 
+def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
+                
+    XsubRange = False
 
-def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
-    
+    if UNBLIND: print 'WARNING: You have unblinded the analysis! Are you sure you want to do this?'
+
     for selection in selections:
 
         for histo in histosToPlot:
@@ -94,14 +59,17 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
             if mcOnly and logOn : canv.SetLogy()
             canv.cd()
             
-            if mcOnly: r.gStyle.SetPadRightMargin(0.23)
-            if not mcOnly:
-              padhigh = r.TPad("padhigh","padhigh",0.,0.30,0.85,1.)
-              padhigh.SetBottomMargin(0.02)
-              padhigh.SetGrid(0,0)
-              if logOn: padhigh.SetLogy()
-              padhigh.Draw()
-              padhigh.cd()
+            if mcOnly: 
+                r.gStyle.SetPadLeftMargin(0.20)
+                padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
+                padhigh.SetBottomMargin(0.15)
+            if not mcOnly: 
+                padhigh = r.TPad("padhigh","padhigh",0.,0.30,0.85,1.)
+                padhigh.SetBottomMargin(0.02)
+            padhigh.SetGrid(0,0)
+            if logOn: padhigh.SetLogy()
+            padhigh.Draw()
+            padhigh.cd()
             
             # Add the selection
             histoOrig = histo
@@ -109,70 +77,148 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
 
             theHisto = r.TH1F()
             stackHist = r.THStack()
+            sigHist = r.THStack()
             ratioHist = r.TH1F()
             dataHist = r.TH1F() # For the ratio
-            
-            x1, y1, x2, y2 = 0.10, 0.75, 0.90, 0.95
-            if separateHiggsBackgrounds: x1, y1, x2, y2 = 0.10, 0.45, 0.90, 0.95
+            dataGraph = r.TGraphErrors()
+
+            x1, y1, x2, y2 = 0.10, 0.55, 0.90, 0.95 
+            if separateHiggsBackgrounds or len(signals)>6: y1 = 0.35
+            if len(signals)>10: y1 = 0.15
             theLegend = initializeLegend(x1, y1, x2, y2)
             sumHist = r.TH1F()
-            
-            # Combine the single Higgs backgrounds, unless specified otherwise
-            if not separateHiggsBackgrounds: 
-                higgsHist = r.TH1F()
-                for sample in samplesToStack:
-                    if ('H' in sample and 'HH' not in sample) or sample == 'VBF':
-                      infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
-                      theHisto = infile.Get(path + histo)
-                      newHisto = theHisto.Clone()
-                      getSumHist(newHisto, higgsHist)
 
             for sample in samplesToStack:
                 # Loop over the samples, adding them to the THStack
                 infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
                 if mcOnly and sample == '15_to_18_data': continue # Skip the data if running on MC only
-                theHisto = infile.Get(path + histo)
-                r.gROOT.cd()
-                if sample == '15_to_18_data': 
+                theHisto = infile.Get(path + histo)                
+
+                if DictOn: 
+                    theHisto.Rebin(histoDict[str(histoOrig)]['rebin']) 
+                    if ((sample == samplesToStack[0]) or (mcOnly and sample == samplesToStack[1])):                     
+                        XsubRange = CheckXrange(theHisto, histoDict[histoOrig]['x-min'], histoDict[histoOrig]['x-max'])
+                        if XsubRange:
+                            low = theHisto.GetXaxis().FindBin(histoDict[histoOrig]['x-min'])
+                            low_edge = theHisto.GetBinLowEdge(low)
+                            high = theHisto.GetXaxis().FindBin(histoDict[histoOrig]['x-max'])
+                            high_edge = theHisto.GetBinLowEdge(high)
+                                                
+                if ((sample == samplesToStack[0]) or (mcOnly and sample == samplesToStack[1])):     
+                    y_title = GetYtitle(theHisto, histoDict[str(histoOrig)]['rebin'], histoDict[histoOrig]['units'])                    
+                                        
+                r.gROOT.cd()                
+                if sample == '15_to_18_data':                    
                     dataHist = theHisto.Clone()  # Get the data
-                    dataHist.SetMarkerColor(r.kBlack)
+                    
+                    if not UNBLIND and 'm_yyjj' in histo: # Blind the m_yyjj for the resonant search
+                        for xbin in range(0, dataHist.GetNbinsX()+1):
+                            if dataHist.GetXaxis().GetBinCenter(xbin) > 120: 
+                                dataHist.SetBinContent(xbin,0) 
+                                dataHist.SetBinError(xbin,0.0001) 
+
+                    # Transfer the histo information to a TGraph for upper pad plotting
+                    for xbin in range(0, dataHist.GetNbinsX()+1):
+                        if dataHist.GetBinContent(xbin) > 0.: # Don't plot markers for zero-valued data points
+                          dataGraph.SetPoint(xbin, dataHist.GetXaxis().GetBinCenter(xbin), dataHist.GetBinContent(xbin))
+                          dataGraph.SetPointError(xbin, 0, dataHist.GetBinError(xbin))
+
+                    
+                    dataGraph.SetMarkerColor(r.kBlack)
+                    dataGraph.SetMarkerStyle(r.kFullDotLarge)
+                    dataGraph.SetLineColor(r.kBlack)
+                    dataGraph.SetLineWidth(2)
+                    dataHist.SetMarkerColor(r.kBlack)                    
+
                     ratioHist = dataHist.Clone()
-                    theLegend.AddEntry(dataHist,"Data", "lep")
+                    
+                    theLegend.AddEntry(dataGraph,"Data", "lep")
                 else:
                   newHisto = theHisto.Clone()
+
                   if separateHiggsBackgrounds:
-                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])   
+                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                       getSumHist(newHisto, sumHist)
                       continue 
                   elif ('H' in sample and 'HH' not in sample) or sample == 'VBF': continue # To avoid double-counting the single Higgs backgrounds
                   else:                                                                                         
-                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])   
-                      getSumHist(newHisto, sumHist)
 
-            # Add the combined single Higgs backgrounds back in, unless specified otherwise
+                      if debug : print "Adding "+sample
+                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description']) 
+                      getSumHist(newHisto, sumHist)
+                      
+
+            # Combine the single Higgs backgrounds, unless specified otherwise                                                                    
             if not separateHiggsBackgrounds:
+                higgsHist = r.TH1F()
+                for sample in samplesToStack:
+                    if ('H' in sample and 'HH' not in sample) or sample == 'VBF':
+                        infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
+                        theHisto = infile.Get(path + histo)
+                        if DictOn: theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
+                        newHisto = theHisto.Clone()
+                        getSumHist(newHisto, higgsHist)                        
+
+                # Add the combined single Higgs backgrounds back in, unless specified otherwise
+                if debug : print "Adding single Higgs"
                 addStack(higgsHist, stackHist, 4, theLegend, 'Single Higgs')   
                 getSumHist(higgsHist, sumHist)
-
+            
             # Divide and get the ratio
-            ratioHist.Divide(sumHist)
+
+            if not mcOnly:  ratioHist.Divide(sumHist)
 
             # Apply nice ATLAS-style plotting here
             stackHist.ls()
             stackHist.Draw("HIST")
-            if mcOnly: stackHist.GetXaxis().SetTitle(histoDict[str(histoOrig)]['x-axis title'])
-            stackHist.GetYaxis().SetTitle(histoDict[str(histoOrig)]['y-axis title'])
-            #stackHist.GetXaxis().Set(histoDict[str(histoOrig)]['nBinsX']+2, histoDict[str(histoOrig)]['x-min'], histoDict[str(histoOrig)]['x-max'])
+            if XsubRange : stackHist.GetXaxis().SetLimits(low_edge,high_edge)
+            stackHist.Draw("HIST")
+
+            if mcOnly: 
+                stackHist.GetXaxis().SetTitle(histoDict[str(histoOrig)]['x-axis title'])
+                stackHist.GetYaxis().SetTitleOffset(2)
+            stackHist.GetYaxis().SetTitle(y_title)
             stackHist.GetXaxis().SetNdivisions(306)
             stackHist.SetMaximum(1.45*stackHist.GetMaximum())
+
             if not mcOnly : 
                    stackHist.GetXaxis().SetLabelOffset(999)
                    stackHist.GetXaxis().SetLabelSize(0)
-                   stackHist.SetMaximum(1.45*dataHist.GetMaximum())
-         
+                   if 'm_yyjj' in histo:
+                      stackHist.SetMaximum(1.45*stackHist.GetMaximum())
+                   else:
+                      stackHist.SetMaximum(1.45*dataHist.GetMaximum())
+
+            if DictOn: sumHist.SetAxisRange(low_edge,high_edge, 'X')
+
+
+            #for nbin in range(0,sumHist.GetNbinsX()):
+                #sumHist.SetBinError(nbin, sumHist.GetBinError(nbin)*20) 
+
+            sumHist.SetMarkerSize(1)
+            sumHist.SetFillColor(12)
+            sumHist.SetFillStyle(3144)#3357)
+            theLegend.AddEntry(sumHist,"Total SM", "f")
+
+            sumHist.Draw("E2 SAME") # "E2 SAME") 
             # Draw the relevant data 
             if not mcOnly: 
-              dataHist.Draw("E0 SAME")
+                if XsubRange : dataGraph.GetXaxis().SetLimits(low_edge,high_edge)
+                dataGraph.Draw("EP SAME")
+            
+            # Inject the relevant signals
+            for sample in signals:                
+                if debug: print ("Signal = ",sample)
+                infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
+                theHisto = infile.Get(path + histo)
+                if (sample == signals[0]):
+                    y_title = GetYtitle(theHisto, histoDict[str(histoOrig)]['rebin'], histoDict[histoOrig]['units'])
+                if DictOn: theHisto.Rebin(histoDict[str(histoOrig)]['rebin'])
+                r.gROOT.cd()
+                newHisto = theHisto.Clone()
+                addSignalStack(newHisto, sigHist, signalDict[str(sample)]['color'], theLegend, signalDict[str(sample)]['legend description'])
+
+            sigHist.Draw("HIST nostack SAME")
 
             # Set up latex and the ATLAS label
             l = r.TLatex()
@@ -180,7 +226,7 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
             l.SetTextColor(r.kBlack)
 
             l1, l2 = 0.55, 0.88
-            if mcOnly: l1, l2 = 0.35, 0.88
+            if mcOnly: l1, l2 = 0.45, 0.88
             r.ATLASLabel(l1,l2,"Internal")
             l.SetTextFont(42)
             l.SetTextSize(0.04)
@@ -191,13 +237,12 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
             # Add the legend to a separare, sideways pad
             canv.cd()
             padside = r.TPad("padside","padside",0.75,0.0,0.98,1.)
-            #if mcOnly : padside = r.TPad("padside","padside",0.85,0.0,0.98,1.)
             padside.SetFillStyle(4000)
             padside.SetGrid(0,0)
             padside.Draw()
             padside.cd()
             theLegend.Draw("SAME")
-            
+
             # Set up the lower pad
             if not mcOnly:
               canv.cd()
@@ -221,25 +266,36 @@ def main(mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",ou
               ratioHist.GetXaxis().SetTitleSize(0.10)
               ratioHist.GetXaxis().SetLabelFont(43)
               ratioHist.GetXaxis().SetLabelSize(20)
-              ratioHist.Draw("EP") 
+              if DictOn: ratioHist.SetAxisRange(low_edge,high_edge, 'X')
 
+              ratioHist.Draw("EP")
 
             # Add line to the ratio plot
             rl = r.TLine()
             rl.SetLineColor(r.kRed)
             rl.SetLineWidth(3)
-            if not mcOnly: rl.DrawLine(ratioHist.GetBinLowEdge(1), 1., ratioHist.GetBinLowEdge(ratioHist.GetNbinsX()+1), 1.)
+            if not mcOnly: 
+                if XsubRange : 
+                    high_edge = ratioHist.GetBinLowEdge(high+1)
+                    rl.DrawLine(low_edge, 1., high_edge, 1.)
+                else:               
+                    rl.DrawLine(ratioHist.GetBinLowEdge(1), 1., ratioHist.GetBinLowEdge(ratioHist.GetNbinsX()+1), 1.)
             
             # Save canvas to png, pdf, eps, and C
             extra = ''
-            if mcOnly: extra = '_SumMC'
+            if mcOnly: extra = '_onlyMC'
             if separateHiggsBackgrounds: extra = '_separateSingleHiggsBkgs'
             if separateHiggsBackgrounds and mcOnly : extra = '_separateSingleHiggsBkgs_SumMC'
-            #canv.Print(outDir + histo + extra + ".C", "C")
-            #canv.Print(outDir + histo + extra + ".png", "png")
-            canv.Print(outDir + histo + extra + ".pdf", "pdf")
-            #canv.Print(outDir + histo + extra + ".eps", "eps")
-        
+
+            if plotDump:
+                canv.Print(outDir + histo + extra + ".C", "C")
+                canv.Print(outDir + histo + extra + ".png", "png")
+                canv.Print(outDir + histo + extra + ".pdf", "pdf")
+                canv.Print(outDir + histo + extra + ".eps", "eps")
+                canv.Print(outDir + histo + extra + ".root", "root")
+            else:
+                canv.Print(outDir + histo + extra + ".pdf", "pdf")
+                    
 if __name__ == "__main__":
     
     # Adding an argument parser, which we might want to use 
@@ -248,8 +304,10 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--mcOnly", help="", action="store_true", default=False)
     parser.add_argument("-H", "--separateHiggsBackgrounds", help="", action="store_true", default=False)
     parser.add_argument("-l", "--logOn", help="", action="store_true", default=False)
-    parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="")
+    parser.add_argument("-i", "--inputPath", help="Path to the input directory.",default="../AnalysisFramework/run/plots/")
     parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
+    parser.add_argument("-p", "--plotDump", help="Option for making plots in different formats.", action="store_true", default=False) 
+    parser.add_argument("-UB", "--UNBLIND", help="",action="store_true",default=False) 
   
     options = parser.parse_args()
 
@@ -258,8 +316,9 @@ if __name__ == "__main__":
     outDir = options.outputPath
     if not os.path.exists(outDir):
            os.makedirs(outDir)
-           print "The output directlory did not exist, I have just created one: ", outDir   
- 
+           print "The output directory did not exist, I have just created one: ", outDir   
+
+
     # Defining dictionary to be passed to the main function
     option_dict = dict( (k, v) for k, v in vars(options).iteritems() if v is not None)
     print option_dict
