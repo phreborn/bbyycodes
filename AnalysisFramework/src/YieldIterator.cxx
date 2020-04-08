@@ -148,7 +148,8 @@ void YieldIterator::execute()
       fileOut<< "----------------------------------------- "<<std::endl;
       fileOut<<" Sample + cut flow : "<<logging<<std::endl;
       fileOut<<" Total counts : "<< total_counts<<std::endl;
-
+      double statUnc = sqrt(total_counts) / total_counts;
+      
       int nCount = 0;
       for (auto ikx:integrals)
       {
@@ -159,7 +160,7 @@ void YieldIterator::execute()
           Yield[vnam]+=ikx.second.at(i);
         acceptance_efficiency=Yield[vnam]/total_yield;
         fileOut <<" Yield "<<Yield[vnam]<<" efficiency "<<acceptance_efficiency<<std::endl;
-	jsonOut <<"\""<<(*iCut)<<"\":"<<Yield[vnam]<<cutCommaIfInternal<<std::endl;
+	jsonOut <<"\""<<(*iCut)<<"\":["<<Yield[vnam]<<","<<Yield[vnam] * statUnc<<"]"<<cutCommaIfInternal<<std::endl;
       }
       Yield.clear();
       integrals.clear();
