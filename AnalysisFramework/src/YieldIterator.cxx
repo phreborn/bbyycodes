@@ -134,7 +134,7 @@ void YieldIterator::execute()
           std::string vvar=var+" >> "+hName;
           // Draw histogram and apply luminosity scaling
           tree->Draw(vvar.c_str(),select.c_str(),"HIST");
-          his->Scale(lumi/sum_weights);
+          //his->Scale(lumi/sum_weights);
           float theXStimesBR = 1.0;
           // Have a specific XStimesBR if we are running on a resonant signal
           if (sampleName.find("toHH") != std::string::npos) theXStimesBR = XStimesBR[sampleName];
