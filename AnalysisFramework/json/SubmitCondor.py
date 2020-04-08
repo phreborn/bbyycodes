@@ -17,6 +17,6 @@ for d in Dir:
         localCMD = "./hhbbyy json/"+version+"/"+d+"/"+j+".js"
         CMD = './RunCondor.sh \'%s\' %s ' % (localCMD, output_name)
 
-    print (CMD)
-    os.system(CMD)
+        print (CMD)
+        os.system(CMD)
     
