@@ -39,13 +39,19 @@ void YieldIterator::execute()
   // For logging purposes, used later
   std::string logging;
 
-  for (auto iSample:document.samples.samples) {
-    mytest::aSample thisSample=document.samples.samples[iSample.first];
-    const std::string sampleName=iSample.first;
-    std::string commaIfInternal = ",";
+  std::string sampleCommaIfInternal =",";
+  //for (auto iSample:document.samples.samples) {
+  for (auto iSample=document.samples.samples.begin();iSample!=document.samples.samples.end();iSample++){    
+    const std::string sampleName=iSample->first;
+    if (std::next(iSample) == document.samples.samples.end()){
+      sampleCommaIfInternal = "";
+    }
+    jsonOut<<(sampleName)<<":{"<<std::endl;
+    mytest::aSample thisSample=document.samples.samples[iSample->first];
+    std::string cutCommaIfInternal = ",";
     for (auto iCut=cutFlows.begin();iCut!=cutFlows.end();++iCut){ //Remaking this into iterator loop to be able to construct the json
       if (std::next(iCut) == cutFlows.end()){
-	commaIfInternal = ""; //Through this trick
+	cutCommaIfInternal = ""; //Through this trick
       }
       //for (auto iCut: cutFlows){
       int total_counts = 0;
@@ -153,11 +159,12 @@ void YieldIterator::execute()
           Yield[vnam]+=ikx.second.at(i);
         acceptance_efficiency=Yield[vnam]/total_yield;
         fileOut <<" Yield "<<Yield[vnam]<<" efficiency "<<acceptance_efficiency<<std::endl;
-	jsonOut <<"\""<<(*iCut)<<"\":"<<Yield[vnam]<<commaIfInternal<<std::endl;
+	jsonOut <<"\""<<(*iCut)<<"\":"<<Yield[vnam]<<cutCommaIfInternal<<std::endl;
       }
       Yield.clear();
       integrals.clear();
     }
+    jsonOut<<"}"<<sampleCommaIfInternal<<std::endl;
   }
   fileOut.close();
   jsonOut<<"}"<<std::endl;
