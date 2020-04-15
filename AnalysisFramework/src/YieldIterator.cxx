@@ -61,9 +61,9 @@ void YieldIterator::execute()
 
   std::string sampleCommaIfInternal =",";
   //for (auto iSample:document.samples.samples) {
-  for (auto iSample=document.samples.samples.begin();iSample!=document.samples.samples.end();iSample++){    
+  for (auto iSample=document.samples.samples.begin();iSample!=document.samples.samples.end();iSample++){ //Remaking this into iterator loop to be able to construct the json
     const std::string sampleName=iSample->first;
-    if (std::next(iSample) == document.samples.samples.end()){
+    if (std::next(iSample) == document.samples.samples.end()){ //Trick to get internal commas on correct positions
       sampleCommaIfInternal = "";
     }
     jsonOut<<"\""<<(sampleName)<<"\":{"<<std::endl;
@@ -71,11 +71,10 @@ void YieldIterator::execute()
     std::string cutCommaIfInternal = ",";
     for (auto iCut=cutFlows.begin();iCut!=cutFlows.end();++iCut){ //Remaking this into iterator loop to be able to construct the json
       if (std::next(iCut) == cutFlows.end()){
-	cutCommaIfInternal = ""; //Through this trick
+	cutCommaIfInternal = "";
       }
       //for (auto iCut: cutFlows){
       int total_counts = 0;
-      double sum_error = 0;
       std::map<std::string,std::vector<double>,std::less<std::string> >  integrals;
       std::map<std::string,std::vector<double>,std::less<std::string> >  errors;
       double xsec_br_eff=0;
@@ -167,7 +166,6 @@ void YieldIterator::execute()
 	  
 	  double e;
 	  double integ = his->IntegralAndError(0,his->GetNbinsX(),e);
-          //double integ=his->Integral();
 	  total_counts+=tree->GetEntries(select.c_str());
 	       
 	  integrals[varName].push_back(integ);
@@ -190,8 +188,6 @@ void YieldIterator::execute()
       fileOut<< "----------------------------------------- "<<std::endl;
       fileOut<<" Sample + cut flow : "<<logging<<std::endl;
       fileOut<<" Total counts : "<< total_counts<<std::endl;
-      double total_error = sqrt(sum_error);
-      //double statUnc = sqrt(total_counts) / total_counts;
       
       int nCount = 0;
       for (auto ikx:integrals)
@@ -205,7 +201,7 @@ void YieldIterator::execute()
 	  }
 	  Unc[vnam] = sqrt(Unc[vnam]);
         acceptance_efficiency=Yield[vnam]/total_yield;
-        fileOut <<" Yield "<<Yield[vnam]<<" efficiency "<<acceptance_efficiency<<std::endl;
+        fileOut <<" Yield "<<Yield[vnam]<<" +/- "<< Unc[vnam] <<" efficiency "<<acceptance_efficiency<<std::endl;
 	jsonOut <<"\""<<(*iCut)<<"\":["<<Yield[vnam]<<","<<Unc[vnam]<<"]"<<cutCommaIfInternal<<std::endl;
 	}
       Yield.clear();
