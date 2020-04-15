@@ -27,7 +27,7 @@ void YieldIterator::execute()
     std::cout << " New selection being added to the list "<<is.first<<std::endl;
     cutFlows.push_back(is.first);
   }
-  
+
   // Now extract the desired MC campaigns to run on
   std::vector<std::string> mcCampaigns={};
   for (auto is:document.luminosity.lumiMap)
@@ -38,6 +38,26 @@ void YieldIterator::execute()
 
   // For logging purposes, used later
   std::string logging;
+  
+  // Add a map for the resonant singnal x-section * BR
+  std::map<std::string, float> XStimesBR; // in fb, and normalised to 1 fb^-1
+  XStimesBR["X251toHH"] = 0.960;
+  XStimesBR["X260toHH"] = 0.960;
+  XStimesBR["X280toHH"] = 1.039;
+  XStimesBR["X300toHH"] = 0.964;
+  XStimesBR["X325toHH"] = 0.718;
+  XStimesBR["X350toHH"] = 0.553;
+  XStimesBR["X400toHH"] = 0.411;
+  XStimesBR["X450toHH"] = 0.228;
+  XStimesBR["X500toHH"] = 0.182;
+  XStimesBR["X550toHH"] = 0.156;
+  XStimesBR["X600toHH"] = 0.104;
+  XStimesBR["X700toHH"] = 0.068;
+  XStimesBR["X800toHH"] = 0.052;
+  XStimesBR["X900toHH"] = 0.041;
+  XStimesBR["X1000toHH"] = 0.033;
+  XStimesBR["X2000toHH"] = 0.009;
+  XStimesBR["X3000toHH"] = 0.008;
 
   std::string sampleCommaIfInternal =",";
   //for (auto iSample:document.samples.samples) {
@@ -55,18 +75,30 @@ void YieldIterator::execute()
       }
       //for (auto iCut: cutFlows){
       int total_counts = 0;
+      double sum_error = 0;
       std::map<std::string,std::vector<double>,std::less<std::string> >  integrals;
+      std::map<std::string,std::vector<double>,std::less<std::string> >  errors;
       double xsec_br_eff=0;
       double total_yield=0;
 
+      // Adding an additional truth-matching feature, which we only need when
+      // running on the yy samples to get the yycj, yybj, yyjj separation
+      std::string truthMatch = "";        
+      if (sampleName == "yybj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
+      if (sampleName == "yycj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
+      if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
       for (auto iMC: mcCampaigns){
         const std::string mc=iMC;
         logging=sampleName+"_"+mc+"_"+(*iCut);
         
         // Specify the actual selection string
+
         std::string select=document.selections.selMap[(*iCut)];
 	// Specify weight
-	std::string weight=document.selections.weight;
+	std::string weight = document.selections.weight;
+	if(select.find("HGamEventInfoAuxDyn.isPassed")!=std::string::npos){
+	    select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed"+truthMatch);
+	}
 	std::string weighted_selection="("+select+")*("+weight+")";
         // Get luminosity from the MC information
         double lumi=document.luminosity.lumiMap[iMC];
@@ -99,12 +131,13 @@ void YieldIterator::execute()
         TH1* histo=dynamic_cast<TH1*>(file->Get(histoName.c_str()));
         double sum1=0,sum2=0,sum3=0;
         if (histo) {
-          sum1=histo->GetBinContent(1);
-          sum2=histo->GetBinContent(2);
-          sum3=histo->GetBinContent(3);
+          sum1=histo->GetBinContent(1);//“N_{xAOD}
+          //sum1=histo->GetBinContent(4);//No_Duplicate -- this is a temporary solution to avoid usage of duplicate events which are present both in h024 and h025
+          sum2=histo->GetBinContent(2);//N_{DxAOD}
+          sum3=histo->GetBinContent(3);//AllEvents
         }
         // First, determine the sum of weights from the MxAOD object
-        double sum_weights=(sum1/sum2)*sum3;
+        double sum_weights=(sum1/sum2)*sum3; //AllEvent*(NxAOD/DxAOD) -- for signal samples it does not matter since the number of events in the DxAOD is the same as the number in MxAOD, but it does matter for backgrounds, which have skimming applied at the DxAOD level 
         TTree* tree=(TTree*)file->Get("CollectionTree");
         // Now loop over the variables specified in the JSON
         int nC=0;
@@ -126,10 +159,19 @@ void YieldIterator::execute()
           // Draw histogram and apply luminosity scaling
           tree->Draw(vvar.c_str(),weighted_selection.c_str(),"HIST");
 
-          his->Scale(lumi /sum_weights);
+          //his->Scale(lumi/sum_weights);
+          float theXStimesBR = 1.0;
+          // Have a specific XStimesBR if we are running on a resonant signal
+          if (sampleName.find("toHH") != std::string::npos) theXStimesBR = XStimesBR[sampleName];
+          his->Scale(lumi*theXStimesBR/sum_weights);
+	  
+	  double e;
+	  double integ = his->IntegralAndError(0,his->GetNbinsX(),e);
+          //double integ=his->Integral();
 	  total_counts+=tree->GetEntries(select.c_str());
-	  double integ=his->Integral();
-          integrals[varName].push_back(integ);
+	       
+	  integrals[varName].push_back(integ);
+	  errors[varName].push_back(e);
         }
         if (sampleName=="data") continue;
         //doing it only for MC16a - why???
@@ -140,30 +182,35 @@ void YieldIterator::execute()
           xsec_br_eff = xsec_br_eff_array[0];
         }
         total_yield+= lumi*xsec_br_eff;
-
       }
       // Finally, get and store the yields and efficiencies
       std::map<std::string,double,std::less<std::string> >  Yield;
+      std::map<std::string,double,std::less<std::string> >  Unc;
       double acceptance_efficiency=0;
       fileOut<< "----------------------------------------- "<<std::endl;
       fileOut<<" Sample + cut flow : "<<logging<<std::endl;
       fileOut<<" Total counts : "<< total_counts<<std::endl;
-      double statUnc = sqrt(total_counts) / total_counts;
+      double total_error = sqrt(sum_error);
+      //double statUnc = sqrt(total_counts) / total_counts;
       
       int nCount = 0;
       for (auto ikx:integrals)
-      {
-        if (nCount) break;
-        nCount++;
-        std::string vnam=ikx.first;
-        for (int i=0;i<ikx.second.size();i++)
-          Yield[vnam]+=ikx.second.at(i);
+	{
+	  if (nCount) break;
+	  nCount++;
+	  std::string vnam=ikx.first;
+	  for (int i=0;i<ikx.second.size();i++){
+	    Yield[vnam]+=ikx.second.at(i);
+	    Unc[vnam]+=pow(errors[vnam].at(i),2);
+	  }
+	  Unc[vnam] = sqrt(Unc[vnam]);
         acceptance_efficiency=Yield[vnam]/total_yield;
         fileOut <<" Yield "<<Yield[vnam]<<" efficiency "<<acceptance_efficiency<<std::endl;
-	jsonOut <<"\""<<(*iCut)<<"\":["<<Yield[vnam]<<","<<Yield[vnam] * statUnc<<"]"<<cutCommaIfInternal<<std::endl;
-      }
+	jsonOut <<"\""<<(*iCut)<<"\":["<<Yield[vnam]<<","<<Unc[vnam]<<"]"<<cutCommaIfInternal<<std::endl;
+	}
       Yield.clear();
       integrals.clear();
+      errors.clear();
     }
     jsonOut<<"}"<<sampleCommaIfInternal<<std::endl;
   }

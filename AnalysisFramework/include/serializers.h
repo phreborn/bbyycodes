@@ -62,6 +62,9 @@ namespace mytest {
     {
       p.weight=j.at("weight").get<std::string>();
     }
+    else{
+      p.weight="1";
+    }
 
     for (auto ik= j.begin(); ik != j.end(); ++ik) {
       if(ik.key()!="weight"){
