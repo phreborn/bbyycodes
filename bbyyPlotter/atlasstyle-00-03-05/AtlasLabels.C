@@ -62,3 +62,37 @@ void ATLASVersion(const char* version,Double_t x,Double_t y,Color_t color)
   }
 }
 
+
+
+void ATLASLabelSqrt(Double_t x,Double_t y,const char* text,Color_t color)
+{ 
+  TLatex l; //l.SetTextAlign(12); l.SetTextSize(tsize); 
+  l.SetNDC();
+  l.SetTextFont(72);
+  l.SetTextSize(0.045); //to be used for single canvas
+  l.SetTextColor(color);
+  
+  double dely = 0.035*696*gPad->GetWh()/(472*gPad->GetWw());
+  double delx = 0.220*696*gPad->GetWh()/(472*gPad->GetWw());
+  
+  l.DrawLatex(x,y,"ATLAS");
+  
+  TLatex p;
+  p.SetNDC();
+  p.SetTextFont(42);
+  p.SetTextSize(0.045);
+  p.SetTextColor(color);
+  p.DrawLatex(x,y-dely-dely/2," #sqrt{s} = 13 TeV");
+  
+  if (text) {
+    TLatex p;
+    p.SetNDC();
+    p.SetTextFont(42);
+    p.SetTextSize(0.045);
+    p.SetTextColor(color);
+    //p.DrawLatex(x+delx/2,y,text);
+    p.DrawLatex(x+delx,y,text); //Internal
+  }
+}
+
+
