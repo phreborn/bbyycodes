@@ -3,7 +3,7 @@
 ## If you have any questions, please contact me valentina.maria.cairo@cern.ch
 
 
-**To run the main program which produces yields.txt and histograms (based on the configurations applied in the JSON files) in a folder *plots*, please follow the instructions below after cloning this project:**
+**To run the main program which produces yields.txt, yields.js and histograms (based on the configurations applied in the JSON files) in a folder *plots*, please follow the instructions below after cloning this project:**
 
 cd AnalysisFramework
 
