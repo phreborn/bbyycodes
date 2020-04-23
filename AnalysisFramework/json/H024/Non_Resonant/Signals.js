@@ -58,6 +58,7 @@
           "mc16e" : "mc16e_hh_yybb_NLO.root"
         },
         "histoName" : "CutFlow_aMCnlo_Hwpp_hh_yybb_noDalitz_weighted" 
+      },
 
       "HHlamMinus2": 	{
         "datafiles" : { 

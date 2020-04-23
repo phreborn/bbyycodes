@@ -6,10 +6,28 @@
     },
 
     "variables":{
-	"m_yy": {"var":"HGamEventInfoAuxDyn.m_yy*0.001","bins":{"nbins" : 55,"lbins" : 105,"ubins" : 160}}
+	"m_yy": {"var":"HGamEventInfoAuxDyn.m_yy*0.001","bins":{"nbins" : 55,"lbins" : 105,"ubins" : 160}},
+        "XGBoost_btag77_85_lowMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_lowMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_85_highMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_highMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_85_noMbb_lowMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_noMbb_lowMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_85_noMbb_highMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_noMbb_highMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_85_noHT_lowMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_noHT_lowMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_85_noHT_highMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_noHT_highMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_85_withTop_lowMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_withTop_lowMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_85_withTop_highMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_withTop_highMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_lowMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_lowMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_highMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_highMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_noMbb_lowMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_noMbb_lowMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_noMbb_highMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_noMbb_highMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_noHT_lowMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_noHT_lowMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_noHT_highMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_noHT_highMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_withTop_lowMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_withTop_lowMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}},
+        "XGBoost_btag77_withTop_highMass_Score": {"var":"HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_withTop_highMass_Score","bins":{"nbins" : 100,"lbins" : 0,"ubins" : 1}}
     },
 
     "selections": {
+      
+      "Pass_yy" : "HGamEventInfoAuxDyn.isPassed",
 
       "TEST" : "HGamEventInfoAuxDyn.isPassedPreselection&&HGamEventInfoAuxDyn.isPassedTriggerMatch&&HGamEventInfoAuxDyn.isPassedPID&&HGamEventInfoAuxDyn.isPassedIsolation&&HGamEventInfoAuxDyn.isPassedRelPtCuts&&HGamEventInfoAuxDyn.isPassedMassCut&&EventInfoAuxDyn.passTrig_HLT_g35_medium_g25_medium_L12EM20VH",
 
