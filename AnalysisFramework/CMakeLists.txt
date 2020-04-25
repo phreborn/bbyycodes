@@ -51,5 +51,7 @@ set_target_properties(hhbbyy PROPERTIES
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ln -sf -t ${PROJECT_SOURCE_DIR}/run/ ${PROJECT_SOURCE_DIR}/json/
+    COMMAND ln -sf -t ${PROJECT_SOURCE_DIR}/run/ ${PROJECT_SOURCE_DIR}/utils/RunCondor.sh
+    COMMAND ln -sf -t ${PROJECT_SOURCE_DIR}/run/ ${PROJECT_SOURCE_DIR}/utils/SubmitCondor.py
 )
 

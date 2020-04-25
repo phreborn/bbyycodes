@@ -29,6 +29,20 @@ cd ../run
 
 **or by using any of the JSON files linked through the *json* soft link (you will find two folders, namely H024 and H025, which contain configurations for the 2 production campaigns).**
 
+**You can also submit your jobs on condor, otherwise it takes quite some time to run over all the samples.**
+
+python SubmitCondor.py
+
+**this will write he output as usual in the plots/ folder. You can check the status of your jobs with**
+
+condor_q
+
+**you can kill them with**
+
+condor_rm jobID
+
+
+
 
 
 ## ========================================
