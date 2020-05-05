@@ -3,14 +3,22 @@
 #include "Controller.h"
 #include "ROOTHelper.h"
 #include "TROOT.h"
+#include <memory>
+#include <chrono>
+
 
 DECLARE_ALGORITHM( VariablePlotter , VariablePlotter )
 
 void VariablePlotter::execute()
 {
-
+  
+  std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+  
   // Fetch the JSON 
   mytest::JSONData& document=Controller::GetDocument();
+  
+
+  bool dumpNtuple = false;
 
   // First extract selections from the JSON
   // Full parsing is handled by the serializer.h
@@ -33,7 +41,8 @@ void VariablePlotter::execute()
   std::string logging;
 
   std::map<std::string,TH1F*,std::less<std::string> > sumhistoMap;
-
+  
+  float theXStimesBR = 1.0;
   // Add a map for the resonant singnal x-section * BR
   std::map<std::string, float> XStimesBR; // in fb, and normalised to 1 fb^-1
   XStimesBR["X251toHH"] = 0.960;
@@ -54,10 +63,17 @@ void VariablePlotter::execute()
   XStimesBR["X2000toHH"] = 0.009;
   XStimesBR["X3000toHH"] = 0.008;
 
+  std::vector< std::string > treeList ;
+
+  DIR* dir = opendir("plots");
+  if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
   for (auto iSample:document.samples.samples) {
     mytest::aSample thisSample=document.samples.samples[iSample.first];
     const std::string sampleName=iSample.first;
     for (auto iCut: cutFlows){
+      TFile outfile (("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
+   
       for (auto ikk:document.variables.varMap)
       {
         std::string variableName=ikk.first;
@@ -76,6 +92,10 @@ void VariablePlotter::execute()
       if (sampleName == "yybj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
       if (sampleName == "yycj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
       if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
+
+      // Have a specific XStimesBR if we are running on a resonant signal
+      if (sampleName.find("toHH") != std::string::npos) theXStimesBR = XStimesBR[sampleName];
+	
       for (auto iMC: mcCampaigns){
         const std::string mc=iMC;
         logging=sampleName+"_"+mc+"_"+iCut;
@@ -118,7 +138,7 @@ void VariablePlotter::execute()
         std::string histoName=thisSample.histoName;
         TH1* histo=dynamic_cast<TH1*>(file->Get(histoName.c_str()));
         double sum1=0,sum2=0,sum3=0;
-        if (histo) {
+	if (histo) {
            sum1=histo->GetBinContent(1);//“N_{xAOD}
            //sum1=histo->GetBinContent(4);//No_Duplicate -- this is a temporary solution to avoid usage of duplicate events which are present both in h024 and h025
            sum2=histo->GetBinContent(2);//N_{DxAOD}
@@ -127,42 +147,86 @@ void VariablePlotter::execute()
         //First, determine the sum of weights from the MxAOD object
         double sum_weights=(sum1/sum2)*sum3; //AllEvent*(NxAOD/DxAOD) -- for signal samples it does not matter since the number of events in the DxAOD is the same as the number in MxAOD, but it does matter for backgrounds, which have skimming applied at the DxAOD level 
         TTree* tree=(TTree*)file->Get("CollectionTree");
-
-        // Now loop over the variables, scale to the appropriate lumi, and add the histogram
+		
+	// Now loop over the variables, scale to the appropriate lumi, and add the histogram
         // to the histo map.
         for(auto iVar : document.variables.varMap){
           std::string var = iVar.second.first;
           std::string varName = iVar.first;
-
-          std::string hName=varName+"_"+logging;
-
-          std::string hN="sumHisto_"+varName+"_"+iCut;					
+	  std::string hName=varName+"_"+logging;
+	  std::string hN="sumHisto_"+varName+"_"+iCut;					
           int nbins=(iVar.second).second.nBins;
           double lowerBin=(iVar.second).second.lowerBin;
           double upperBin=(iVar.second).second.upperBin;
           std::cout<<"   ++++ bins "<<nbins<<" "<<lowerBin<<" "<<upperBin<<" hname "<<hName<<std::endl;
-          TH1F *his=new TH1F(hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin);
-          std::string vvar=var+" >> "+hName;
+	  std::shared_ptr<TH1F> his = std::make_shared<TH1F>(hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin);
+	  std::string vvar=var+" >> "+hName;
           std::cout << "Drawing with selection: " << select.c_str() << std::endl;
           tree->Draw(vvar.c_str(),select.c_str(),"HIST");
-          float theXStimesBR = 1.0;
-          // Have a specific XStimesBR if we are running on a resonant signal
-          if (sampleName.find("toHH") != std::string::npos) theXStimesBR = XStimesBR[sampleName];
-          his->Scale(lumi*theXStimesBR/sum_weights);
-          sumhistoMap[hN]->Add(his);
-        }
-      }
+	  //auto his = df_filter.Histo1D({hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin},var.c_str());
+          std::cout << "HIST ENTRIES ===== " << his->GetEntries() << std::endl;
+	  his->Scale(lumi*theXStimesBR/sum_weights);
+          std::cout<< "Scale by = "<< lumi*theXStimesBR/sum_weights << std::endl;
+          //sumhistoMap[hN]->Add(his.GetPtr());
+	  sumhistoMap[hN]->Add(his.get());
+          std::cout<< "added histo =====" << std::endl;
+          std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << std::endl;
+        }//iVar
+	
+	if (dumpNtuple) {
+          
+	  ROOT::RDataFrame df(*tree);      
+	  auto df_filter = df.Filter(select);
+	  std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
+	  double df_weight = lumi*theXStimesBR/sum_weights;
+          auto df_out = df_filter.Define("weight", std::to_string(df_weight)).Define("m_yy", "HGamEventInfoAuxDyn.m_yy*0.001").Define("m_jj", "HGamEventInfoAuxDyn.yybb_m_jj*0.001");
+	  treeList = {"weight","m_yy","m_jj"};
+          /*
+          auto df_out = df_filter.Define("weight", std::to_string(df_weight));
+          treeList.push_back("weight","m_yy","m_jj");
+          for(auto iVar : document.variables.varMap) {
+	    std::string var = iVar.second.first;
+            std::string varName = iVar.first;
+            if ( varName == "m_yy" || varName == "m_jj" ) {
+              std::cout<< "varName =======" << varName << ", var ======" << var << std::endl;
+              df_out.Define(varName, var);
+              treeList.push_back(varName);
+              std::cout<< "Print after custom Define" << std::endl;
+	    }
+          }
+          
+          //auto defColNames = df.GetDefinedColumnNames();
+          //auto defColNames = df_filter.GetColumnNames();
+          //for (auto &&defColName : defColNames) std::cout << defColName << std::endl;
+          //auto df_out = df_filter.Define("m_yy", "HGamEventInfoAuxDyn.m_yy*0.001").Define("weight", std::to_string(df_weight)).Define("m_jj", "HGamEventInfoAuxDyn.yybb_m_jj*0.001");
+          ROOT::RDF::RSnapshotOptions opts;
+	  opts.fMode="RECREATE";
+          //df_out.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList,opts);
+	  df_out.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
+          */ //commented out while waiting for Danilo
+          ROOT::RDF::RSnapshotOptions opts;
+          opts.fMode="RECREATE";
+          df_out.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
+	}
+      }//mcCampaigns
       // Write to the plotting directory 
-      DIR* dir = opendir("plots");
-      if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);                   
-      TFile outfile (("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
+      //iDIR* dir = opendir("plots");
+      //if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);                   
+      //TFile outfile (("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
+      outfile.cd();
       for (auto iy:sumhistoMap)
         iy.second->Write();
       sumhistoMap.clear();
       outfile.ls();
       outfile.Close();
+      if (dumpNtuple) {
+        std::string outName = sampleName+"_"+iCut+"_tree.root";
+        std::string hadd = "cd plots/; hadd -f "+outName+" "+sampleName+"_*_"+iCut+"_tree.root; rm *mc16*_tree.root; cd -";
+        system(hadd.c_str());
+      }
     } 
   }
-
+  std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+  std::cout << "Execution time difference = " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[s]" << std::endl;
   std::cout<<std::endl<<std::endl<<" VariablePlotter::execute() done !!!! "<<std::endl<<std::endl;
 }
