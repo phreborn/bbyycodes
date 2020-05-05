@@ -44,6 +44,13 @@ condor_rm jobID
 
 
 
+**TO DOs**
+
+The ntuple dumper is still a work-in-progress feature.
+It is set to false by defualt. If you want to test it please use only the json/H025/test.js input file.
+
+
+
 
 ## ========================================
 
