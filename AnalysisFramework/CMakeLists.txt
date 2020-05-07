@@ -1,13 +1,19 @@
-cmake_minimum_required(VERSION 2.8.9)
+#cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.1)
 
 project (hhbbyy)
 
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
 find_package(ROOT REQUIRED)
+#find_package(vdt REQUIRED)
 
-include_directories(${PROJECT_SOURCE_DIR}/include ${ROOT_INCLUDE_DIRS})
+include_directories(${PROJECT_SOURCE_DIR}/include ${ROOT_INCLUDE_DIRS} /cvmfs/sft.cern.ch/lcg/releases/LCG_97_ATLAS_1/vdt/0.4.3/x86_64-centos7-gcc8-opt/include)
 
-SET(CMAKE_CXX_FLAGS "-std=c++1y")
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSION OFF)
+#SET(CMAKE_CXX_FLAGS "-std=c++1z")
 
 #file(GLOB SOURCES "src/main.cxx")
 add_executable(hhbbyy 

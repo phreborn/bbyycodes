@@ -179,17 +179,19 @@ void VariablePlotter::execute()
 	  auto df_filter = df.Filter(select);
 	  std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
 	  double df_weight = lumi*theXStimesBR/sum_weights;
-          auto df_out = df_filter.Define("weight", std::to_string(df_weight)).Define("m_yy", "HGamEventInfoAuxDyn.m_yy*0.001").Define("m_jj", "HGamEventInfoAuxDyn.yybb_m_jj*0.001");
-	  treeList = {"weight","m_yy","m_jj"};
-          /*
+          //auto df_out = df_filter.Define("weight", std::to_string(df_weight)).Define("m_yy", "HGamEventInfoAuxDyn.m_yy*0.001").Define("m_jj", "HGamEventInfoAuxDyn.yybb_m_jj*0.001");
+	  //treeList = {"weight","m_yy","m_jj"};
+          ///*
           auto df_out = df_filter.Define("weight", std::to_string(df_weight));
-          treeList.push_back("weight","m_yy","m_jj");
+          treeList.push_back("weight");
+          ROOT::RDF::RNode df_with_defines(df_out);  
           for(auto iVar : document.variables.varMap) {
 	    std::string var = iVar.second.first;
             std::string varName = iVar.first;
             if ( varName == "m_yy" || varName == "m_jj" ) {
               std::cout<< "varName =======" << varName << ", var ======" << var << std::endl;
-              df_out.Define(varName, var);
+              //df_out.Define(varName, var);
+              df_with_defines = df_with_defines.Define(varName, var);
               treeList.push_back(varName);
               std::cout<< "Print after custom Define" << std::endl;
 	    }
@@ -202,11 +204,11 @@ void VariablePlotter::execute()
           ROOT::RDF::RSnapshotOptions opts;
 	  opts.fMode="RECREATE";
           //df_out.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList,opts);
-	  df_out.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
-          */ //commented out while waiting for Danilo
-          ROOT::RDF::RSnapshotOptions opts;
-          opts.fMode="RECREATE";
-          df_out.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
+	  df_with_defines.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
+          //*/ //commented out while waiting for Danilo
+          //ROOT::RDF::RSnapshotOptions opts;
+          //opts.fMode="RECREATE";
+          //df_out.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
 	}
       }//mcCampaigns
       // Write to the plotting directory 

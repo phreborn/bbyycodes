@@ -15,7 +15,7 @@ mkdir build
 
 cd build
 
-cmake ../
+cmake3 ../
 
 make -j
 
