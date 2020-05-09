@@ -63,7 +63,8 @@ void VariablePlotter::execute()
   XStimesBR["X2000toHH"] = 0.009;
   XStimesBR["X3000toHH"] = 0.008;
 
-  std::vector< std::string > treeList ;
+  //variables you want to save in the flat ntuple - this could be generalised and read in from the json
+  std::vector< std::string > treeList = {"weight", "m_yy", "m_jj"};
 
   DIR* dir = opendir("plots");
   if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -124,10 +125,6 @@ void VariablePlotter::execute()
           dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
         if (fileName=="mc16d.MGPy8_ttgamma_nonallhadronic_AF2.MxAODDetailed.e6155_a875_r10201_p3703.h024.root")
           dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
-        //if (fileName=="yy_mc16a.root")
-        //  dataDir="root://eosatlas.cern.ch//eos/atlas/user/a/altaylor/bbgg/h024/";
-        //if (fileName=="yy_mc16e.root")
-        //  dataDir="root://eosatlas.cern.ch//eos/atlas/user/a/altaylor/bbgg/h024/";
         if (fileName=="mc16a_hh_yybb_NLO.root" || fileName=="mc16d_hh_yybb_NLO.root" || fileName=="mc16e_hh_yybb_NLO.root")
           dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples/";
         if (fileName=="15_16_data.root" || fileName=="17_data.root" || fileName=="18_data.root")
@@ -164,57 +161,44 @@ void VariablePlotter::execute()
           std::cout << "Drawing with selection: " << select.c_str() << std::endl;
           tree->Draw(vvar.c_str(),select.c_str(),"HIST");
 	  //auto his = df_filter.Histo1D({hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin},var.c_str());
-          std::cout << "HIST ENTRIES ===== " << his->GetEntries() << std::endl;
+          //std::cout << "HIST ENTRIES ===== " << his->GetEntries() << std::endl;
 	  his->Scale(lumi*theXStimesBR/sum_weights);
-          std::cout<< "Scale by = "<< lumi*theXStimesBR/sum_weights << std::endl;
+          //std::cout<< "Scale by = "<< lumi*theXStimesBR/sum_weights << std::endl;
           //sumhistoMap[hN]->Add(his.GetPtr());
 	  sumhistoMap[hN]->Add(his.get());
-          std::cout<< "added histo =====" << std::endl;
-          std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << std::endl;
+          //std::cout<< "added histo =====" << std::endl;
+          //std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << std::endl;
         }//iVar
 	
 	if (dumpNtuple) {
           
 	  ROOT::RDataFrame df(*tree);      
 	  auto df_filter = df.Filter(select);
-	  std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
+	  //std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
 	  double df_weight = lumi*theXStimesBR/sum_weights;
-          //auto df_out = df_filter.Define("weight", std::to_string(df_weight)).Define("m_yy", "HGamEventInfoAuxDyn.m_yy*0.001").Define("m_jj", "HGamEventInfoAuxDyn.yybb_m_jj*0.001");
-	  //treeList = {"weight","m_yy","m_jj"};
-          ///*
           auto df_out = df_filter.Define("weight", std::to_string(df_weight));
-          treeList.push_back("weight");
           ROOT::RDF::RNode df_with_defines(df_out);  
           for(auto iVar : document.variables.varMap) {
 	    std::string var = iVar.second.first;
             std::string varName = iVar.first;
-            if ( varName == "m_yy" || varName == "m_jj" ) {
-              std::cout<< "varName =======" << varName << ", var ======" << var << std::endl;
-              //df_out.Define(varName, var);
-              df_with_defines = df_with_defines.Define(varName, var);
-              treeList.push_back(varName);
-              std::cout<< "Print after custom Define" << std::endl;
-	    }
+            for (auto j : treeList) {
+              if ( varName == j ) {
+                 //std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
+                 df_with_defines = df_with_defines.Define(varName, var);
+                 //std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;   
+              }
+            }
           }
-          
-          //auto defColNames = df.GetDefinedColumnNames();
-          //auto defColNames = df_filter.GetColumnNames();
-          //for (auto &&defColName : defColNames) std::cout << defColName << std::endl;
-          //auto df_out = df_filter.Define("m_yy", "HGamEventInfoAuxDyn.m_yy*0.001").Define("weight", std::to_string(df_weight)).Define("m_jj", "HGamEventInfoAuxDyn.yybb_m_jj*0.001");
+         
+          for (auto j : treeList) {
+            std::cout<< "print treeList:" << j <<std::endl;
+          } 
           ROOT::RDF::RSnapshotOptions opts;
 	  opts.fMode="RECREATE";
-          //df_out.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList,opts);
 	  df_with_defines.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
-          //*/ //commented out while waiting for Danilo
-          //ROOT::RDF::RSnapshotOptions opts;
-          //opts.fMode="RECREATE";
-          //df_out.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
+          //std::cout<< "I have just created a snapshot" << std::endl;
 	}
       }//mcCampaigns
-      // Write to the plotting directory 
-      //iDIR* dir = opendir("plots");
-      //if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);                   
-      //TFile outfile (("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
       outfile.cd();
       for (auto iy:sumhistoMap)
         iy.second->Write();
