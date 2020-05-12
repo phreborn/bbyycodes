@@ -63,7 +63,44 @@
       "HM_A_KF_loosembb" : "(HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_KF_Cat == (-99+(10*3)) )*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
       "HM_B_KF_loosembb" : "(HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_KF_Cat == (-99+(10*4)) )*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
-      "XGBoost_btag77_85_tightScore_LowMass" : "(HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat == 1111)*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight" 
+      "XGBoost_btag77_85_tightScore_HMass_all" : "(HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat == 1111)*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight" ,
+
+      "XGBoost_btag77_85_Nominal_tightScore_HMass_NoWeights" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat % 10) == 1))",
+
+      "XGBoost_btag77_85_Nominal_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat % 10) == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_85_Nominal_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat % 10) == 2))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_85_Nominal_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat % 10) == 3))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_85_Nominal_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat % 10) == 4))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_Nominal_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat % 10) == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_Nominal_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat % 10) == 2))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_Nominal_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat % 10) == 3))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_Nominal_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat % 10) == 4))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_85_NominalWithTop_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat)/100) % 10) == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_85_NominalWithTop_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat)/100) % 10) == 2))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_85_NominalWithTop_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat)/100) % 10) == 3))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_85_NominalWithTop_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat)/100) == 4))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_NominalWithTop_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat)/100) % 10) == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+   
+      "XGBoost_btag77_NominalWithTop_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat)/100) % 10) == 2))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_NominalWithTop_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat)/100) % 10) == 3))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+
+      "XGBoost_btag77_NominalWithTop_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat)/100) % 10) == 4))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight"
+
+
+
 
    },
 
