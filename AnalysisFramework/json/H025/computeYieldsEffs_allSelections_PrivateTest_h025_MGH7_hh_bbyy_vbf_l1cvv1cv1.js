@@ -2,7 +2,7 @@
   "sequencer":["YieldCalculator","VariablePlotter"],
 
     "directories":{
-      "mc16d" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h025/mc16d/Nominal/"
+      "mc16d" : "root://eosatlas.cern.ch//eos/user/e/epetit/Higgs/yybb/data/h025/MGH7_hh_bbyy_vbf_l1cvv1cv1/data-MxAOD/"
     },
 
     "variables":{
@@ -15,7 +15,7 @@
 
       "TEST" : "HGamEventInfoAuxDyn.isPassedPreselection&&HGamEventInfoAuxDyn.isPassedTriggerMatch&&HGamEventInfoAuxDyn.isPassedPID&&HGamEventInfoAuxDyn.isPassedIsolation&&HGamEventInfoAuxDyn.isPassedRelPtCuts&&HGamEventInfoAuxDyn.isPassedMassCut&&EventInfoAuxDyn.passTrig_HLT_g35_medium_g25_medium_L12EM20VH",
 
-      "Validation" : "HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_btag77_85_cutFlow == 6",
+      "Validation" : "HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_btag77_85_cutFlow == 6", 
 
       "XGBoost_btag77_85_tightScore_LowMass" : "(HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat == 1111)*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight" 
 
@@ -29,7 +29,7 @@
 
       "HH":	{
         "datafiles" : { 
-          "mc16d" : "mc16d.MGH7_hh_bbyy_vbf_l1cvv1cv1.MxAODDetailedNoSkim.e7254_s3126_r10201_p4097_h025.root"
+          "mc16d" : "MGH7_hh_bbyy_vbf_l1cvv1cv1.root"
         },
         "histoName": "CutFlow_MGH7_hh_bbyy_vbf_l1cvv1cv1_noDalitz_weighted"
       }
