@@ -38,7 +38,7 @@
 
     "samples" : {
 
-      "HH":	{
+      "X300toHH":	{
         "datafiles" : { 
           "mc16d" : "MGH7_X300tohh_bbyy_AF2.root"
         },

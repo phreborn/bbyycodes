@@ -38,7 +38,7 @@
 
     "samples" : {
 
-      "HH":	{
+      "X300toHH":	{
         "datafiles" : { 
           "mc16d" : "mc16d.MGH7_X300tohh_bbyy.MxAODDetailedNoSkim.e7251_a875_r10201_p4097_h025.root"
         },
