@@ -2,7 +2,7 @@
   "sequencer":["YieldCalculator","VariablePlotter"],
 
     "directories":{
-      "mc16d" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h025/mc16d/Nominal/"
+      "mc16d" : "root://eosatlas.cern.ch//eos/user/e/epetit/Higgs/yybb/data/h025/aMCnlo_Hwpp_hh_yybb/data-MxAOD/"
     },
 
     "variables":{
@@ -112,7 +112,7 @@
 
       "HH":	{
         "datafiles" : { 
-          "mc16d" : "mc16d.aMCnloHwpp_hh_yybb.MxAODDetailedNoSkim.e4419_a875_r10201_p4097_h025.root"
+          "mc16d" : "aMCnlo_Hwpp_hh_yybb.root"
         },
         "histoName" : "CutFlow_aMCnlo_Hwpp_hh_yybb_noDalitz_weighted"
       }
