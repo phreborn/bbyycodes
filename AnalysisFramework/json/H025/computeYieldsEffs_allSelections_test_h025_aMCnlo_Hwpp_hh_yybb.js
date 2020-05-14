@@ -6,7 +6,7 @@
     },
 
     "variables":{
-	"m_yy": {"var":"HGamEventInfoAuxDyn.m_yy*0.001","bins":{"nbins" : 55,"lbins" : 105,"ubins" : 160}},
+	      "m_yy": {"var":"HGamEventInfoAuxDyn.m_yy*0.001","bins":{"nbins" : 55,"lbins" : 105,"ubins" : 160}},
         "N_j" :{"var": "HGamEventInfoAuxDyn.N_j","bins":{"nbins" : 8,"lbins" : 0,"ubins" : 8}},
         "N_j_central" :{"var": "HGamEventInfoAuxDyn.N_j_central","bins":{"nbins" : 8,"lbins" : 0,"ubins" : 8}},
         "m_jj" :{"var":"HGamEventInfoAuxDyn.yybb_m_jj*0.001","bins":{"nbins" : 30,"lbins" : 0,"ubins" : 300}},
@@ -32,25 +32,25 @@
     },
 
     "selections": {
-      
+
       "Pass_yy" : "HGamEventInfoAuxDyn.isPassed",
 
       "TEST" : "HGamEventInfoAuxDyn.isPassedPreselection&&HGamEventInfoAuxDyn.isPassedTriggerMatch&&HGamEventInfoAuxDyn.isPassedPID&&HGamEventInfoAuxDyn.isPassedIsolation&&HGamEventInfoAuxDyn.isPassedRelPtCuts&&HGamEventInfoAuxDyn.isPassedMassCut&&EventInfoAuxDyn.passTrig_HLT_g35_medium_g25_medium_L12EM20VH",
 
-      "Validation" : "HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_btag77_85_cutFlow == 6", 
+      "Validation" : "HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_btag77_85_cutFlow == 6",
 
       "LM_A" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat % 10) == 1 ))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
       "LM_B" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat % 10) == 2 ))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
       "HM_A" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat % 10) == 3 ))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
       "HM_B" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat % 10) == 4 ))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
-  
+
       "LM_A_loosembb" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat)/10) % 10) == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
       "LM_B_loosembb" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat)/10) % 10) == 2))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
- 
+
       "HM_A_loosembb" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat)/10) % 10) == 3))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
       "HM_B_loosembb" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat)/10) % 10) == 4))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
-      
+
       "LM_A_KF" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_KF_Cat % 10) == 1 ))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
       "LM_B_KF" : "(HGamEventInfoAuxDyn.isPassed && ((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_KF_Cat % 10) == 2 ))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
@@ -92,15 +92,16 @@
       "XGBoost_btag77_85_NominalWithTop_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat)/100) % 10) == 4))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
       "XGBoost_btag77_NominalWithTop_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat)/100) % 10) == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
-   
+
       "XGBoost_btag77_NominalWithTop_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat)/100) % 10) == 2))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
       "XGBoost_btag77_NominalWithTop_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat)/100) % 10) == 3))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
-      "XGBoost_btag77_NominalWithTop_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat)/100) % 10) == 4))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight"
+      "XGBoost_btag77_NominalWithTop_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed && ((((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat)/100) % 10) == 4))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
+      "XGBoost_btag77_VBF" : "(HGamEventInfoAuxDyn.isPassed && (HGamEventInfoAuxDyn.yybb_btag77_vbf_selected == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
-
+      "XGBoost_btag77_85_VBF" : "(HGamEventInfoAuxDyn.isPassed && (HGamEventInfoAuxDyn.yybb_btag77_85_vbf_selected == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight"
 
    },
 
@@ -111,7 +112,7 @@
     "samples" : {
 
       "HH":	{
-        "datafiles" : { 
+        "datafiles" : {
           "mc16d" : "mc16d.aMCnloHwpp_hh_yybb.MxAODDetailedNoSkim.e4419_a875_r10201_p4097_h025.root"
         },
         "histoName" : "CutFlow_aMCnlo_Hwpp_hh_yybb_noDalitz_weighted"
