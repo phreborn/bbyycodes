@@ -15,7 +15,6 @@ using json = nlohmann::json;
 
 JSONParser::JSONParser(std::string f):fileName(f) {;}
 void JSONParser::setAlgorithm(algorithm* i) {algorithms.push_back(i);}
-
 void JSONParser::parseAndIterate() {
   std::ifstream fileIn(fileName);
   json j = json::parse(fileIn);
@@ -25,7 +24,6 @@ void JSONParser::parseAndIterate() {
   for (auto it:algorithms)
     it->execute();
 }
-
 void JSONParser::parse() {
   std::ifstream fileIn(fileName);
   json j = json::parse(fileIn);
@@ -33,7 +31,6 @@ void JSONParser::parse() {
   json &jj=j;
   CreateDocument(jj);
 }
-
 void JSONParser::CreateDocument(json& jj)
 {
   mytest::JSONData& document=Controller::GetDocument();
@@ -71,5 +68,6 @@ void JSONParser::CreateDocument(json& jj)
       document.selections = pp;
     }
 
-  }
+  }	
 }
+
