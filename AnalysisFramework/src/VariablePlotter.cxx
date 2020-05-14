@@ -95,7 +95,14 @@ void VariablePlotter::execute()
       if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
 
       // Have a specific XStimesBR if we are running on a resonant signal
-      if (sampleName.find("toHH") != std::string::npos) theXStimesBR = XStimesBR[sampleName];
+      if (sampleName.find("toHH") != std::string::npos) {
+         std::string sampleNameShort; 
+         sampleNameShort = sampleName;
+         int pos = sampleNameShort.find("toHH")+4; // not beautiful, should be changed
+         sampleNameShort.erase(pos,-1); //erase everything that comes after "toHH". This allows to attach strings in the names of the resonant samples in the json files, which might be useful for making the validation plots, and at the same time keep the same mapping for the XS.
+         theXStimesBR = XStimesBR[sampleNameShort];
+      }
+
 	
       for (auto iMC: mcCampaigns){
         const std::string mc=iMC;
