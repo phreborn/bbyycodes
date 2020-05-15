@@ -201,10 +201,7 @@ void VariablePlotter::execute()
           
           ReplaceAll(select_clean,"@","");
              
-          std::cout<< "select = " << select << ", select_clean = " <<select_clean << std::endl;
-	  auto df_filter = df.Filter("HGamAntiKt4EMPFlowJets_BTagging201903AuxDyn.DL1r_bin.size()>=2").Filter(select_clean);
-          //df.Filter(select);
-          //Filter("HGamAntiKt4EMPFlowJets_BTagging201903AuxDyn.DL1r_bin@.size()>=2");
+	  auto df_filter = df.Filter(select_clean);
 	  //std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
 	  double df_weight = lumi*theXStimesBR/sum_weights;
           auto df_out = df_filter.Define("weight", std::to_string(df_weight));
