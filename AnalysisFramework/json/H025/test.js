@@ -19,7 +19,9 @@
       
 	"Pass_yy" : "HGamEventInfoAuxDyn.isPassed == 1",
 	"Validation" : "HGamEventInfoAuxDyn.isPassed == 1 && HGamEventInfoAuxDyn.yybb_btag77_85_cutFlow == 6",
-        "LM_A" : "(HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat == ((10*1)+1) )" 
+        "LM_A" : "(HGamEventInfoAuxDyn.isPassed == 1 && HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat == ((10*1)+1) )",
+        "CutBased_Selection" : "(HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.N_j_central >= 2 && HGamAntiKt4EMPFlowJets_BTagging201903AuxDyn.DL1r_bin@.size()>=2 && HGamAntiKt4EMPFlowJets_BTagging201903AuxDyn.DL1r_bin[0]>=1 && HGamAntiKt4EMPFlowJets_BTagging201903AuxDyn.DL1r_bin[1]>=1 )"
+ 
 	
    },
 

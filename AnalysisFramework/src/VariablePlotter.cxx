@@ -9,6 +9,21 @@
 
 DECLARE_ALGORITHM( VariablePlotter , VariablePlotter )
 
+
+void ReplaceAll(std::string &str, const std::string& from, const std::string& to)
+{
+
+   size_t start_pos = 0;
+   while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+   }
+
+
+}
+
+
+
 void VariablePlotter::execute()
 {
   
@@ -179,8 +194,17 @@ void VariablePlotter::execute()
 	
 	if (dumpNtuple) {
           
-	  ROOT::RDataFrame df(*tree);      
-	  auto df_filter = df.Filter(select);
+	  ROOT::RDataFrame df(*tree);
+          std::string select_clean;
+          select_clean = select;
+        
+          
+          ReplaceAll(select_clean,"@","");
+             
+          std::cout<< "select = " << select << ", select_clean = " <<select_clean << std::endl;
+	  auto df_filter = df.Filter("HGamAntiKt4EMPFlowJets_BTagging201903AuxDyn.DL1r_bin.size()>=2").Filter(select_clean);
+          //df.Filter(select);
+          //Filter("HGamAntiKt4EMPFlowJets_BTagging201903AuxDyn.DL1r_bin@.size()>=2");
 	  //std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
 	  double df_weight = lumi*theXStimesBR/sum_weights;
           auto df_out = df_filter.Define("weight", std::to_string(df_weight));
