@@ -7,8 +7,9 @@ project (hhbbyy)
 find_package(ROOT REQUIRED)
 #find_package(vdt REQUIRED)
 
-include_directories(${PROJECT_SOURCE_DIR}/include ${ROOT_INCLUDE_DIRS} /cvmfs/sft.cern.ch/lcg/releases/LCG_97_ATLAS_1/vdt/0.4.3/x86_64-centos7-gcc8-opt/include)
+#include_directories(${PROJECT_SOURCE_DIR}/include ${ROOT_INCLUDE_DIRS} /cvmfs/sft.cern.ch/lcg/releases/LCG_97_ATLAS_1/vdt/0.4.3/x86_64-centos7-gcc8-opt/include)
 
+include_directories(${PROJECT_SOURCE_DIR}/include ${ROOT_INCLUDE_DIRS})
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
