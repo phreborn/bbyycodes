@@ -23,11 +23,11 @@
 
       "Validation" : "HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_btag77_85_cutFlow == 6", 
 
-      "XGBoost_btag77_85_tightScore_LowMass" : "(HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat == 1111)*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+      "XGBoost_btag77_85_tightScore_HMass_all" : "(HGamEventInfoAuxDyn.isPassed && HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat == 1111)*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
-       "XGBoost_btag77_VBF" : "(HGamEventInfoAuxDyn.isPassed && (HGamEventInfoAuxDyn.yybb_btag77_vbf_selected == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
+      "VBF_btag77" : "(HGamEventInfoAuxDyn.isPassed && (HGamEventInfoAuxDyn.yybb_btag77_vbf_selected == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
 
-      "XGBoost_btag77_85_VBF" : "(HGamEventInfoAuxDyn.isPassed && (HGamEventInfoAuxDyn.yybb_btag77_85_vbf_selected == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight" 
+      "VBF_btag77_85" : "(HGamEventInfoAuxDyn.isPassed && (HGamEventInfoAuxDyn.yybb_btag77_85_vbf_selected == 1))*HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight" 
 
    },
 
@@ -37,7 +37,7 @@
 
     "samples" : {
 
-      "HH":	{
+      "HH_Private":	{
         "datafiles" : { 
           "mc16d" : "MGH7_hh_bbyy_vbf_l1cvv1cv1.root"
         },
