@@ -33,7 +33,7 @@ void VariablePlotter::execute()
   mytest::JSONData& document=Controller::GetDocument();
   
 
-  bool dumpNtuple = false;
+  bool dumpNtuple = false; //ntuple dumper is off by default, add a line in the JSON file if you want to activate it
 
   // First extract selections from the JSON
   // Full parsing is handled by the serializer.h
@@ -132,6 +132,7 @@ void VariablePlotter::execute()
 
         // Pick up the luminosity 
         double lumi=document.luminosity.lumiMap[iMC];
+        dumpNtuple=document.dumper.dumperMap[iMC];
         // Data and MC directories from JSON
         std::string dataDir=document.directories.dirMap[iMC];
         if (sampleName=="data") dataDir=document.directories.dataDir;

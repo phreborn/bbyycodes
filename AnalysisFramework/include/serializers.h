@@ -89,6 +89,14 @@ namespace mytest {
 
   }
 
+  void from_json(const json& j, Dumper& p)
+  {
+    for (auto it = j.begin(); it != j.end(); ++it) {
+      p.dumperMap [it.key()]=it.value();
+    }
+
+  }
+
 
   void from_json(const json& j, MCSamples& p)
   {      

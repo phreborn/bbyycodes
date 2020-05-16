@@ -67,6 +67,9 @@ void JSONParser::CreateDocument(json& jj)
     else if (key == "selections") {
       document.selections = pp;
     }
+    else if (key == "dumper") {
+      document.dumper = pp;
+    }
 
   }	
 }

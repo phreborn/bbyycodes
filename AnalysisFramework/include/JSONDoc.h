@@ -55,6 +55,10 @@ namespace mytest {
 
   };
 
+  struct Dumper {
+    std::map <std::string, bool, std::less<std::string> > dumperMap;
+  };
+
 
   struct JSONData {
     Sequences algorithms;
@@ -64,6 +68,7 @@ namespace mytest {
     Lumi luminosity;
     Bins bins;
     MCSamples samples;
+    Dumper dumper;
   };
 
 
