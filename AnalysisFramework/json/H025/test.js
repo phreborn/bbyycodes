@@ -6,6 +6,13 @@
 	"mc16e" : "root://eosatlas.cern.ch//eos/user/e/epetit/Higgs/yybb/data/h025/aMCnlo_Hwpp_hh_yybb/data-MxAOD/"
     },
 
+    "dumper":{
+
+       "mc16d" : true,
+       "mc16e" : true
+
+    },
+
     "variables":{
         "m_yy": {"var":"HGamEventInfoAuxDyn.m_yy*0.001","bins":{"nbins" : 55,"lbins" : 105,"ubins" : 160}},
         "N_j" :{"var": "HGamEventInfoAuxDyn.N_j","bins":{"nbins" : 8,"lbins" : 0,"ubins" : 8}},
