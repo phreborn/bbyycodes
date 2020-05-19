@@ -58,7 +58,7 @@ void VariablePlotter::execute()
   std::map<std::string,TH1F*,std::less<std::string> > sumhistoMap;
   
   float theXStimesBR = 1.0;
-  // Add a map for the resonant singnal x-section * BR
+  // Add a map for the resonant signal x-section * BR
   std::map<std::string, float> XStimesBR; // in fb, and normalised to 1 fb^-1
   XStimesBR["X251toHH"] = 0.960;
   XStimesBR["X260toHH"] = 0.960;
@@ -79,7 +79,7 @@ void VariablePlotter::execute()
   XStimesBR["X3000toHH"] = 0.008;
 
   //variables you want to save in the flat ntuple - this could be generalised and read in from the json
-  std::vector< std::string > treeList = {"weight", "weight_2", "weight_BRFilterEff", "weight_HGam", "weight_bbyy", "m_yy", "m_jj"};
+  std::vector< std::string > treeList = {"weight", "weight_2", "weight_BRFilterEff", "weight_HGam", "weight_bbyy", "",  "m_yy", "m_jj"};
 
   DIR* dir = opendir("plots");
   if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -165,7 +165,7 @@ void VariablePlotter::execute()
            sum3=histo->GetBinContent(3);//AllEvents
         }
         //First, determine the sum of weights from the MxAOD object
-        double sum_weights=(sum1/sum2)*sum3; //AllEvent*(NxAOD/DxAOD) -- for signal samples it does not matter since the number of events in the DxAOD is the same as the number in MxAOD, but it does matter for backgrounds, which have skimming applied at the DxAOD level 
+        double sum_weights=(sum1/sum2)*sum3; //AllEvents*(NxAOD/DxAOD) -- for signal samples it does not matter since the number of events in the DxAOD is the same as the number in MxAOD, but it does matter for backgrounds, which have skimming applied at the DxAOD level 
         TTree* tree=(TTree*)file->Get("CollectionTree");
 		
 	// Now loop over the variables, scale to the appropriate lumi, and add the histogram
