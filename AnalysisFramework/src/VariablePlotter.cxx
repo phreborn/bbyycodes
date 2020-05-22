@@ -79,7 +79,7 @@ void VariablePlotter::execute()
   XStimesBR["X3000toHH"] = 0.008;
 
   //variables you want to save in the flat ntuple - this could be generalised and read in from the json
-  std::vector< std::string > treeList = {"weight", "weight_2", "weight_BRFilterEff", "weight_HGam", "weight_bbyy", "",  "m_yy", "m_jj"};
+  std::vector< std::string > treeList = {"weight", "weight_2", "weight_BRFilterEff", "weight_HGam", "weight_bbyy", "weight_MC",  "m_yy", "m_jj"};
 
   DIR* dir = opendir("plots");
   if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
