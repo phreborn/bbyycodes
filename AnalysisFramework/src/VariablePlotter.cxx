@@ -79,7 +79,17 @@ void VariablePlotter::execute()
   XStimesBR["X3000toHH"] = 0.008;
 
   //variables you want to save in the flat ntuple - this could be generalised and read in from the json
-  std::vector< std::string > treeList = {"weight", "weight_2", "weight_BRFilterEff", "weight_HGam", "weight_bbyy", "weight_MC",  "m_yy", "m_jj"};
+  std::vector< std::string > treeList = {"weight", "weight_2", "m_yy", "m_jj"};
+
+  std::string truthMatch = "";
+ 
+  TFile *outfile;
+  std::vector< std::string > outName;
+  std::vector< std::string > outNameMerge;
+  ROOT::RDF::RSnapshotOptions opts;
+  //opts.fLazy = true;  
+  opts.fMode="RECREATE";
+  using SnapRet_t = ROOT::RDF::RResultPtr<ROOT::RDF::RInterface<ROOT::Detail::RDF::RLoopManager>>;
 
   DIR* dir = opendir("plots");
   if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -87,40 +97,39 @@ void VariablePlotter::execute()
   for (auto iSample:document.samples.samples) {
     mytest::aSample thisSample=document.samples.samples[iSample.first];
     const std::string sampleName=iSample.first;
-    for (auto iCut: cutFlows){
-      TFile outfile (("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
+    
+    for (auto iMC: mcCampaigns){
+      const std::string mc=iMC;
+      for (auto iCut: cutFlows){
+        outfile = new TFile(("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
    
-      for (auto ikk:document.variables.varMap)
-      {
-        std::string variableName=ikk.first;
-        std::string variableValue=(ikk.second).first;
-        int nbins=(ikk.second).second.nBins;
-        double lowerBin=(ikk.second).second.lowerBin;
-        double upperBin=(ikk.second).second.upperBin;
-        std::string his="sumHisto_"+variableName+"_"+iCut;
-        TH1F *sumHisto=new TH1F(his.c_str(),his.c_str(),nbins,lowerBin,upperBin);
-        sumhistoMap[his]=sumHisto;
-      }
+        for (auto ikk:document.variables.varMap) {
+          std::string variableName=ikk.first;
+          std::string variableValue=(ikk.second).first;
+          int nbins=(ikk.second).second.nBins;
+          double lowerBin=(ikk.second).second.lowerBin;
+          double upperBin=(ikk.second).second.upperBin;
+          std::string his="sumHisto_"+variableName+"_"+iCut;
+          TH1F *sumHisto=new TH1F(his.c_str(),his.c_str(),nbins,lowerBin,upperBin);
+          sumhistoMap[his]=sumHisto;
+        }
 
-      // Adding an additional truth-matching feature, which we only need when
-      // running on the yy samples to get the yycj, yybj, yyjj separation
-      std::string truthMatch = "";        
-      if (sampleName == "yybj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
-      if (sampleName == "yycj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
-      if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
+        // Adding an additional truth-matching feature, which we only need when
+        // running on the yy samples to get the yycj, yybj, yyjj separation
+        //std::string truthMatch = "";        
+        if (sampleName == "yybj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
+        if (sampleName == "yycj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
+        if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
 
-      // Have a specific XStimesBR if we are running on a resonant signal
-      if (sampleName.find("toHH") != std::string::npos) {
+        // Have a specific XStimesBR if we are running on a resonant signal
+        if (sampleName.find("toHH") != std::string::npos) {
          std::string sampleNameShort; 
          sampleNameShort = sampleName;
          int pos = sampleNameShort.find("toHH")+4; // not beautiful, should be changed
          sampleNameShort.erase(pos,-1); //erase everything that comes after "toHH". This allows to attach strings in the names of the resonant samples in the json files, which might be useful for making the validation plots, and at the same time keep the same mapping for the XS.
          theXStimesBR = XStimesBR[sampleNameShort];
       }
-
-	
-      for (auto iMC: mcCampaigns){
-        const std::string mc=iMC;
+        
         logging=sampleName+"_"+mc+"_"+iCut;
 
         // Pick up the selections for each of the different categories
@@ -194,12 +203,13 @@ void VariablePlotter::execute()
         }//iVar
 	
 	if (dumpNtuple) {
+     
+          std::cout <<"In DUMP NTUPLE" <<std::endl;
           
 	  ROOT::RDataFrame df(*tree);
-          std::string select_clean;
-          select_clean = select;
-        
           
+          std::string select_clean;
+          select_clean = select; 
           ReplaceAll(select_clean,"@","");
              
 	  auto df_filter = df.Filter(select_clean);
@@ -222,24 +232,35 @@ void VariablePlotter::execute()
           for (auto j : treeList) {
             std::cout<< "print treeList:" << j <<std::endl;
           } 
-          ROOT::RDF::RSnapshotOptions opts;
-	  opts.fMode="RECREATE";
 	  df_with_defines.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
-          //std::cout<< "I have just created a snapshot" << std::endl;
+          outName.push_back(sampleName+"_"+iCut+"_tree.root");
+          outNameMerge.push_back(sampleName+"_*_"+iCut+"_tree.root");
+          std::cout<< "I have just created a snapshot" << std::endl;
 	}
-      }//mcCampaigns
-      outfile.cd();
-      for (auto iy:sumhistoMap)
-        iy.second->Write();
-      sumhistoMap.clear();
-      outfile.ls();
-      outfile.Close();
-      if (dumpNtuple) {
-        std::string outName = sampleName+"_"+iCut+"_tree.root";
-        std::string hadd = "cd plots/; hadd -f "+outName+" "+sampleName+"_*_"+iCut+"_tree.root; rm *mc16*_tree.root; cd -";
-        system(hadd.c_str());
-      }
-    } 
+        outfile->cd();
+        std::cout<< "Before Loop to write histos  ===== " << std::endl;
+        for (auto iy:sumhistoMap){
+          std::cout<< "In Loop to write histos  ===== " << std::endl;
+          iy.second->Write();
+          std::cout<< "check ===== " << std::endl;
+        }
+        std::cout<< "Before clear map ===== " << std::endl;
+        sumhistoMap.clear();
+        std::cout<< "After clear map ===== " << std::endl;
+        outfile->ls();
+        outfile->Close();
+      }//selections
+    } // MCCampaigns
+    if (dumpNtuple) { //merge trees per MC campaign
+       for (int i=0; i<outName.size(); i++) {
+         std::cout<< "In loop for hadd  ===== " << std::endl;
+         std::cout<< "Before Merging  ===== " << std::endl;
+         std::string hadd = "hadd -f ./plots/"+outName.at(i)+" ./plots/"+outNameMerge.at(i);
+         std::cout<< "I am about to execute this:" << hadd << std::endl;
+         system(hadd.c_str());
+       }
+       system("rm ./plots/*mc16*_tree.root");    
+     } 
   }
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
   std::cout << "Execution time difference = " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[s]" << std::endl;
