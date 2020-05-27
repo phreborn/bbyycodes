@@ -18,8 +18,14 @@ void ReplaceAll(std::string &str, const std::string& from, const std::string& to
         str.replace(start_pos, from.length(), to);
         start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
    }
+}
 
-
+bool hasEnding (std::string const &fullString, std::string const &ending) {
+  if (fullString.length() >= ending.length()) {
+    return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+  } else {
+    return false;
+  }
 }
 
 
@@ -91,7 +97,7 @@ void VariablePlotter::execute()
   opts.fMode="RECREATE";
   using SnapRet_t = ROOT::RDF::RResultPtr<ROOT::RDF::RInterface<ROOT::Detail::RDF::RLoopManager>>;
 
-  DIR* dir = opendir("plots");
+  DIR* dir =  opendir("plots");
   if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
   for (auto iSample:document.samples.samples) {
@@ -99,27 +105,8 @@ void VariablePlotter::execute()
     const std::string sampleName=iSample.first;
 
 
- //   for (auto iCut: cutFlows){
- //       outfile = new TFile(("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
+    for (auto iCut: cutFlows){
 
- //       for (auto ikk:document.variables.varMap) {
- //         std::string variableName=ikk.first;
- //         std::string variableValue=(ikk.second).first;
- //         int nbins=(ikk.second).second.nBins;
- //         double lowerBin=(ikk.second).second.lowerBin;
- //         double upperBin=(ikk.second).second.upperBin;
- //         std::string his="sumHisto_"+variableName+"_"+iCut;
- //         TH1F *sumHisto=new TH1F(his.c_str(),his.c_str(),nbins,lowerBin,upperBin);
- //         sumhistoMap[his]=sumHisto;
- //       }
- //    }
-
-    
-    for (auto iMC: mcCampaigns){
-      const std::string mc=iMC;
-      for (auto iCut: cutFlows){
-        outfile = new TFile(("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
-   
         for (auto ikk:document.variables.varMap) {
           std::string variableName=ikk.first;
           std::string variableValue=(ikk.second).first;
@@ -128,9 +115,19 @@ void VariablePlotter::execute()
           double upperBin=(ikk.second).second.upperBin;
           std::string his="sumHisto_"+variableName+"_"+iCut;
           TH1F *sumHisto=new TH1F(his.c_str(),his.c_str(),nbins,lowerBin,upperBin);
+          std::cout<< "his = " << his << std::endl;
           sumhistoMap[his]=sumHisto;
         }
+   }
 
+    
+    for (auto iMC: mcCampaigns){
+      const std::string mc=iMC;
+      for (auto iCut: cutFlows){
+        outfile = new TFile(("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
+  
+        std::cout<< "in CUT FLOWS" << std::endl;
+ 
         // Adding an additional truth-matching feature, which we only need when
         // running on the yy samples to get the yycj, yybj, yyjj separation
         //std::string truthMatch = "";        
@@ -222,9 +219,11 @@ void VariablePlotter::execute()
 	  his->Scale(lumi*theXStimesBR/sum_weights);
           //std::cout<< "Scale by = "<< lumi*theXStimesBR/sum_weights << std::endl;
           //sumhistoMap[hN]->Add(his.GetPtr());
+          std::cout<< "Before adding histo =====, hn=" << hN << ", his name "<< his.get()->GetName() << std::endl;
+          std::cout<< "sumhistoMap: " <<  sumhistoMap[hN] <<std::endl;
 	  sumhistoMap[hN]->Add(his.get());
-          //std::cout<< "added histo =====" << std::endl;
-          //std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << std::endl;
+          std::cout<< "added histo =====" << std::endl;
+          std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << ", iMC = " << iMC << std::endl;
         }//iVar
 	
 	if (dumpNtuple) {
@@ -247,13 +246,13 @@ void VariablePlotter::execute()
             std::string varName = iVar.first;
             for (auto j : treeList) {
               if ( varName == j ) {
-                 //std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
-                 df_with_defines = df_with_defines.Define(varName, var);
-                 //std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;   
+		//std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
+		df_with_defines = df_with_defines.Define(varName, var);
+		//std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;   
               }
             }
           }
-         
+	  
           for (auto j : treeList) {
             std::cout<< "print treeList:" << j <<std::endl;
           } 
@@ -266,15 +265,13 @@ void VariablePlotter::execute()
         std::cout<< "Before Loop to write histos  ===== " << std::endl;
         for (auto iy:sumhistoMap){
           std::cout<< "In Loop to write histos  ===== " << std::endl;
-          iy.second->Write();
-          std::cout<< "check ===== " << std::endl;
+	  if (hasEnding(iy.first,iCut)) 
+	    iy.second->Write();
+          std::cout<< "check ===== " << iy.first << " " << hasEnding(iy.first,iCut) <<std::endl;
         }
-        std::cout<< "Before clear map ===== " << std::endl;
-        sumhistoMap.clear();
-        std::cout<< "After clear map ===== " << std::endl;
-        outfile->ls();
+	outfile->ls();
         outfile->Close();
-      }//selections
+      }//CutFlows
     } // MCCampaigns
     if (dumpNtuple) { //merge trees per MC campaign
        for (int i=0; i<outName.size(); i++) {
@@ -286,7 +283,12 @@ void VariablePlotter::execute()
        }
        system("rm ./plots/*mc16*_tree.root");    
      } 
-  }
+    
+    std::cout<< "Before clear map ===== " << std::endl;
+    sumhistoMap.clear();
+    std::cout<< "After clear map ===== " << std::endl;
+
+  }//samples
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
   std::cout << "Execution time difference = " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[s]" << std::endl;
   std::cout<<std::endl<<std::endl<<" VariablePlotter::execute() done !!!! "<<std::endl<<std::endl;
