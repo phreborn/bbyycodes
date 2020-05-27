@@ -79,7 +79,7 @@ void VariablePlotter::execute()
   XStimesBR["X3000toHH"] = 0.008;
 
   //variables you want to save in the flat ntuple - this could be generalised and read in from the json
-  std::vector< std::string > treeList = {"weight", "weight_2", "m_yy", "m_jj"};
+  std::vector< std::string > treeList = {"SF", "weight", "m_yy", "m_jj"};
 
   std::string truthMatch = "";
  
@@ -97,6 +97,23 @@ void VariablePlotter::execute()
   for (auto iSample:document.samples.samples) {
     mytest::aSample thisSample=document.samples.samples[iSample.first];
     const std::string sampleName=iSample.first;
+
+
+ //   for (auto iCut: cutFlows){
+ //       outfile = new TFile(("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
+
+ //       for (auto ikk:document.variables.varMap) {
+ //         std::string variableName=ikk.first;
+ //         std::string variableValue=(ikk.second).first;
+ //         int nbins=(ikk.second).second.nBins;
+ //         double lowerBin=(ikk.second).second.lowerBin;
+ //         double upperBin=(ikk.second).second.upperBin;
+ //         std::string his="sumHisto_"+variableName+"_"+iCut;
+ //         TH1F *sumHisto=new TH1F(his.c_str(),his.c_str(),nbins,lowerBin,upperBin);
+ //         sumhistoMap[his]=sumHisto;
+ //       }
+ //    }
+
     
     for (auto iMC: mcCampaigns){
       const std::string mc=iMC;
@@ -128,7 +145,7 @@ void VariablePlotter::execute()
          int pos = sampleNameShort.find("toHH")+4; // not beautiful, should be changed
          sampleNameShort.erase(pos,-1); //erase everything that comes after "toHH". This allows to attach strings in the names of the resonant samples in the json files, which might be useful for making the validation plots, and at the same time keep the same mapping for the XS.
          theXStimesBR = XStimesBR[sampleNameShort];
-      }
+        }
         
         logging=sampleName+"_"+mc+"_"+iCut;
 
@@ -139,9 +156,16 @@ void VariablePlotter::execute()
         // Below removed to now
         //if (document.selections.weight.empty()) select+="*"+document.selections.weight;
 
+        // Specify weight
+        std::string weight = document.selections.weight;
+        std::string weighted_selection="("+select+")*("+weight+")";
+
         // Pick up the luminosity 
         double lumi=document.luminosity.lumiMap[iMC];
+        
+        //Decide if you want to dump the ntuple
         dumpNtuple=document.dumper.dumperMap[iMC];
+
         // Data and MC directories from JSON
         std::string dataDir=document.directories.dirMap[iMC];
         if (sampleName=="data") dataDir=document.directories.dataDir;
@@ -190,8 +214,9 @@ void VariablePlotter::execute()
           std::cout<<"   ++++ bins "<<nbins<<" "<<lowerBin<<" "<<upperBin<<" hname "<<hName<<std::endl;
 	  std::shared_ptr<TH1F> his = std::make_shared<TH1F>(hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin);
 	  std::string vvar=var+" >> "+hName;
-          std::cout << "Drawing with selection: " << select.c_str() << std::endl;
-          tree->Draw(vvar.c_str(),select.c_str(),"HIST");
+          std::cout << "Drawing with selection: " << select.c_str() << " and weight: " << weight.c_str() << std::endl;
+          //tree->Draw(vvar.c_str(),select.c_str(),"HIST");
+          tree->Draw(vvar.c_str(),weighted_selection.c_str(),"HIST");
 	  //auto his = df_filter.Histo1D({hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin},var.c_str());
           //std::cout << "HIST ENTRIES ===== " << his->GetEntries() << std::endl;
 	  his->Scale(lumi*theXStimesBR/sum_weights);
@@ -214,8 +239,8 @@ void VariablePlotter::execute()
              
 	  auto df_filter = df.Filter(select_clean);
 	  //std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
-	  double df_weight = lumi*theXStimesBR/sum_weights;
-          auto df_out = df_filter.Define("weight", std::to_string(df_weight));
+	  double df_SF = lumi*theXStimesBR/sum_weights;
+          auto df_out = df_filter.Define("SF", std::to_string(df_SF));
           ROOT::RDF::RNode df_with_defines(df_out);  
           for(auto iVar : document.variables.varMap) {
 	    std::string var = iVar.second.first;
