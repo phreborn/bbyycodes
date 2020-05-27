@@ -265,7 +265,7 @@ void VariablePlotter::execute()
         std::cout<< "Before Loop to write histos  ===== " << std::endl;
         for (auto iy:sumhistoMap){
           std::cout<< "In Loop to write histos  ===== " << std::endl;
-	  if (hasEnding(iy.first,iCut)) 
+	  if (hasEnding(iy.first,iCut))  // this checks if the seletion string ends with iCut - if you want to add variations of a certain selection make sure the final part if unique!
 	    iy.second->Write();
           std::cout<< "check ===== " << iy.first << " " << hasEnding(iy.first,iCut) <<std::endl;
         }
