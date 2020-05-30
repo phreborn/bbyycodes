@@ -2,12 +2,14 @@
   "sequencer":["YieldCalculator","VariablePlotter"],
 
     "directories":{
-	"mc16d" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h025/mc16d/Nominal/",
+	"mc16a" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h025/mc16d/Nominal/",
+        "mc16d" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h025/mc16d/Nominal/",
         "mc16e" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h025/mc16d/Nominal/"
     },
 
     "dumper":{
 
+       "mc16a" : true,
        "mc16d" : true,
        "mc16e" : true
 
@@ -32,14 +34,16 @@
    },
 
     "lumi" : {
-	"mc16d" : 44386,
-        "mc16e" : 44386
+        "mc16a" : 36209.04,
+        "mc16d" : 44385.7,
+        "mc16e" : 58450.1
     },
 
     "samples" : {
 
       "HH":	{
         "datafiles" : { 
+            "mc16a" : "mc16d.aMCnloHwpp_hh_yybb.MxAODDetailedNoSkim.e4419_a875_r10201_p4097_h025.root",
             "mc16d" : "mc16d.aMCnloHwpp_hh_yybb.MxAODDetailedNoSkim.e4419_a875_r10201_p4097_h025.root",
             "mc16e" : "mc16d.aMCnloHwpp_hh_yybb.MxAODDetailedNoSkim.e4419_a875_r10201_p4097_h025.root"
         },
