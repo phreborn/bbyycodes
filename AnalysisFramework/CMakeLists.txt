@@ -26,7 +26,8 @@ add_executable(hhbbyy
 		src/VariablePlotter.cxx 
 		src/Controller.cxx
 		src/Plotting.cxx
-		src/PrettyPlotter.cxx)
+		src/PrettyPlotter.cxx
+                src/NtupleDumper.cxx)
 target_link_libraries(hhbbyy ${ROOT_LIBRARIES} )
 
 #add_executable(hhbbyy_data src/main_data.cxx)

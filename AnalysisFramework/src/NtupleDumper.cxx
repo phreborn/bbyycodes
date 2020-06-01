@@ -1,4 +1,4 @@
-#include "VariablePlotter.h"
+#include "NtupleDumper.h"
 #include "JSONDoc.h"
 #include "Controller.h"
 #include "ROOTHelper.h"
@@ -7,10 +7,10 @@
 #include <chrono>
 
 
-DECLARE_ALGORITHM( VariablePlotter , VariablePlotter )
+DECLARE_ALGORITHM( NtupleDumper , NtupleDumper )
 
 
-void ReplaceAll(std::string &str, const std::string& from, const std::string& to)
+void replaceAll(std::string &str, const std::string& from, const std::string& to)
 {
 
    size_t start_pos = 0;
@@ -18,19 +18,13 @@ void ReplaceAll(std::string &str, const std::string& from, const std::string& to
         str.replace(start_pos, from.length(), to);
         start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
    }
-}
 
-bool hasEnding (std::string const &fullString, std::string const &ending) {
-  if (fullString.length() >= ending.length()) {
-    return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
-  } else {
-    return false;
-  }
+
 }
 
 
 
-void VariablePlotter::execute()
+void NtupleDumper::execute()
 {
   
   std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -85,7 +79,7 @@ void VariablePlotter::execute()
   XStimesBR["X3000toHH"] = 0.008;
 
   //variables you want to save in the flat ntuple - this could be generalised and read in from the json
-  std::vector< std::string > treeList = {"SF", "weight", "m_yy", "m_jj"};
+  std::vector< std::string > treeList = {"weight", "weight_2", "m_yy", "m_jj"};
 
   std::string truthMatch = "";
  
@@ -97,16 +91,18 @@ void VariablePlotter::execute()
   opts.fMode="RECREATE";
   using SnapRet_t = ROOT::RDF::RResultPtr<ROOT::RDF::RInterface<ROOT::Detail::RDF::RLoopManager>>;
 
-  DIR* dir =  opendir("plots");
+  DIR* dir = opendir("plots");
   if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
   for (auto iSample:document.samples.samples) {
     mytest::aSample thisSample=document.samples.samples[iSample.first];
     const std::string sampleName=iSample.first;
-
-
-    for (auto iCut: cutFlows){
-
+    
+    for (auto iMC: mcCampaigns){
+      const std::string mc=iMC;
+      for (auto iCut: cutFlows){
+        outfile = new TFile(("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
+   
         for (auto ikk:document.variables.varMap) {
           std::string variableName=ikk.first;
           std::string variableValue=(ikk.second).first;
@@ -115,19 +111,9 @@ void VariablePlotter::execute()
           double upperBin=(ikk.second).second.upperBin;
           std::string his="sumHisto_"+variableName+"_"+iCut;
           TH1F *sumHisto=new TH1F(his.c_str(),his.c_str(),nbins,lowerBin,upperBin);
-          std::cout<< "his = " << his << std::endl;
           sumhistoMap[his]=sumHisto;
         }
-   }
 
-    
-    for (auto iMC: mcCampaigns){
-      const std::string mc=iMC;
-      for (auto iCut: cutFlows){
-        outfile = new TFile(("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
-  
-        std::cout<< "in CUT FLOWS" << std::endl;
- 
         // Adding an additional truth-matching feature, which we only need when
         // running on the yy samples to get the yycj, yybj, yyjj separation
         //std::string truthMatch = "";        
@@ -142,7 +128,7 @@ void VariablePlotter::execute()
          int pos = sampleNameShort.find("toHH")+4; // not beautiful, should be changed
          sampleNameShort.erase(pos,-1); //erase everything that comes after "toHH". This allows to attach strings in the names of the resonant samples in the json files, which might be useful for making the validation plots, and at the same time keep the same mapping for the XS.
          theXStimesBR = XStimesBR[sampleNameShort];
-        }
+      }
         
         logging=sampleName+"_"+mc+"_"+iCut;
 
@@ -153,16 +139,9 @@ void VariablePlotter::execute()
         // Below removed to now
         //if (document.selections.weight.empty()) select+="*"+document.selections.weight;
 
-        // Specify weight
-        std::string weight = document.selections.weight;
-        std::string weighted_selection="("+select+")*("+weight+")";
-
         // Pick up the luminosity 
         double lumi=document.luminosity.lumiMap[iMC];
-        
-        //Decide if you want to dump the ntuple
         dumpNtuple=document.dumper.dumperMap[iMC];
-
         // Data and MC directories from JSON
         std::string dataDir=document.directories.dirMap[iMC];
         if (sampleName=="data") dataDir=document.directories.dataDir;
@@ -211,19 +190,16 @@ void VariablePlotter::execute()
           std::cout<<"   ++++ bins "<<nbins<<" "<<lowerBin<<" "<<upperBin<<" hname "<<hName<<std::endl;
 	  std::shared_ptr<TH1F> his = std::make_shared<TH1F>(hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin);
 	  std::string vvar=var+" >> "+hName;
-          std::cout << "Drawing with selection: " << select.c_str() << " and weight: " << weight.c_str() << std::endl;
-          //tree->Draw(vvar.c_str(),select.c_str(),"HIST");
-          tree->Draw(vvar.c_str(),weighted_selection.c_str(),"HIST");
+          std::cout << "Drawing with selection: " << select.c_str() << std::endl;
+          tree->Draw(vvar.c_str(),select.c_str(),"HIST");
 	  //auto his = df_filter.Histo1D({hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin},var.c_str());
           //std::cout << "HIST ENTRIES ===== " << his->GetEntries() << std::endl;
 	  his->Scale(lumi*theXStimesBR/sum_weights);
           //std::cout<< "Scale by = "<< lumi*theXStimesBR/sum_weights << std::endl;
           //sumhistoMap[hN]->Add(his.GetPtr());
-          //std::cout<< "Before adding histo =====, hn=" << hN << ", his name "<< his.get()->GetName() << std::endl;
-          //std::cout<< "sumhistoMap: " <<  sumhistoMap[hN] <<std::endl;
 	  sumhistoMap[hN]->Add(his.get());
           //std::cout<< "added histo =====" << std::endl;
-          //std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << ", iMC = " << iMC << std::endl;
+          //std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << std::endl;
         }//iVar
 	
 	if (dumpNtuple) {
@@ -234,25 +210,25 @@ void VariablePlotter::execute()
           
           std::string select_clean;
           select_clean = select; 
-          ReplaceAll(select_clean,"@","");
+          replaceAll(select_clean,"@","");
              
 	  auto df_filter = df.Filter(select_clean);
 	  //std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
-	  double df_SF = lumi*theXStimesBR/sum_weights;
-          auto df_out = df_filter.Define("SF", std::to_string(df_SF));
+	  double df_weight = lumi*theXStimesBR/sum_weights;
+          auto df_out = df_filter.Define("weight", std::to_string(df_weight));
           ROOT::RDF::RNode df_with_defines(df_out);  
           for(auto iVar : document.variables.varMap) {
 	    std::string var = iVar.second.first;
             std::string varName = iVar.first;
             for (auto j : treeList) {
               if ( varName == j ) {
-		//std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
-		df_with_defines = df_with_defines.Define(varName, var);
-		//std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;   
+                 //std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
+                 df_with_defines = df_with_defines.Define(varName, var);
+                 //std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;   
               }
             }
           }
-	  
+         
           for (auto j : treeList) {
             std::cout<< "print treeList:" << j <<std::endl;
           } 
@@ -262,34 +238,31 @@ void VariablePlotter::execute()
           std::cout<< "I have just created a snapshot" << std::endl;
 	}
         outfile->cd();
-        //std::cout<< "Before Loop to write histos  ===== " << std::endl;
+        std::cout<< "Before Loop to write histos  ===== " << std::endl;
         for (auto iy:sumhistoMap){
-          //std::cout<< "In Loop to write histos  ===== " << std::endl;
-	  if (hasEnding(iy.first,iCut))  // this checks if the seletion string ends with iCut - if you want to add variations of a certain selection make sure the final part if unique!
-	    iy.second->Write();
-          //std::cout<< "check ===== " << iy.first << " " << hasEnding(iy.first,iCut) <<std::endl;
+          std::cout<< "In Loop to write histos  ===== " << std::endl;
+          iy.second->Write();
+          std::cout<< "check ===== " << std::endl;
         }
-	outfile->ls();
+        std::cout<< "Before clear map ===== " << std::endl;
+        sumhistoMap.clear();
+        std::cout<< "After clear map ===== " << std::endl;
+        outfile->ls();
         outfile->Close();
-      }//CutFlows
+      }//selections
     } // MCCampaigns
     if (dumpNtuple) { //merge trees per MC campaign
        for (int i=0; i<outName.size(); i++) {
-         //std::cout<< "In loop for hadd  ===== " << std::endl;
-         //std::cout<< "Before Merging  ===== " << std::endl;
+         std::cout<< "In loop for hadd  ===== " << std::endl;
+         std::cout<< "Before Merging  ===== " << std::endl;
          std::string hadd = "hadd -f ./plots/"+outName.at(i)+" ./plots/"+outNameMerge.at(i);
-         //std::cout<< "I am about to execute this:" << hadd << std::endl;
+         std::cout<< "I am about to execute this:" << hadd << std::endl;
          system(hadd.c_str());
        }
        system("rm ./plots/*mc16*_tree.root");    
      } 
-    
-    //std::cout<< "Before clear map ===== " << std::endl;
-    sumhistoMap.clear();
-    //std::cout<< "After clear map ===== " << std::endl;
-
-  }//samples
+  }
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
   std::cout << "Execution time difference = " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[s]" << std::endl;
-  std::cout<<std::endl<<std::endl<<" VariablePlotter::execute() done !!!! "<<std::endl<<std::endl;
+  std::cout<<std::endl<<std::endl<<" NtupleDumper::execute() done !!!! "<<std::endl<<std::endl;
 }
