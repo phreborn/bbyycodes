@@ -219,11 +219,11 @@ void VariablePlotter::execute()
 	  his->Scale(lumi*theXStimesBR/sum_weights);
           //std::cout<< "Scale by = "<< lumi*theXStimesBR/sum_weights << std::endl;
           //sumhistoMap[hN]->Add(his.GetPtr());
-          std::cout<< "Before adding histo =====, hn=" << hN << ", his name "<< his.get()->GetName() << std::endl;
-          std::cout<< "sumhistoMap: " <<  sumhistoMap[hN] <<std::endl;
+          //std::cout<< "Before adding histo =====, hn=" << hN << ", his name "<< his.get()->GetName() << std::endl;
+          //std::cout<< "sumhistoMap: " <<  sumhistoMap[hN] <<std::endl;
 	  sumhistoMap[hN]->Add(his.get());
-          std::cout<< "added histo =====" << std::endl;
-          std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << ", iMC = " << iMC << std::endl;
+          //std::cout<< "added histo =====" << std::endl;
+          //std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << ", iMC = " << iMC << std::endl;
         }//iVar
 	
 	if (dumpNtuple) {
@@ -262,12 +262,12 @@ void VariablePlotter::execute()
           std::cout<< "I have just created a snapshot" << std::endl;
 	}
         outfile->cd();
-        std::cout<< "Before Loop to write histos  ===== " << std::endl;
+        //std::cout<< "Before Loop to write histos  ===== " << std::endl;
         for (auto iy:sumhistoMap){
-          std::cout<< "In Loop to write histos  ===== " << std::endl;
+          //std::cout<< "In Loop to write histos  ===== " << std::endl;
 	  if (hasEnding(iy.first,iCut))  // this checks if the seletion string ends with iCut - if you want to add variations of a certain selection make sure the final part if unique!
 	    iy.second->Write();
-          std::cout<< "check ===== " << iy.first << " " << hasEnding(iy.first,iCut) <<std::endl;
+          //std::cout<< "check ===== " << iy.first << " " << hasEnding(iy.first,iCut) <<std::endl;
         }
 	outfile->ls();
         outfile->Close();
@@ -275,18 +275,18 @@ void VariablePlotter::execute()
     } // MCCampaigns
     if (dumpNtuple) { //merge trees per MC campaign
        for (int i=0; i<outName.size(); i++) {
-         std::cout<< "In loop for hadd  ===== " << std::endl;
-         std::cout<< "Before Merging  ===== " << std::endl;
+         //std::cout<< "In loop for hadd  ===== " << std::endl;
+         //std::cout<< "Before Merging  ===== " << std::endl;
          std::string hadd = "hadd -f ./plots/"+outName.at(i)+" ./plots/"+outNameMerge.at(i);
-         std::cout<< "I am about to execute this:" << hadd << std::endl;
+         //std::cout<< "I am about to execute this:" << hadd << std::endl;
          system(hadd.c_str());
        }
        system("rm ./plots/*mc16*_tree.root");    
      } 
     
-    std::cout<< "Before clear map ===== " << std::endl;
+    //std::cout<< "Before clear map ===== " << std::endl;
     sumhistoMap.clear();
-    std::cout<< "After clear map ===== " << std::endl;
+    //std::cout<< "After clear map ===== " << std::endl;
 
   }//samples
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
