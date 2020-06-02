@@ -296,7 +296,8 @@ void VariablePlotter::execute()
      } 
    
     outName.clear();
-    outNameMerge.clear(); 
+    outNameMerge.clear();
+    MC_counter = 0; 
     //std::cout<< "Before clear map ===== " << std::endl;
     sumhistoMap.clear();
     //std::cout<< "After clear map ===== " << std::endl;
