@@ -6,7 +6,6 @@
 #include <memory>
 #include <chrono>
 
-
 DECLARE_ALGORITHM( VariablePlotter , VariablePlotter )
 
 
@@ -89,6 +88,8 @@ void VariablePlotter::execute()
 
   std::string truthMatch = "";
  
+  int MC_counter = 0;
+
   TFile *outfile;
   std::vector< std::string > outName;
   std::vector< std::string > outNameMerge;
@@ -123,6 +124,7 @@ void VariablePlotter::execute()
     
     for (auto iMC: mcCampaigns){
       const std::string mc=iMC;
+      MC_counter++;
       for (auto iCut: cutFlows){
         outfile = new TFile(("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
   
@@ -211,9 +213,10 @@ void VariablePlotter::execute()
           std::cout<<"   ++++ bins "<<nbins<<" "<<lowerBin<<" "<<upperBin<<" hname "<<hName<<std::endl;
 	  std::shared_ptr<TH1F> his = std::make_shared<TH1F>(hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin);
 	  std::string vvar=var+" >> "+hName;
-          std::cout << "Drawing with selection: " << select.c_str() << " and weight: " << weight.c_str() << std::endl;
+          std::cout << "Drawing with selection: " << select.c_str() << " and weight: " << weight.c_str() << " and weighted selection " << weighted_selection.c_str() << std::endl;
           //tree->Draw(vvar.c_str(),select.c_str(),"HIST");
           tree->Draw(vvar.c_str(),weighted_selection.c_str(),"HIST");
+          //tree->Draw(vvar.c_str(),"","HIST");
 	  //auto his = df_filter.Histo1D({hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin},var.c_str());
           //std::cout << "HIST ENTRIES ===== " << his->GetEntries() << std::endl;
 	  his->Scale(lumi*theXStimesBR/sum_weights);
@@ -261,9 +264,12 @@ void VariablePlotter::execute()
             std::cout<< "print treeList:" << j <<std::endl;
           } 
 	  df_with_defines.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
-          outName.push_back(sampleName+"_"+iCut+"_tree.root");
-          outNameMerge.push_back(sampleName+"_*_"+iCut+"_tree.root");
-          std::cout<< "I have just created a snapshot" << std::endl;
+          std::cout<< "I have just created a snapshot for " << "plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root" <<  std::endl;
+        
+          if (MC_counter == 1) { 
+            outName.push_back(sampleName+"_"+iCut+"_tree.root");
+            outNameMerge.push_back(sampleName+"_*_"+iCut+"_tree.root");
+          }
 	}
         outfile->cd();
         //std::cout<< "Before Loop to write histos  ===== " << std::endl;
@@ -281,13 +287,16 @@ void VariablePlotter::execute()
        for (int i=0; i<outName.size(); i++) {
          //std::cout<< "In loop for hadd  ===== " << std::endl;
          //std::cout<< "Before Merging  ===== " << std::endl;
+         //std::cout<< "=======THIS IS OUTNAME: " << outName.at(i) << ", and this is OUTNAMEMERGE: " << outNameMerge.at(i) << std::endl;
          std::string hadd = "hadd -f ./plots/"+outName.at(i)+" ./plots/"+outNameMerge.at(i);
-         //std::cout<< "I am about to execute this:" << hadd << std::endl;
+         std::cout<< "I am about to execute this:" << hadd << std::endl;
          system(hadd.c_str());
        }
        system("rm ./plots/*mc16*_tree.root");    
      } 
-    
+   
+    outName.clear();
+    outNameMerge.clear(); 
     //std::cout<< "Before clear map ===== " << std::endl;
     sumhistoMap.clear();
     //std::cout<< "After clear map ===== " << std::endl;
