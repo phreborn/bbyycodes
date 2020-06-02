@@ -85,7 +85,7 @@ void VariablePlotter::execute()
   XStimesBR["X3000toHH"] = 0.008;
 
   //variables you want to save in the flat ntuple - this could be generalised and read in from the json
-  std::vector< std::string > treeList = {"SF", "weight", "m_yy", "m_jj"};
+  std::vector< std::string > treeList = {"SF", "weight", "total_weight", "m_yy", "m_jj"};
 
   std::string truthMatch = "";
  
@@ -248,7 +248,11 @@ void VariablePlotter::execute()
               if ( varName == j ) {
 		//std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
 		df_with_defines = df_with_defines.Define(varName, var);
-		//std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;   
+                if (j == "weight") {
+                 auto df_total_weight = std::to_string(df_SF) + "*" + var;
+                 df_with_defines = df_with_defines.Define("total_weight", df_total_weight);
+		}
+                //std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;   
               }
             }
           }
