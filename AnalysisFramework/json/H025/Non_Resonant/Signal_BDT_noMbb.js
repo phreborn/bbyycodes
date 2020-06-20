@@ -38,35 +38,35 @@
       "LM_A" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_cutBased_btag77_Cat  % 10) == 1 ))",
 
 
-      "XGBoost_btag77_85_noMbb_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat/100) % 10) == 1))",
-      "XGBoost_btag77_85_noMbb_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat/100) % 10) == 2))",
-      "XGBoost_btag77_85_noMbb_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat/100) % 10) == 3))",
-      "XGBoost_btag77_85_noMbb_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat/100) % 10) == 4))",
+      "XGBoost_btag77_85_noMbb_tightScore_HMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat/100) % 10) == 1)      )",
+      "XGBoost_btag77_85_noMbb_looseScore_HMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat/100) % 10) == 2)      )",
+      "XGBoost_btag77_85_noMbb_tightScore_LMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat/100) % 10) == 3)      )",
+      "XGBoost_btag77_85_noMbb_looseScore_LMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_Cat/100) % 10) == 4)      )",
 
-      "XGBoost_btag77_noMbb_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat/100) % 10) == 1))",
-      "XGBoost_btag77_noMbb_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat/100) % 10) == 2))",
-      "XGBoost_btag77_noMbb_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat/100) % 10) == 3))",
-      "XGBoost_btag77_noMbb_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat/100) % 10) == 4))",
+      "XGBoost_btag77_noMbb_tightScore_HMass" 	      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat/100) % 10) == 1)         )",
+      "XGBoost_btag77_noMbb_looseScore_HMass" 	      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat/100) % 10) == 2)         )",
+      "XGBoost_btag77_noMbb_tightScore_LMass" 	      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat/100) % 10) == 3)         )",
+      "XGBoost_btag77_noMbb_looseScore_LMass" 	      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_Cat/100) % 10) == 4)         )",
 
-      "XGBoost_btag77_85_noMbb_BCal_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BCal_Cat/100) % 10) == 1))",
-      "XGBoost_btag77_85_noMbb_BCal_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BCal_Cat/100) % 10) == 2))",
-      "XGBoost_btag77_85_noMbb_BCal_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BCal_Cat/100) % 10) == 3))",
-      "XGBoost_btag77_85_noMbb_BCal_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BCal_Cat/100) % 10) == 4))",      
+      "XGBoost_btag77_85_noMbb_BCal_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BCal_Cat/100) % 10) == 1) )",
+      "XGBoost_btag77_85_noMbb_BCal_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BCal_Cat/100) % 10) == 2) )",
+      "XGBoost_btag77_85_noMbb_BCal_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BCal_Cat/100) % 10) == 3) )",
+      "XGBoost_btag77_85_noMbb_BCal_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BCal_Cat/100) % 10) == 4) )",      
 
-      "XGBoost_btag77_noMbb_BCal_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat/100) % 10) == 1))",
-      "XGBoost_btag77_noMbb_BCal_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat/100) % 10) == 2))",
-      "XGBoost_btag77_noMbb_BCal_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat/100) % 10) == 3))",
-      "XGBoost_btag77_noMbb_BCal_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat/100) % 10) == 4))",  
+      "XGBoost_btag77_noMbb_BCal_tightScore_HMass"    : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat/100) % 10) == 1)    )",
+      "XGBoost_btag77_noMbb_BCal_looseScore_HMass"    : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat/100) % 10) == 2)    )",
+      "XGBoost_btag77_noMbb_BCal_tightScore_LMass"    : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat/100) % 10) == 3)    )",
+      "XGBoost_btag77_noMbb_BCal_looseScore_LMass"    : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat/100) % 10) == 4)    )",  
 
-      "XGBoost_btag77_85_noMbb_KF_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/100) % 10) == 1))",
-      "XGBoost_btag77_85_noMbb_KF_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/100) % 10) == 2))",
-      "XGBoost_btag77_85_noMbb_KF_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/100) % 10) == 3))",
-      "XGBoost_btag77_85_noMbb_KF_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/100) % 10) == 4))",
+      "XGBoost_btag77_85_noMbb_KF_tightScore_HMass"   : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/100) % 10) == 1)   )",
+      "XGBoost_btag77_85_noMbb_KF_looseScore_HMass"   : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/100) % 10) == 2)   )",
+      "XGBoost_btag77_85_noMbb_KF_tightScore_LMass"   : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/100) % 10) == 3)   )",
+      "XGBoost_btag77_85_noMbb_KF_looseScore_LMass"   : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/100) % 10) == 4)   )",
 
-      "XGBoost_btag77_noMbb_KF_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/100) % 10) == 1))",
-      "XGBoost_btag77_noMbb_KF_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/100) % 10) == 2))",
-      "XGBoost_btag77_noMbb_KF_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/100) % 10) == 3))",
-      "XGBoost_btag77_noMbb_KF_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/100) % 10) == 4))",
+      "XGBoost_btag77_noMbb_KF_tightScore_HMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/100) % 10) == 1)      )",
+      "XGBoost_btag77_noMbb_KF_looseScore_HMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/100) % 10) == 2)      )",
+      "XGBoost_btag77_noMbb_KF_tightScore_LMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/100) % 10) == 3)      )",
+      "XGBoost_btag77_noMbb_KF_looseScore_LMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/100) % 10) == 4)      )",
        
 
       "VBF_btag77" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_vbf_selected == 1))",
@@ -79,7 +79,7 @@
 
       "VBF_btag77_KF" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_KF_vbf_selected == 1))",
 
-      "VBF_btag77_KF" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_KF_vbf_selected == 1))"
+      "VBF_btag77_85_KF" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_KF_vbf_selected == 1))"
 
    },
 

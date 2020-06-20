@@ -2,9 +2,9 @@
   "sequencer":["VariablePlotter"],
 
     "directories":{
-      "mc16a" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h025/mc16a/Nominal/",
-      "mc16d" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h025/mc16d/Nominal/",
-      "mc16e" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h025/mc16e/Nominal/"
+      "mc16a" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h025_diphotonpreselection/mc16a/",
+      "mc16d" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h025_diphotonpreselection/mc16d/",
+      "mc16e" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h025_diphotonpreselection/mc16e/"
     },
 
    "dumper":{
@@ -58,6 +58,16 @@
       "XGBoost_btag77_Nominal_BCal_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat % 10) == 3))",
       "XGBoost_btag77_Nominal_BCal_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat % 10) == 4))",  
 
+      "XGBoost_btag77_85_Nominal_BReg_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BReg_Cat % 10) == 1))",
+      "XGBoost_btag77_85_Nominal_BReg_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BReg_Cat % 10) == 2))",
+      "XGBoost_btag77_85_Nominal_BReg_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BReg_Cat % 10) == 3))",
+      "XGBoost_btag77_85_Nominal_BReg_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_BReg_Cat % 10) == 4))",
+
+      "XGBoost_btag77_Nominal_BReg_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BReg_Cat % 10) == 1))",
+      "XGBoost_btag77_Nominal_BReg_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BReg_Cat % 10) == 2))",
+      "XGBoost_btag77_Nominal_BReg_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BReg_Cat % 10) == 3))",
+      "XGBoost_btag77_Nominal_BReg_looseScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BReg_Cat % 10) == 4))",
+
       "XGBoost_btag77_85_Nominal_KF_tightScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat % 10) == 1))",
       "XGBoost_btag77_85_Nominal_KF_looseScore_HMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat % 10) == 2))",
       "XGBoost_btag77_85_Nominal_KF_tightScore_LMass" : "(HGamEventInfoAuxDyn.isPassed == 1 && ((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat % 10) == 3))",
@@ -77,6 +87,10 @@
 
       "VBF_btag77_85_BCal" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_BCal_vbf_selected == 1))",
 
+      "VBF_btag77_BReg" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_BReg_vbf_selected == 1))",
+
+      "VBF_btag77_85_BReg" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_BReg_vbf_selected == 1))",
+
       "VBF_btag77_KF" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_KF_vbf_selected == 1))",
 
       "VBF_btag77_85_KF" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_KF_vbf_selected == 1))"
@@ -91,32 +105,69 @@
 
     "samples" : {
 
-      "ttH":    {
+      "HH":    {
+        "datafiles" : {
+          "mc16a" : "mc16a.aMCnloHwpp_hh_yybb_AF2.root",
+          "mc16d" : "mc16d.aMCnloHwpp_hh_yybb_AF2.root",
+          "mc16e" : "mc16e.aMCnloHwpp_hh_yybb_AF2.root"
+        },
+        "histoName" : "CutFlow_aMCnlo_Hwpp_hh_yybb_noDalitz_weighted"
+      },
+
+      "VBF":	{
+        "datafiles" : {
+          "mc16a" : "mc16a.MGH7_hh_bbyy_vbf_l1cvv1cv1.root",
+          "mc16d" : "mc16d.MGH7_hh_bbyy_vbf_l1cvv1cv1.root",
+          "mc16e" : "mc16e.MGH7_hh_bbyy_vbf_l1cvv1cv1.root"
+        },
+        "histoName": "CutFlow_MGH7_hh_bbyy_vbf_l1cvv1cv1_noDalitz_weighted"
+      },
+
+      "ttH_PowhegH7":    {
         "datafiles" : {
           "mc16a" : "mc16a.PowhegHw7_ttH125_fixweight.MxAODDetailedNoSkim.e7488_s3126_r9364_p4097_h025.root",
-          "mc16d" : "mc16d.PowhegHw7_ttH125_fixweight.MxAODDetailedNoSkim.e7488_s3126_r10201_p4097_h025.root",
-          "mc16e" : "mc16e.PowhegHw7_ttH125_fixweight.MxAODDetailedNoSkim.e7488_s3126_r10724_p4097_h025.root"
+          "mc16d" : "mc16d.PowhegHw7_ttH125_fixweight.MxAODDetailedNoSkim.root",
+          "mc16e" : "mc16e.PowhegHw7_ttH125_fixweight.root"
         },
         "histoName" : "CutFlow_PowhegHw7_ttH125_fixweight_noDalitz_weighted"
       },
 
+      "ttH_PowhegPy8":    {
+        "datafiles" : {
+          "mc16a" : "mc16a.PowhegPy8_ttH125_fixweight.root",
+          "mc16d" : "mc16d.PowhegPy8_ttH125_fixweight.MxAODDetailed.root",
+          "mc16e" : "mc16e.PowhegPy8_ttH125_fixweight.root"
+        },
+        "histoName" : "CutFlow_PowhegPy8_ttH125_fixweight_noDalitz_weighted"
+      },
+
       "ZH_PowhegH7":    {
         "datafiles" : {
-          "mc16a" : "mc16a.PowhegH713_ZH125J.MxAODDetailedNoSkim.e7929_s3126_r9364_p4097_h025.root",
-          "mc16d" : "mc16d.PowhegH713_ZH125J.MxAODDetailedNoSkim.e7929_s3126_r10201_p4097_h025.root",
-          "mc16e" : "mc16e.PowhegH713_ZH125J.MxAODDetailedNoSkim.e7929_s3126_r10724_p4097_h025.root"
+          "mc16a" : "mc16a.PowhegH713_ZH125J.root",
+          "mc16d" : "mc16d.PowhegH713_ZH125J.MxAODDetailedNoSkim.root",
+          "mc16e" : "mc16e.PowhegH713_ZH125J.root"
         },
         "histoName": "CutFlow_PowhegH713_ZH125J_noDalitz_weighted"
       },
 
       "ZH_PowhegPy8":    {
         "datafiles" : {
-          "mc16a" : "mc16a.PowhegPy8_ZH125J.MxAODDetailed.e5743_s3126_r9364_p4097_h025.root",
-          "mc16d" : "mc16d.PowhegPy8_ZH125J.MxAODDetailed.e5743_s3126_r10201_p4097_h025.root",
-          "mc16e" : "mc16e.PowhegPy8_ZH125J.MxAODDetailed.e5743_s3126_r10724_p4097_h025.root"
+          "mc16a" : "mc16a.PowhegPy8_ZH125J.root",
+          "mc16d" : "mc16d.PowhegPy8_ZH125J.MxAODDetailed.root",
+          "mc16e" : "mc16e.PowhegPy8_ZH125J.root"
         },
         "histoName": "CutFlow_PowhegPy8_ZH125J_noDalitz_weighted"
+      },
+ 
+      "yy":    {
+        "datafiles" : {
+          "mc16a" : "mc16a.Sherpa2_myy_90_175.root",
+          "mc16d" : "mc16d.Sherpa2_diphoton_myy_90_175.root",
+          "mc16e" : "mc16e.Sherpa2_myy_90_175.root"
+        },
+        "histoName" : "CutFlow_Sherpa2_myy_90_175_noDalitz_weighted"
       }
-
+     
      }
+
 }
