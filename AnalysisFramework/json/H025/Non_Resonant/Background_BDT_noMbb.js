@@ -79,7 +79,7 @@
 
       "VBF_btag77_KF" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_KF_vbf_selected == 1))",
 
-      "VBF_btag77_KF" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_KF_vbf_selected == 1))"
+      "VBF_btag77_85_KF" : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_KF_vbf_selected == 1))"
 
    },
 
