@@ -74,7 +74,7 @@
       "XGBoost_btag77_85_withTop_KF_tightScore_HMass"   : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/1000) % 10) == 1)   )",
       "XGBoost_btag77_85_withTop_KF_looseScore_HMass"   : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/1000) % 10) == 2)   )",
       "XGBoost_btag77_85_withTop_KF_tightScore_LMass"   : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/1000) % 10) == 3)   )",
-      "XGBoost_btag77_85_withTop_KF_looseScore_LMass"   : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/0) % 10) == 4)      )",
+      "XGBoost_btag77_85_withTop_KF_looseScore_LMass"   : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_85_KF_Cat/1000) % 10) == 4)   )",
 
       "XGBoost_btag77_withTop_KF_tightScore_HMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/1000) % 10) == 1)      )",
       "XGBoost_btag77_withTop_KF_looseScore_HMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/1000) % 10) == 2)      )",
@@ -82,21 +82,21 @@
       "XGBoost_btag77_withTop_KF_looseScore_LMass"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_KF_Cat/1000) % 10) == 4)      )",
        
 
-      "VBF_btag77" 		: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_vbf_selected == 1) 		)",
+      "VBF_btag77" 		: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_vbf_selected == 1))",
 
-      "VBF_btag77_85" 		: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_vbf_selected == 1) 	)",
+      "VBF_btag77_85" 		: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_vbf_selected == 1))",
 
-      "VBF_btag77_BCal" 	: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_BCal_vbf_selected == 1) 	)",
+      "VBF_btag77_BCal" 	: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_BCal_vbf_selected == 1))",
 
-      "VBF_btag77_85_BCal" 	: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_BCal_vbf_selected == 1) 	)",
+      "VBF_btag77_85_BCal" 	: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_BCal_vbf_selected == 1))",
 
-      "VBF_btag77_BReg"         : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_BReg_vbf_selected == 1)       )",
+      "VBF_btag77_BReg"         : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_BReg_vbf_selected == 1))",
       
-      "VBF_btag77_85_BReg"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_BReg_vbf_selected == 1)    )",
+      "VBF_btag77_85_BReg"      : "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_BReg_vbf_selected == 1))",
 
-      "VBF_btag77_KF" 		: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_KF_vbf_selected == 1) 	)",
+      "VBF_btag77_KF" 		: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_KF_vbf_selected == 1))",
 
-      "VBF_btag77_85_KF" 	: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_KF_vbf_selected == 1) 	)"
+      "VBF_btag77_85_KF" 	: "(HGamEventInfoAuxDyn.isPassed == 1 && (HGamEventInfoAuxDyn.yybb_btag77_85_KF_vbf_selected == 1))"
 
    },
 

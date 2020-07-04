@@ -67,7 +67,8 @@ echo ''                                                      >> $JobDir/$ExeFile
 echo "export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase"  >> $JobDir/$ExeFile
 echo "source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh" >> $JobDir/$ExeFile
 echo "setupATLAS"                                            >> $JobDir/$ExeFile
-echo 'lsetup "root 6.14.04-x86_64-slc6-gcc62-opt"'            >> $JobDir/$ExeFile
+#echo 'lsetup "root 6.14.04-x86_64-slc6-gcc62-opt"'            >> $JobDir/$ExeFile
+echo 'asetup 21.2.113,AnalysisBase'                          >> $JobDir/$ExeFile
 echo "cd $BasePath"                                          >> $JobDir/$ExeFile
 echo                                                         >> $JobDir/$ExeFile
 echo "${CMD}"                                                >> $JobDir/$ExeFile
