@@ -23,7 +23,7 @@ namespace mytest {
   };
 
   struct Dir {
-    std::string dataDir="root://eosatlas.cern.ch//eos/atlas/user/a/altaylor/bbgg/h024/";
+    std::string dataDir="root://eosatlas.cern.ch///eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h025_diphotonpreselection//";
     std::map <std::string, std::string, std::less<std::string> > dirMap;
   };
 
