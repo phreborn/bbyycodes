@@ -9,11 +9,26 @@
 
 DECLARE_ALGORITHM(DataAnalysis , DataAnalysis)
 
+
+void ReplaceAll_data(std::string &str, const std::string& from, const std::string& to)
+{
+
+   size_t start_pos = 0;
+   while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+   }
+}
+
+
+
 void DataAnalysis::execute()
 {
 
   // Fetch the JSON 
   mytest::JSONData& document=Controller::GetDocument();
+
+  bool dumpNtuple = false; //ntuple dumper is off by default, add a line in the JSON file if you want to activate it
 
   // First extract selections from the JSON
   // Full parsing is handled by the serializer.h
@@ -36,6 +51,17 @@ void DataAnalysis::execute()
   // For logging purposes, used later
   std::string logging;
 
+  //variables you want to save in the flat ntuple - this could be generalised and read in from the json
+  std::vector< std::string > treeList = {"m_yy"}; // !!!only dumping myy for now, make sure you have the right blinding applied if you dump other discriminant variables!!!
+  std::vector< std::string > outName;
+  std::vector< std::string > outNameMerge;
+  int MC_counter = 0;
+  ROOT::RDF::RSnapshotOptions opts;
+  //opts.fLazy = true;  
+  opts.fMode="RECREATE";
+  using SnapRet_t = ROOT::RDF::RResultPtr<ROOT::RDF::RInterface<ROOT::Detail::RDF::RLoopManager>>;
+
+
   for (auto iSample:document.samples.samples) {
     // As a matter of principle there is only one sample
     mytest::aSample thisSample=document.samples.samples[iSample.first];
@@ -48,6 +74,9 @@ void DataAnalysis::execute()
     // into a single TChain
     for (auto iMC: Campaigns){
       const std::string mc=iMC;
+      MC_counter++;
+      //Decide if you want to dump the ntuple
+      dumpNtuple=document.dumper.dumperMap[iMC];
       // Data directory
       std::string dataDir=document.directories.dirMap[iMC];
       // File name
@@ -92,13 +121,48 @@ void DataAnalysis::execute()
         std::string canvasName("plots/"+hN);
         canvasName+=".png";
         c1.SaveAs(canvasName.c_str());
-      } 
+      } // iVar
+
+      if (dumpNtuple) {
+
+        //std::cout <<"In DUMP NTUPLE" <<std::endl;
+
+        ROOT::RDataFrame df(*nt);
+        std::string select_clean;
+        select_clean = select;
+        ReplaceAll_data(select_clean,"@","");
+        auto df_filter = df.Filter(select_clean);
+        //std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
+        ROOT::RDF::RNode df_with_defines(df_filter);
+        for(auto iVar : document.variables.varMap) {
+            std::string var = iVar.second.first;
+            std::string varName = iVar.first;
+            for (auto j : treeList) {
+              if ( varName == j ) {
+                //std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
+                df_with_defines = df_with_defines.Define(varName, var);
+                //std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl; 
+              }
+             }
+         }
+         for (auto j : treeList) {
+            std::cout<< "print treeList:" << j <<std::endl;
+         }
+         df_with_defines.Snapshot(nt->GetName(),"plots/"+sampleName+"_"+iCut+"_tree.root",treeList, opts);
+         std::cout<< "I have just created a snapshot for " << "plots/"+sampleName+"_"+iCut+"_tree.root" <<  std::endl;
+         if (MC_counter == 1) {
+            outName.push_back(sampleName+"_"+iCut+"_tree.root");
+            outNameMerge.push_back(sampleName+"_*_"+iCut+"_tree.root");
+         }
+        }//dumpNtuple
+
+
       // Write and close the root file
       f_w.Write();
       f_w.Close();
-    }
+    } //iCut
 
-  }
+  }//iSample
 
 }
 

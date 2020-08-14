@@ -12,8 +12,9 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <errno.h>
-
 #include "algorithm.h"
+#include "ROOT/RDataFrame.hxx"
+#include "ROOT/RSnapshotOptions.hxx"
 
 class DataAnalysis: public algorithm {
 public:
