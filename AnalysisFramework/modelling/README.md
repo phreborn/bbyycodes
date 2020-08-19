@@ -1,13 +1,15 @@
-#Here we will add instructions on how to use the modelling scripts.
+#Here you can find the instructions on how to use the modelling scripts.
 
 ##For questions, please contact valentina.maria.cairo@cern.ch & jannicke.pearkes@cern.ch
 
 
 Same setup used for the other scripts, i.e. from the AnalysisFramework folder:
 
+```bash
 setupATLAS
-source setup.sh
 
+source setup.sh
+```
 
 Create the following symlink:
 ```bash
