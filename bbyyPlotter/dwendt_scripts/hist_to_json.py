@@ -1,3 +1,8 @@
+# Script to read myy histograms from a .root file and store
+# them as jsons
+
+# Adapted by David Wendt from a plotter script by Jannicke Pearkes
+
 import math
 from pprint import *
 import numpy as np
@@ -61,7 +66,8 @@ def make_json(sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling):
 
 # path = "/afs/cern.ch/user/j/jpearkes/work/public/baseline_histograms_aug11/" # Where histograms are stored
 # path = "/afs/cern.ch/user/j/jpearkes/work/public/selection_histograms_aug24/" # Where histograms are stored
-path = "/afs/cern.ch/user/j/jpearkes/work/public/selection_histograms_myy_120_130_aug24/"
+path = "/afs/cern.ch/user/j/jpearkes/work/public/selection_histograms_myy_120_130_aug24/" # Where histograms are stored
+
 signal = "VBF_rescale" # What we want to run over: rescaled histograms
 # signal = "VBF" # What we want to run over: non-rescaled histograms
 bkgs = ["yy_VBF_btag77_withTop_BCal.root", "ZH_PowhegPy8_VBF_btag77_withTop_BCal.root",
@@ -79,13 +85,12 @@ category = "VBF_btag77_withTop_BCal"
 
 # Discriminant variable
 disc_variable = "m_yy"
-
 to_read = "sumHisto_"+disc_variable+"_"+category
 
-bkg_yields = {}
-
-bkgs_dat = []
-bkgs_uncert = []
+# Read information about backgrounds
+bkg_yields = {} # Background yields
+bkgs_dat = [] # Background myy histograms
+bkgs_uncert = [] # Stat errors on bkg myy histograms
 for bkg in bkgs:
 	bkg_file = uproot.open(path+bkg)
 	bkg_dat = bkg_file[to_read].values[15:25]
@@ -106,17 +111,22 @@ bkg_yields["total"] = bkg_yield
 
 print("total background yield = " + str(bkg_yield))
 
-obs_dat = bkg_dat
+obs_dat = bkg_dat # Currently setting observation = background
+# Change this line to use a proper observed data set
 
-sig_yields = {}
-sbs = {}
+# Run over signal samples (i.e. different c2v couplings
+# to read their myy histograms into jsons and calculate yields
+sig_yields = {} # Signal yields
+sbs = {} # Signal to (total) background ratios
 for coupling in couplings:
 	# print("Writing json for coupling " + coupling)
 	if coupling == "l1cvv1cv1":
+		# SM sample has different naming convention
 		filename = "VBF_VBF_btag77_withTop_BCal.root"
 	else:
 		filename = signal+"_"+coupling+"_"+category+".root"
 
+	# Read myy histogram and calculate yield, s/b
 	file = uproot.open(path+filename)
 	sig_dat = file[to_read].values[15:25].tolist()
 	sig_yield = sum(sig_dat)
@@ -127,7 +137,10 @@ for coupling in couplings:
 	print("signal yield = " + str(sig_yield))
 	print("s/b (total) = " + str(sig_yield / bkg_yield)) 
 
+	# Write histogram to json
 	make_json(sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling)
 
+# Write yields, s/b to a json spec
 yield_spec = {"bkg_yields" : [bkg_yields], "sig_yields" : [sig_yields], "s/b" : [sbs]} 
+# Write this spec to a json
 with open('yields.json', 'w') as outfile: json.dump( yield_spec , outfile )
