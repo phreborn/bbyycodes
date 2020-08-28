@@ -1,4 +1,6 @@
-#modified from https://gitlab.cern.ch/hartman/dihiggs4b/blob/master/PFlow-Topo/Limit-Comparisons.ipynb by Nicole Hartman
+# Adapted by David Wendt from 
+# https://gitlab.cern.ch/atlas-physics/HDBS/DiHiggs/yybb/code/-/blob/v_6.0/bbyyPlotter/plot_kl_scan.py by (?) Alex Wang
+# and https://gitlab.cern.ch/rahynema/hh4b-vbf-limits/-/tree/master by Rachel Hyneman
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,6 +10,7 @@ import json
 import pyhf 
 import sys
 
+# Find bounds on mu
 def invert_interval(test_mus, hypo_tests, test_size=0.05):
     cls_obs = np.array([test[0] for test in hypo_tests]).flatten()
     cls_exp = [
@@ -30,9 +33,12 @@ stdText += r'$\sqrt{s} = $ 13 TeV, 139fb$^{-1}$'+'\n'
 stdText += r'$HH\rightarrow \gamma\gamma bb$'
 stdText += '\nStats only limit'
 
+# c2v values that we use
 c2vs = [0, 0.5, 1, 1.5, 2, 4]
 
-# These values are the reweighted xsecs from my excel file
+# These values are the (non-reweighted) xsecs from 
+# https://indico.cern.ch/event/945922/contributions/3976127/attachments/2087239/3506646/yybb_VHHContamination_12August2020_VMMCAIRO_DWENDT.pdf
+# slide 12, 125.09 Higgs mass point
 n = np.array([5.80822E-05,
               2.0989E-05,
               4.54404E-06,
@@ -40,14 +46,14 @@ n = np.array([5.80822E-05,
               3.37047E-05,
               0.000340078]) * 1000
 
-path = "" # Wherever the json histograms are stored
-# Note: these histograms should have filenames in the
-# format "VBF_[coupling].json" (or otherwise change
-# the line below that opens the json)
+path = "" # Wherever the json histograms (from hist_to_json.py) are stored
+# Note: these histograms should have filenames in the format "VBF_[coupling].json" 
+# (or otherwise change the line below that opens the json)
 
 exp_limits = []
 obs_limits = []
 
+# Calculate upper limits for each c2v value
 for i,c2v in enumerate(c2vs):
     c2v_str = str(c2v).replace(".", "p")
     
@@ -96,6 +102,7 @@ for i,c2v in enumerate(c2vs):
         hypo_test_res_p2s[imu] = hypo_tests[imu][1][4]
         hypo_test_res_obs[imu] = hypo_tests[imu][0]
 	
+    # (optional) Plot CL_s as a function of mu 
     fig, ax = plt.subplots()
     fig.set_size_inches(7, 5)
     ax.set_xlabel(r"$\mu$ (POI)")
@@ -107,12 +114,14 @@ for i,c2v in enumerate(c2vs):
     ax.plot(mu_tests, [0.05] * len(mu_tests))
     plt.savefig("cvv" + c2v_str + "CLs.pdf")
     
+    # Calculate upper limits from CLs
     limits = invert_interval(mu_tests, hypo_tests, test_size=0.05) 
     print("c2v = " + str(c2v) + " limits: ", limits) 
 
     exp_limits.append(limits["exp"])
     obs_limits.append(limits["obs"])
 
+# From here down is plotting the limits
 limits = np.array(exp_limits)
 limit_bands = {i:limits[:,i+2] for i in range(-2, 3)}
 limit2_bands = limit_bands
@@ -135,6 +144,7 @@ ax.semilogy(c2vs, n * np.array(limit_bands[0]),'k--',label='expected')
 ax.fill_between(c2vs, n * np.array(limit_bands[-2]), n * np.array(limit_bands[2]),  facecolor = 'yellow')
 ax.fill_between(c2vs, n * np.array(limit_bands[-1]), n * np.array(limit_bands[1]),  facecolor = 'lime')
 
+# The two commented lines below were inherited
 # The extra bands that I wanted to add
 #ax.semilogy(lambdas, n * np.array(limit2_bands[0]),color='b',linestyle='--',label='PFlow')
 
@@ -161,4 +171,4 @@ else:
 
 ax.text(0.025,.975,stdText,ha='left',va='top',transform=ax.transAxes)
 
-plt.savefig('c2v_scan_no_rescale.pdf')
+plt.savefig('c2v_scan.pdf')
