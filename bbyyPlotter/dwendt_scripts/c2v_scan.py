@@ -1,3 +1,7 @@
+# Performs a c2v scan by reading myy histograms from jsons,
+# calculating xsec upper limits using pyhf, and plotting
+# against theory line
+
 # Adapted by David Wendt from 
 # https://gitlab.cern.ch/atlas-physics/HDBS/DiHiggs/yybb/code/-/blob/v_6.0/bbyyPlotter/plot_kl_scan.py by (?) Alex Wang
 # and https://gitlab.cern.ch/rahynema/hh4b-vbf-limits/-/tree/master by Rachel Hyneman
