@@ -168,6 +168,7 @@ void plot_cutflow() {
 	std::vector<std::string> ggF_branches = find_cutflow_branches(fname_ggF);
 	std::vector<std::string> ttH_branches = find_cutflow_branches(fname_ttH);
 
+    // Branch 10 corresponds to "HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow"
 	std::string ggF_cutflow_branch = ggF_branches[10];
 	std::string ttH_cutflow_branch = ttH_branches[10];
 
