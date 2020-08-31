@@ -49,6 +49,9 @@ n = np.array([5.80822E-05,
               8.79087E-06,
               3.37047E-05,
               0.000340078]) * 1000
+              
+# Rescale xsecs by SM VBF fraction
+n /= 0.81771
 
 path = "" # Wherever the json histograms (from hist_to_json.py) are stored
 # Note: these histograms should have filenames in the format "VBF_[coupling].json" 
