@@ -86,7 +86,7 @@ print("Couplings: "+str(couplings))
 # Categories used for the scan
 # category = "VBF_btag77_withTop_BCal"
 categories = [
-	"Validation",
+	# "Validation",
 	"XGBoost_btag77_withTop_BCal_looseScore_HMass",
 	"XGBoost_btag77_withTop_BCal_looseScore_LMass",
 	"XGBoost_btag77_withTop_BCal_tightScore_HMass",
@@ -98,13 +98,13 @@ categories = [
 disc_variable = "m_yy"
 
 # Read data from each background and each category
-bkg_yields = {} # Background yields
+bkg_yields = []
 bkg_dat = {} # Backgruond myy histograms
 bkg_uncert = {} # Stat errors on bkg myy histograms
 for category in categories:
     bkgs_dat = []
     bkgs_uncert = []
-    cat_bkg_yield = {}
+    cat_bkg_yields = []
     for bkg in bkgs:
         to_read = "sumHisto_"+disc_variable+"_"+category
         bkg_filename = bkg + "_" + category + ".root"
@@ -114,25 +114,37 @@ for category in categories:
 
         bkgs_dat.append(bkg_dat_i)
         bkgs_uncert.append(bkg_uncert_i)
-        cat_bkg_yield[bkg] = [np.sum(bkg_dat_i)]
+        cat_bkg_yields.append(np.sum(bkg_dat_i))
 
     bkg_dat[category] = np.sum(np.array(bkgs_dat), axis=0).tolist()
     bkg_uncert[category] = np.sum(np.array(bkgs_uncert), axis=0).tolist()
-    bkg_yields[category] = [cat_bkg_yield]
+    bkg_yields.append(cat_bkg_yields)
     
-# Write background yields to json
-with open('bkg_yields.json', 'w') as outfile: json.dump( bkg_yields , outfile )
+# Write background yields to text
+np.savetxt('bkg_yields.txt', bkg_yields, 
+           header = "Rows are categories: \n#"
+               + "XGBoost_btag77_withTop_BCal_looseScore_HMass, "
+               + "XGBoost_btag77_withTop_BCal_looseScore_LMass, "
+               + "XGBoost_btag77_withTop_BCal_tightScore_HMass, "
+               + "XGBoost_btag77_withTop_BCal_tightScore_LMass, "
+               + "VBF_btag77_withTop_BCal \n#"
+               + "Columns are backgrounds: \n#"
+               + "yy, ZH_PowhegPy8, ttyy_noallhad, ttH_PowhegPy8, HH"
+           )
 
 obs_dat = bkg_dat # Currently setting observation = background
 # Change this line to use a proper observed data set
 
 # Run over signal samples (i.e. different c2v couplings)
 # to read their myy histograms into jsons and calculate yields
-sig_yields = {}
+sig_yields = []
+couplings_str = ""
 for coupling in couplings:
+    couplings_str += coupling
+    couplings_str += ", "
     # print("Writing json for coupling " + coupling)
     sig_dat = {}
-    coup_sig_yields = {}
+    coup_sig_yields = []
     for category in categories:
         to_read = "sumHisto_"+disc_variable+"_"+category
 		
@@ -145,12 +157,20 @@ for coupling in couplings:
         # Read myy histogram for each category
         file = uproot.open(path+filename)
         sig_dat[category] = file[to_read].values[15:25].tolist()
-        coup_sig_yields[category] = [sum(sig_dat[category])]
-	
-    sig_yields[coupling] = [coup_sig_yields]
+        coup_sig_yields.append(sum(sig_dat[category]))
     
+    sig_yields.append(coup_sig_yields)
     # Write histograms to json
     make_json(categories, sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling)
 
-# Write signal yields to json
-with open('sig_yields.json', 'w') as outfile: json.dump( sig_yields , outfile )
+# Write signal yields to text
+np.savetxt('sig_yields.txt', sig_yields, 
+           header = "Rows are couplings: \n#"
+               + couplings_str[:-2]
+               + "\n#Columns are categories: \n#"
+               + "XGBoost_btag77_withTop_BCal_looseScore_HMass, "
+               + "XGBoost_btag77_withTop_BCal_looseScore_LMass, "
+               + "XGBoost_btag77_withTop_BCal_tightScore_HMass, "
+               + "XGBoost_btag77_withTop_BCal_tightScore_LMass, "
+               + "VBF_btag77_withTop_BCal"
+           )
