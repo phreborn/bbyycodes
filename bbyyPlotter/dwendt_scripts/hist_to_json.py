@@ -114,11 +114,11 @@ for category in categories:
 
         bkgs_dat.append(bkg_dat_i)
         bkgs_uncert.append(bkg_uncert_i)
-        cat_bkg_yield[bkg] = np.sum(bkg_dat_i)
+        cat_bkg_yield[bkg] = [np.sum(bkg_dat_i)]
 
     bkg_dat[category] = np.sum(np.array(bkgs_dat), axis=0).tolist()
     bkg_uncert[category] = np.sum(np.array(bkgs_uncert), axis=0).tolist()
-    bkg_yields[category] = cat_bkg_yield
+    bkg_yields[category] = [cat_bkg_yield]
     
 # Write background yields to json
 with open('bkg_yields.json', 'w') as outfile: json.dump( bkg_yields , outfile )
@@ -145,9 +145,9 @@ for coupling in couplings:
         # Read myy histogram for each category
         file = uproot.open(path+filename)
         sig_dat[category] = file[to_read].values[15:25].tolist()
-        coup_sig_yields[category] = sum(sig_dat[category])
+        coup_sig_yields[category] = [sum(sig_dat[category])]
 	
-    sig_yields[coupling] = coup_sig_yields
+    sig_yields[coupling] = [coup_sig_yields]
     
     # Write histograms to json
     make_json(categories, sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling)
