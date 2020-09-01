@@ -49,42 +49,113 @@ n = np.array([5.80822E-05,
               8.79087E-06,
               3.37047E-05,
               0.000340078]) * 1000
-              
+    
 # Rescale xsecs by SM VBF fraction
 n /= 0.81771
 
 path = "" # Wherever the json histograms (from hist_to_json.py) are stored
-# Note: these histograms should have filenames in the format "VBF_[coupling].json" 
+# Note: these histograms should have filenames in the format "VBF_[coupling]_all_cats.json" 
 # (or otherwise change the line below that opens the json)
 
 exp_limits = []
 obs_limits = []
 
+all_sig_yields = []
+all_bkg_yields = []
+all_significances = []
+tot_significances = []
+
 # Calculate upper limits for each c2v value
 for i,c2v in enumerate(c2vs):
+    print("Starting c2v = ", c2v)
     c2v_str = str(c2v).replace(".", "p")
-    
-    nTests = 201 
-    mu_tests = np.linspace(0.01,650.,nTests)
-    while( mu_tests[1] - mu_tests[0] > 1.0 ): 
-        nTests += 100
-        mu_tests = np.linspace(.01,650.,nTests)
-        
 
-    f = open(path + "VBF_l1cvv" + c2v_str + "cv1.json")
+    f = open(path + "VBF_l1cvv" + c2v_str + "cv1_all_cats.json")
     inWSspec = json.load(f)
+    
+    # Calculate yields and significances
+    simple_significances = []
+    s_yields = np.array([])
+    b_yields = np.array([])
+    s_cat_names = [] 
+    b_cat_names = []
+    for ichan in range(len(inWSspec['channels'])): 
+        t_bkg_yield = 0.0 
+        t_sig_yield = 0.0
+        for isamp in range(len(inWSspec['channels'][ichan])):  
+            if( 'signal' in inWSspec['channels'][ichan]['samples'][isamp]['name'] ): 
+                s_yields = np.append( s_yields , np.sum( inWSspec['channels'][ichan]['samples'][isamp]['data'] ) )
+                s_cat_names.append( inWSspec['channels'][ichan]['samples'][isamp]['name'] )
+            elif( 'background' in inWSspec['channels'][ichan]['samples'][isamp]['name'] ):
+                b_yields = np.append( b_yields , np.sum( inWSspec['channels'][ichan]['samples'][isamp]['data'] ) )
+                b_cat_names.append( inWSspec['channels'][ichan]['samples'][isamp]['name'] )
+								
+    simple_significances = np.sqrt( 2.0*( (s_yields+b_yields)*np.log(1.0+s_yields/b_yields)-s_yields) ) 
+    tot_simple_significance = np.sqrt( np.sum( simple_significances**2 ) )
+    
+    # Optional: Print total significance before rescaling
+    # print("Total Signal Significance = ", tot_simple_significance)
+    
+    sig_scaling = 1.0
+    # Uncomment this section to implement signal rescaling
+#==============================================================================
+#     while( tot_simple_significance < 0.3 ): 
+#         sig_scaling *= 2.0 
+#         scaled_s_yields = sig_scaling*s_yields 
+#         simple_significances = np.sqrt( 2.0*( (scaled_s_yields+b_yields)*np.log(1.0+scaled_s_yields/b_yields)-scaled_s_yields) ) 
+#         tot_simple_significance = np.sqrt( np.sum( simple_significances**2 ) ) 
+#     while( tot_simple_significance > 1 ): 
+#         sig_scaling *= 0.5 
+#         scaled_s_yields = sig_scaling*s_yields 
+#         simple_significances = np.sqrt( 2.0*( (scaled_s_yields+b_yields)*np.log(1.0+scaled_s_yields/b_yields)-scaled_s_yields) ) 
+#         tot_simple_significance = np.sqrt( np.sum( simple_significances**2 ) ) 
+#==============================================================================
+			
+								
+    nTests = 201 
+    mu_tests = np.linspace(.01,100.,nTests)
+    scaled_mus = mu_tests * sig_scaling
+    while( scaled_mus[1] - scaled_mus[0] > 5.0 ): 
+        nTests += 100
+        mu_tests = np.linspace(.01,100.,nTests)
+        scaled_mus = mu_tests * sig_scaling			
+
+    # Optional: print signal scaling
+    # print("Will apply scaling of ",sig_scaling," to signal input")
+
+
+			###################################################
+			### If scaling required, apply to signal 'data'
+			
+    if( sig_scaling != 1.0 ):
+        for ichan in range(len(inWSspec['channels'])): 
+            for isamp in range(len(inWSspec['channels'][ichan])):  
+                if( 'signal' in inWSspec['channels'][ichan]['samples'][isamp]['name'] ): 
+                    unscaled_data = np.array( inWSspec['channels'][ichan]['samples'][isamp]['data'] , 'd' ) 
+                    scaled_data = sig_scaling * unscaled_data
+                    scaled_data[ np.where(unscaled_data==1e-06) ] = 1e-09 * sig_scaling 
+                    inWSspec['channels'][ichan]['samples'][isamp]['data'] = scaled_data.tolist()
+									
+			###################################################
+			### Finally construct workspace from input spec and perform fit 	
     
     inWS = pyhf.workspace.Workspace(inWSspec)
     inModel = inWS.model(poi_name='mu')
-			
+            
     inits = inModel.config.suggested_init()
     inits[ inModel.config.poi_index ] = 0.0
     bounds = inModel.config.suggested_bounds()
-    bounds[0] = (0, 650.5)
+    bounds[0] = (0, 100.5)
     expected_bkg = inModel.expected_data( inits )			
 									
     hypo_tests = [] 
-    for mu in mu_tests:
+    for i, mu in enumerate(mu_tests):
+        # Optional: give progress updates
+#==============================================================================
+#         if i % 100 == 0:
+#             print("Hypothesis test for mu number ", i, 
+#                   " out of ", len(mu_tests), ", c2v = ", c2v)
+#==============================================================================
         hypo_tests.append( pyhf.infer.hypotest(
                 mu,
                 expected_bkg,
@@ -109,24 +180,56 @@ for i,c2v in enumerate(c2vs):
         hypo_test_res_p2s[imu] = hypo_tests[imu][1][4]
         hypo_test_res_obs[imu] = hypo_tests[imu][0]
 	
-    # (optional) Plot CL_s as a function of mu 
-    fig, ax = plt.subplots()
-    fig.set_size_inches(7, 5)
-    ax.set_xlabel(r"$\mu$ (POI)")
-    ax.set_ylabel(r"$\mathrm{CL}_{s}$")
-    ax.set_title("c2v = " + str(c2v) + " CLs")
-    ax.fill_between(mu_tests, hypo_test_res_m2s, hypo_test_res_p2s,  facecolor = 'yellow')
-    ax.fill_between(mu_tests, hypo_test_res_m1s, hypo_test_res_p1s,  facecolor = 'lime')
-    ax.plot(mu_tests, hypo_test_res_exp)
-    ax.plot(mu_tests, [0.05] * len(mu_tests))
-    plt.savefig("cvv" + c2v_str + "CLs.pdf")
     
-    # Calculate upper limits from CLs
+    # Optional: Plot CL_s as a function of mu 
+#==============================================================================
+#     fig, ax = plt.subplots()
+#     fig.set_size_inches(7, 5)
+#     ax.set_xlabel(r"$\mu$ (POI)")
+#     ax.set_ylabel(r"$\mathrm{CL}_{s}$")
+#     ax.set_title("c2v = " + str(c2v) + " CLs")
+#     ax.fill_between(mu_tests, hypo_test_res_m2s, hypo_test_res_p2s,  facecolor = 'yellow')
+#     ax.fill_between(mu_tests, hypo_test_res_m1s, hypo_test_res_p1s,  facecolor = 'lime')
+#     ax.plot(mu_tests, hypo_test_res_exp)
+#     ax.plot(mu_tests, [0.05] * len(mu_tests))
+#     plt.savefig("cvv" + c2v_str + "CLs.pdf")
+#==============================================================================
+    
+     # Calculate upper limits from CLs
     limits = invert_interval(mu_tests, hypo_tests, test_size=0.05) 
-    print("c2v = " + str(c2v) + " limits: ", limits) 
+    
+    # Print yields and significances
+    print("c2v = " + str(c2v) + " limits: ", limits)
+    print(" ")
+    print('Signal Yields: ')
+    for ic,catname in enumerate(s_cat_names): 
+        print( catname , " : " , s_yields[ic])
+    print('   Total = ',np.sum(s_yields))
+    print('Background Yields: ')
+    for ic,catname in enumerate(b_cat_names): 
+        print( catname , " : " , b_yields[ic])
+    print('   Total = ',np.sum(b_yields))
+    print('Simple Significance: ')
+    for ic,catname in enumerate(s_cat_names): 
+        print( catname , " : " , simple_significances[ic])
+    print('   Total (in quadrature) = ',tot_simple_significance)
 
     exp_limits.append(limits["exp"])
     obs_limits.append(limits["obs"])
+    all_sig_yields.append(s_yields)
+    all_bkg_yields.append(b_yields)
+    all_significances.append(simple_significances)
+    tot_significances.append(tot_simple_significance)
+    
+# Save yields and significances as text files
+sig_yields = np.array(all_sig_yields)
+np.savetxt("sig_yields.txt", sig_yields)
+bkg_yields = np.array(all_bkg_yields)
+np.savetxt("bkg_yields.txt", bkg_yields)
+significances = np.array(all_significances)
+np.savetxt("significances.txt", significances)
+tot_significances = np.array(tot_significances)
+np.savetxt("tot_significances.txt", tot_significances)
 
 # From here down is plotting the limits
 limits = np.array(exp_limits)
@@ -178,4 +281,4 @@ else:
 
 ax.text(0.025,.975,stdText,ha='left',va='top',transform=ax.transAxes)
 
-plt.savefig('c2v_scan.pdf')
+plt.savefig('c2v_scan_all_cats.pdf')
