@@ -98,46 +98,59 @@ categories = [
 disc_variable = "m_yy"
 
 # Read data from each background and each category
+bkg_yields = {} # Background yields
 bkg_dat = {} # Backgruond myy histograms
 bkg_uncert = {} # Stat errors on bkg myy histograms
 for category in categories:
-	bkgs_dat = []
-	bkgs_uncert = []
-	for bkg in bkgs:
-		to_read = "sumHisto_"+disc_variable+"_"+category
-		bkg_filename = bkg + "_" + category + ".root"
-		bkg_file = uproot.open(path+bkg_filename)
-		bkg_dat_i = bkg_file[to_read].values[15:25]
-		bkg_uncert_i = np.sqrt(bkg_file[to_read].variances[15:25])
+    bkgs_dat = []
+    bkgs_uncert = []
+    cat_bkg_yield = {}
+    for bkg in bkgs:
+        to_read = "sumHisto_"+disc_variable+"_"+category
+        bkg_filename = bkg + "_" + category + ".root"
+        bkg_file = uproot.open(path+bkg_filename)
+        bkg_dat_i = bkg_file[to_read].values[15:25]
+        bkg_uncert_i = np.sqrt(bkg_file[to_read].variances[15:25])
 
-		bkgs_dat.append(bkg_dat_i)
-		bkgs_uncert.append(bkg_uncert_i)
+        bkgs_dat.append(bkg_dat_i)
+        bkgs_uncert.append(bkg_uncert_i)
+        cat_bkg_yield[bkg] = np.sum(bkg_dat_i)
 
-	bkg_dat[category] = np.sum(np.array(bkgs_dat), axis=0).tolist()
-	bkg_uncert[category] = np.sum(np.array(bkgs_uncert), axis=0).tolist()
+    bkg_dat[category] = np.sum(np.array(bkgs_dat), axis=0).tolist()
+    bkg_uncert[category] = np.sum(np.array(bkgs_uncert), axis=0).tolist()
+    bkg_yields[category] = cat_bkg_yield
+    
+# Write background yields to json
+with open('bkg_yields.json', 'w') as outfile: json.dump( bkg_yields , outfile )
 
 obs_dat = bkg_dat # Currently setting observation = background
 # Change this line to use a proper observed data set
 
-
 # Run over signal samples (i.e. different c2v couplings)
 # to read their myy histograms into jsons and calculate yields
-
+sig_yields = {}
 for coupling in couplings:
-	# print("Writing json for coupling " + coupling)
-	sig_dat = {}
-	for category in categories:
-		to_read = "sumHisto_"+disc_variable+"_"+category
+    # print("Writing json for coupling " + coupling)
+    sig_dat = {}
+    coup_sig_yields = {}
+    for category in categories:
+        to_read = "sumHisto_"+disc_variable+"_"+category
 		
-		if coupling == "l1cvv1cv1":
+        if coupling == "l1cvv1cv1":
             # SM sample has different naming convention
-			filename = "VBF_" + category + ".root"
-		else:
-			filename = signal+"_"+coupling+"_"+category+".root"
+            filename = "VBF_" + category + ".root"
+        else:
+            filename = signal+"_"+coupling+"_"+category+".root"
 
         # Read myy histogram for each category
-		file = uproot.open(path+filename)
-		sig_dat[category] = file[to_read].values[15:25].tolist()
+        file = uproot.open(path+filename)
+        sig_dat[category] = file[to_read].values[15:25].tolist()
+        coup_sig_yields[category] = sum(sig_dat[category])
 	
+    sig_yields[coupling] = coup_sig_yields
+    
     # Write histograms to json
-	make_json(categories, sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling)
+    make_json(categories, sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling)
+
+# Write signal yields to json
+with open('sig_yields.json', 'w') as outfile: json.dump( sig_yields , outfile )
