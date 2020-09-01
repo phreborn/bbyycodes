@@ -18,41 +18,47 @@ sns.set_palette(sns.color_palette())
 sns.set_color_codes()
 import json
 
-def make_json(sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling):
+def make_json(categories, sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling):
 	""" Make json files """
-
-	mod_spec = { 'channels': [] , 'observations': [] , 'measurements': [] , 'version': "1.0.0"}
 	
 	# Define the workspace 
+
+	mod_spec = { 'channels': [] , 'observations': [] , 'measurements': [] , 'version': "1.0.0"}
+
+	for category in categories:
+		cat_sig_dat = sig_dat[category]
+		cat_bkg_dat = bkg_dat[category]
+		cat_bkg_uncert = bkg_uncert[category]
+		cat_obs_dat = obs_dat[category]
 	
-	channel = {  
-		'name': 'singlechannel',
-		'samples' : [
-		{
-			'name': 'signal',
-			'data': sig_dat,
-			'modifiers': [
-				{'name': 'mu', 'type': 'normfactor', 'data': None } , 
+		channel = {  
+			'name': category,
+			'samples' : [
+			{
+				'name': category + ' signal',
+				'data': cat_sig_dat,
+				'modifiers': [
+					{'name': 'mu', 'type': 'normfactor', 'data': None } , 
+				],
+			},
+			{
+				'name': category + ' background',
+				'data': cat_bkg_dat,
+				'modifiers': [
+					{'name': category + ' uncorr_bkguncrt', 'type': 'shapesys', 'data': cat_bkg_uncert } , 
+				],
+			},
 			],
-		},
-		{
-			'name': 'background',
-			'data': bkg_dat,
-			'modifiers': [
-				{'name': 'uncorr_bkguncrt', 'type': 'shapesys', 'data': bkg_uncert } , 
-			],
-		},
-		],
-	}
+		}
 	
-	mod_spec['channels'].append(channel)
+		mod_spec['channels'].append(channel)
 	
-	obs = {  
-		'name': 'singlechannel',
-		'data': obs_dat 
-	}
+		obs = {  
+			'name': category + ' singlechannel',
+			'data': cat_obs_dat 
+		}
 			
-	mod_spec['observations'].append(obs)
+		mod_spec['observations'].append(obs)
 
 	meas = { 
 		"name": 'measurement', 
@@ -61,18 +67,15 @@ def make_json(sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling):
 	
 	mod_spec['measurements'].append(meas)
 
-	with open('VBF_' + coupling + '.json', 'w') as outfile: json.dump( mod_spec , outfile )
+	with open('VBF_' + coupling + '_all_cats.json', 'w') as outfile: json.dump( mod_spec , outfile )
 
 
 # path = "/afs/cern.ch/user/j/jpearkes/work/public/baseline_histograms_aug11/" # Where histograms are stored
 # path = "/afs/cern.ch/user/j/jpearkes/work/public/selection_histograms_aug24/" # Where histograms are stored
 path = "/afs/cern.ch/user/j/jpearkes/work/public/selection_histograms_myy_120_130_aug24/" # Where histograms are stored
-
 signal = "VBF_rescale" # What we want to run over: rescaled histograms
 # signal = "VBF" # What we want to run over: non-rescaled histograms
-bkgs = ["yy_VBF_btag77_withTop_BCal.root", "ZH_PowhegPy8_VBF_btag77_withTop_BCal.root",
-	"ttyy_noallhad_VBF_btag77_withTop_BCal.root", "ttH_PowhegPy8_VBF_btag77_withTop_BCal.root",
-	"HH_VBF_btag77_withTop_BCal.root"]
+bkgs = ["yy", "ZH_PowhegPy8", "ttyy_noallhad", "ttH_PowhegPy8", "HH"] # different backgrounds
 
 # Find available VBF couplings
 signals = glob.glob(path+signal+"_l1cvv*cv1_*"+"Validation.root")
@@ -80,67 +83,61 @@ couplings = [coupling.replace(path+signal+"_", '').replace("_Validation.root",""
 couplings.append("l1cvv1cv1")
 print("Couplings: "+str(couplings))
 
-# Category used for the scan
-category = "VBF_btag77_withTop_BCal"
+# Categories used for the scan
+# category = "VBF_btag77_withTop_BCal"
+categories = [
+	"Validation",
+	"XGBoost_btag77_withTop_BCal_looseScore_HMass",
+	"XGBoost_btag77_withTop_BCal_looseScore_LMass",
+	"XGBoost_btag77_withTop_BCal_tightScore_HMass",
+	"XGBoost_btag77_withTop_BCal_tightScore_LMass",
+	"VBF_btag77_withTop_BCal"
+]
 
 # Discriminant variable
 disc_variable = "m_yy"
-to_read = "sumHisto_"+disc_variable+"_"+category
 
-# Read information about backgrounds
-bkg_yields = {} # Background yields
-bkgs_dat = [] # Background myy histograms
-bkgs_uncert = [] # Stat errors on bkg myy histograms
-for bkg in bkgs:
-	bkg_file = uproot.open(path+bkg)
-	bkg_dat = bkg_file[to_read].values[15:25]
-	bkg_uncert = np.sqrt(bkg_file[to_read].variances[15:25])
+# Read data from each background and each category
+bkg_dat = {} # Backgruond myy histograms
+bkg_uncert = {} # Stat errors on bkg myy histograms
+for category in categories:
+	bkgs_dat = []
+	bkgs_uncert = []
+	for bkg in bkgs:
+		to_read = "sumHisto_"+disc_variable+"_"+category
+		bkg_filename = bkg + "_" + category + ".root"
+		bkg_file = uproot.open(path+bkg_filename)
+		bkg_dat_i = bkg_file[to_read].values[15:25]
+		bkg_uncert_i = np.sqrt(bkg_file[to_read].variances[15:25])
 
-	bkgs_dat.append(bkg_dat)
-	bkgs_uncert.append(bkg_uncert)
+		bkgs_dat.append(bkg_dat_i)
+		bkgs_uncert.append(bkg_uncert_i)
 
-	bkg_yields[bkg] = sum(bkg_dat)	
-
-	print(bkg)
-	print("yield = " + str(sum(bkg_dat)))
-
-bkg_dat = np.sum(np.array(bkgs_dat), axis=0).tolist()
-bkg_uncert = np.sum(np.array(bkgs_uncert), axis=0).tolist()
-bkg_yield = sum(bkg_dat)
-bkg_yields["total"] = bkg_yield
-
-print("total background yield = " + str(bkg_yield))
+	bkg_dat[category] = np.sum(np.array(bkgs_dat), axis=0).tolist()
+	bkg_uncert[category] = np.sum(np.array(bkgs_uncert), axis=0).tolist()
 
 obs_dat = bkg_dat # Currently setting observation = background
 # Change this line to use a proper observed data set
 
-# Run over signal samples (i.e. different c2v couplings
+
+# Run over signal samples (i.e. different c2v couplings)
 # to read their myy histograms into jsons and calculate yields
-sig_yields = {} # Signal yields
-sbs = {} # Signal to (total) background ratios
+
 for coupling in couplings:
 	# print("Writing json for coupling " + coupling)
-	if coupling == "l1cvv1cv1":
-		# SM sample has different naming convention
-		filename = "VBF_VBF_btag77_withTop_BCal.root"
-	else:
-		filename = signal+"_"+coupling+"_"+category+".root"
+	sig_dat = {}
+	for category in categories:
+		to_read = "sumHisto_"+disc_variable+"_"+category
+		
+		if coupling == "l1cvv1cv1":
+            # SM sample has different naming convention
+			filename = "VBF_" + category + ".root"
+		else:
+			filename = signal+"_"+coupling+"_"+category+".root"
 
-	# Read myy histogram and calculate yield, s/b
-	file = uproot.open(path+filename)
-	sig_dat = file[to_read].values[15:25].tolist()
-	sig_yield = sum(sig_dat)
-	sig_yields[coupling] = sig_yield
-	sbs[coupling] = sig_yield/bkg_yield
-
-	print("\t--- " + coupling + " ---")
-	print("signal yield = " + str(sig_yield))
-	print("s/b (total) = " + str(sig_yield / bkg_yield)) 
-
-	# Write histogram to json
-	make_json(sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling)
-
-# Write yields, s/b to a json spec
-yield_spec = {"bkg_yields" : [bkg_yields], "sig_yields" : [sig_yields], "s/b" : [sbs]} 
-# Write this spec to a json
-with open('yields.json', 'w') as outfile: json.dump( yield_spec , outfile )
+        # Read myy histogram for each category
+		file = uproot.open(path+filename)
+		sig_dat[category] = file[to_read].values[15:25].tolist()
+	
+    # Write histograms to json
+	make_json(categories, sig_dat, bkg_dat, bkg_uncert, obs_dat, coupling)
