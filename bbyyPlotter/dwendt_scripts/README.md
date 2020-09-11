@@ -9,12 +9,21 @@ Reads signal and background histograms from the
 path specified in the file and writes them to jsons
 along with a json containing yields and signal/background.
 
+Original file is `hist_to_json.py`. Two new files replace this 
+depending on usage. `hist_to_json_VBF_only.py` processes the 
+histograms by only using the VBF category and only using VBF
+for signal, while `hist_to_json_ggF_sig.py` has ggF included
+in signal as well, with the choice to use either 5 categories 
+(with VBF) or 4 categories (without VBF).
+
 Instructions:
 ```
 setupATLAS
 lsetup "root 6.20.06-x86_64-centos7-gcc8-opt"
-python hist_to_json.py
+python hist_to_json*.py
 ```
+where `hist_to_json*.py` refers either to `hist_to_json_VBF_only.py`
+or `hist_to_json_ggF_sig.py`.
 
 #`c2v_scan.py`
 
