@@ -39,6 +39,7 @@ stdText += '\nStats only limit'
 
 # c2v values that we use
 c2vs = [0, 0.5, 1, 1.5, 2, 4]
+#c2vs = [1]
 
 # These values are the (non-reweighted) xsecs from 
 # https://indico.cern.ch/event/945922/contributions/3976127/attachments/2087239/3506646/yybb_VHHContamination_12August2020_VMMCAIRO_DWENDT.pdf
@@ -54,7 +55,7 @@ n = np.array([5.80822E-05,
 n /= 0.81771
 
 path = "" # Wherever the json histograms (from hist_to_json.py) are stored
-# Note: these histograms should have filenames in the format "VBF_[coupling]_all_cats.json" 
+# Note: these histograms should have filenames in the format "VBF_[coupling]_VBF_only.json" 
 # (or otherwise change the line below that opens the json)
 
 exp_limits = []
@@ -65,12 +66,14 @@ all_bkg_yields = []
 all_significances = []
 tot_significances = []
 
+mu_maxes = [20, 65, 700, 140, 30, 10]
+
 # Calculate upper limits for each c2v value
 for i,c2v in enumerate(c2vs):
     print("Starting c2v = ", c2v)
     c2v_str = str(c2v).replace(".", "p")
 
-    f = open(path + "VBF_l1cvv" + c2v_str + "cv1_all_cats.json")
+    f = open(path + "VBF_l1cvv" + c2v_str + "cv1_VBF_only.json")
     inWSspec = json.load(f)
     
     # Calculate yields and significances
@@ -92,36 +95,46 @@ for i,c2v in enumerate(c2vs):
 								
     simple_significances = np.sqrt( 2.0*( (s_yields+b_yields)*np.log(1.0+s_yields/b_yields)-s_yields) ) 
     tot_simple_significance = np.sqrt( np.sum( simple_significances**2 ) )
-    
-    # Optional: Print total significance before rescaling
-    # print("Total Signal Significance = ", tot_simple_significance)
+        
+    print('Signal Yields: ')
+    for ic,catname in enumerate(s_cat_names): 
+        print( catname , " : " , s_yields[ic])
+    print('   Total = ',np.sum(s_yields))
+    print('Background Yields: ')
+    for ic,catname in enumerate(b_cat_names): 
+        print( catname , " : " , b_yields[ic])
+    print('   Total = ',np.sum(b_yields))
+    print('Simple Significances: ')
+    for ic,catname in enumerate(s_cat_names): 
+        print( catname , " : " , simple_significances[ic])
+    print('   Total (in quadrature) = ',tot_simple_significance)
     
     sig_scaling = 1.0
     # Uncomment this section to implement signal rescaling
-#==============================================================================
-#     while( tot_simple_significance < 0.3 ): 
-#         sig_scaling *= 2.0 
-#         scaled_s_yields = sig_scaling*s_yields 
-#         simple_significances = np.sqrt( 2.0*( (scaled_s_yields+b_yields)*np.log(1.0+scaled_s_yields/b_yields)-scaled_s_yields) ) 
-#         tot_simple_significance = np.sqrt( np.sum( simple_significances**2 ) ) 
-#     while( tot_simple_significance > 1 ): 
-#         sig_scaling *= 0.5 
-#         scaled_s_yields = sig_scaling*s_yields 
-#         simple_significances = np.sqrt( 2.0*( (scaled_s_yields+b_yields)*np.log(1.0+scaled_s_yields/b_yields)-scaled_s_yields) ) 
-#         tot_simple_significance = np.sqrt( np.sum( simple_significances**2 ) ) 
-#==============================================================================
+    while( tot_simple_significance < 0.5 ): 
+        sig_scaling *= 2.0 
+        scaled_s_yields = sig_scaling*s_yields 
+        simple_significances = np.sqrt( 2.0*( (scaled_s_yields+b_yields)*np.log(1.0+scaled_s_yields/b_yields)-scaled_s_yields) ) 
+        tot_simple_significance = np.sqrt( np.sum( simple_significances**2 ) ) 
+    while( tot_simple_significance > 1 ): 
+        sig_scaling *= 0.5 
+        scaled_s_yields = sig_scaling*s_yields 
+        simple_significances = np.sqrt( 2.0*( (scaled_s_yields+b_yields)*np.log(1.0+scaled_s_yields/b_yields)-scaled_s_yields) ) 
+        tot_simple_significance = np.sqrt( np.sum( simple_significances**2 ) ) 
 			
+#    mu_max = mu_maxes[i]
+    mu_max = 10.0
 								
     nTests = 201 
-    mu_tests = np.linspace(.01,100.,nTests)
+    mu_tests = np.linspace(.01,mu_max,nTests)
     scaled_mus = mu_tests * sig_scaling
     while( scaled_mus[1] - scaled_mus[0] > 5.0 ): 
         nTests += 100
-        mu_tests = np.linspace(.01,100.,nTests)
+        mu_tests = np.linspace(.01,mu_max,nTests)
         scaled_mus = mu_tests * sig_scaling			
 
     # Optional: print signal scaling
-    # print("Will apply scaling of ",sig_scaling," to signal input")
+    print("Will apply scaling of ",sig_scaling," to signal input")
 
 
 			###################################################
@@ -145,7 +158,7 @@ for i,c2v in enumerate(c2vs):
     inits = inModel.config.suggested_init()
     inits[ inModel.config.poi_index ] = 0.0
     bounds = inModel.config.suggested_bounds()
-    bounds[0] = (0, 100.5)
+#    bounds[0] = (0, mu_max + 0.5)
     expected_bkg = inModel.expected_data( inits )			
 									
     hypo_tests = [] 
@@ -181,38 +194,28 @@ for i,c2v in enumerate(c2vs):
         hypo_test_res_obs[imu] = hypo_tests[imu][0]
 	
     
-    # Optional: Plot CL_s as a function of mu 
+     # Calculate upper limits from CLs
+    limits = invert_interval(scaled_mus, hypo_tests, test_size=0.05) 
+    
 #==============================================================================
+#     # Optional: Plot CL_s as a function of mu 
 #     fig, ax = plt.subplots()
 #     fig.set_size_inches(7, 5)
 #     ax.set_xlabel(r"$\mu$ (POI)")
+#     ax.set_xlim(0, mu_max)
 #     ax.set_ylabel(r"$\mathrm{CL}_{s}$")
 #     ax.set_title("c2v = " + str(c2v) + " CLs")
 #     ax.fill_between(mu_tests, hypo_test_res_m2s, hypo_test_res_p2s,  facecolor = 'yellow')
 #     ax.fill_between(mu_tests, hypo_test_res_m1s, hypo_test_res_p1s,  facecolor = 'lime')
 #     ax.plot(mu_tests, hypo_test_res_exp)
 #     ax.plot(mu_tests, [0.05] * len(mu_tests))
-#     plt.savefig("cvv" + c2v_str + "CLs.pdf")
+#     plt.savefig("cvv" + c2v_str + "CLs_VBF_only_sig_scale_all_bkgs.pdf")
 #==============================================================================
     
-     # Calculate upper limits from CLs
-    limits = invert_interval(mu_tests, hypo_tests, test_size=0.05) 
-    
     # Print yields and significances
+    print("")
     print("c2v = " + str(c2v) + " limits: ", limits)
-    print(" ")
-    print('Signal Yields: ')
-    for ic,catname in enumerate(s_cat_names): 
-        print( catname , " : " , s_yields[ic])
-    print('   Total = ',np.sum(s_yields))
-    print('Background Yields: ')
-    for ic,catname in enumerate(b_cat_names): 
-        print( catname , " : " , b_yields[ic])
-    print('   Total = ',np.sum(b_yields))
-    print('Simple Significance: ')
-    for ic,catname in enumerate(s_cat_names): 
-        print( catname , " : " , simple_significances[ic])
-    print('   Total (in quadrature) = ',tot_simple_significance)
+    print("")
 
     exp_limits.append(limits["exp"])
     obs_limits.append(limits["obs"])
@@ -223,13 +226,15 @@ for i,c2v in enumerate(c2vs):
     
 # Save yields and significances as text files
 sig_yields = np.array(all_sig_yields)
-np.savetxt("sig_yields.txt", sig_yields)
 bkg_yields = np.array(all_bkg_yields)
-np.savetxt("bkg_yields.txt", bkg_yields)
 significances = np.array(all_significances)
-np.savetxt("significances.txt", significances)
 tot_significances = np.array(tot_significances)
-np.savetxt("tot_significances.txt", tot_significances)
+#==============================================================================
+# np.savetxt("significances_VBF_only2.txt", significances)
+# np.savetxt("sig_yields_VBF_only2.txt", sig_yields)
+# np.savetxt("bkg_yields__VBF_only2.txt", bkg_yields)
+# np.savetxt("tot_significances_VBF_only2.txt", tot_significances)
+#==============================================================================
 
 # From here down is plotting the limits
 limits = np.array(exp_limits)
@@ -248,23 +253,31 @@ else:
     gs = gridspec.GridSpec(4,1)
     ax = fig.add_subplot(gs[:4,0])
 
-
+# Plot xsec limits
 ax.semilogy(c2vs, n * np.array(limit_bands[0]),'k--',label='expected')
-
 ax.fill_between(c2vs, n * np.array(limit_bands[-2]), n * np.array(limit_bands[2]),  facecolor = 'yellow')
 ax.fill_between(c2vs, n * np.array(limit_bands[-1]), n * np.array(limit_bands[1]),  facecolor = 'lime')
-
-# The two commented lines below were inherited
-# The extra bands that I wanted to add
-#ax.semilogy(lambdas, n * np.array(limit2_bands[0]),color='b',linestyle='--',label='PFlow')
-
 ax.plot(c2vs,n,'C4',label='theory prediction')
+ax.set_ylabel('95% upper limit on $\sigma_{VBF} * BR$ [fb]', fontsize=16)
 
 ylim = [.001,20]
 ax.plot([1]*2,ylim,'grey')
 ax.set_ylim(ylim)
 
-ax.set_ylabel('95% upper limit on $\sigma_{VBF} * BR$ [pb]', fontsize=16)
+#==============================================================================
+# # Plot mu limits
+# ax.semilogy(c2vs, np.array(limit_bands[0]),'k--',label='expected')
+# ax.fill_between(c2vs, np.array(limit_bands[-2]), np.array(limit_bands[2]),  facecolor = 'yellow')
+# ax.fill_between(c2vs, np.array(limit_bands[-1]), np.array(limit_bands[1]),  facecolor = 'lime')
+# ax.set_ylabel('95% upper limit on $\mu$', fontsize=16)
+#==============================================================================
+
+# The two commented lines below were inherited
+# The extra bands that I wanted to add
+#ax.semilogy(lambdas, n * np.array(limit2_bands[0]),color='b',linestyle='--',label='PFlow')
+
+
+
 ax.legend(loc='lower right')
 
 if (add_subplot):
@@ -281,4 +294,4 @@ else:
 
 ax.text(0.025,.975,stdText,ha='left',va='top',transform=ax.transAxes)
 
-plt.savefig('c2v_scan_all_cats.pdf')
+plt.savefig('c2v_scan.pdf')
