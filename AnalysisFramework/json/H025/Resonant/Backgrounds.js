@@ -182,17 +182,7 @@
 		"mc16e" : "mc16e.MGPy8_ttgammagamma_allhad.root"
             },
             "histoName" : "CutFlow_MGPy8_ttgammagamma_allhad_AF2_noDalitz_weighted"
-	},
-
-        "yy":    {
-            "datafiles" : {
-                "mc16a" : "mc16a.Sherpa2_myy_90_175.root",
-                "mc16d" : "mc16d.Sherpa2_myy_90_175.root",
-                "mc16e" : "mc16e.Sherpa2_myy_90_175.root"
-            },
-            "histoName" : "CutFlow_Sherpa2_myy_90_175_noDalitz_weighted"
-        }
-
+	}
 	
     }
     
