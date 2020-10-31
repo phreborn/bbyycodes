@@ -92,9 +92,9 @@ void YieldIterator::execute()
       // Adding an additional truth-matching feature, which we only need when
       // running on the yy samples to get the yycj, yybj, yyjj separation
       std::string truthMatch = "";        
-      if (sampleName == "yybj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
-      if (sampleName == "yycj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
-      if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
+      if (sampleName == "yybj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
+      if (sampleName == "yycj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
+      if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
       for (auto iMC: mcCampaigns){
         const std::string mc=iMC;
         logging=sampleName+"_"+mc+"_"+(*iCut);

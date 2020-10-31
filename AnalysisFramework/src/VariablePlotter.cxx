@@ -133,9 +133,9 @@ void VariablePlotter::execute()
         // Adding an additional truth-matching feature, which we only need when
         // running on the yy samples to get the yycj, yybj, yyjj separation
         //std::string truthMatch = "";        
-        if (sampleName == "yybj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
-        if (sampleName == "yycj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
-        if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
+        if (sampleName == "yybj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
+        if (sampleName == "yycj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
+        if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
 
         // Have a specific XStimesBR if we are running on a resonant signal
         if (sampleName.find("toHH") != std::string::npos) {
