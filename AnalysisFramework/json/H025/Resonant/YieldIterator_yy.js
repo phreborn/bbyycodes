@@ -1,6 +1,10 @@
 {
   "sequencer":["YieldCalculator"],
 
+    "name" {
+
+	"yields":"PhotonJet_yields"
+    }
     
     "directories":{
         "mc16a" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h025_diphotonselection/mc16d/",
