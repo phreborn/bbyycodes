@@ -2,8 +2,9 @@
   "sequencer":["YieldCalculator"],
 
     "name":{
-	"yield":"Signal_yields"
+	"yields" : "Signal_yields"
     },
+
     
     "directories":{
         "mc16a" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h025_diphotonselection/mc16a/",

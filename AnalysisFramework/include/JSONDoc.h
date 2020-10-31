@@ -38,6 +38,10 @@ namespace mytest {
     std::string weight;
   };
 
+  struct Name {
+    std::map <std::string, std::string, std::less<std::string> > nameMap;
+  };
+
   struct Lumi {
     std::map <std::string, double, std::less<std::string> > lumiMap;
   };
@@ -66,6 +70,7 @@ namespace mytest {
     Var variables;
     Sel selections;
     Lumi luminosity;
+    Name name;
     Bins bins;
     MCSamples samples;
     Dumper dumper;

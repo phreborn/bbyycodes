@@ -10,14 +10,23 @@ void YieldIterator::execute()
 {
 
   std::cout<<" Entering YieldIterator::execute() "<<std::endl;
-  std::ofstream fileOut;
-  std::ofstream jsonOut;
-  fileOut.open("yields.txt");
-  jsonOut.open("yields.js");
-  jsonOut<<"{"<<std::endl;
 
   // Fetch the JSON 
   mytest::JSONData& document=Controller::GetDocument();
+
+  //Specify name for yields output
+  std::string file_name = "yields";
+  for (auto is:document.name.nameMap)
+    {
+      file_name = is.second;
+    }
+
+  std::ofstream fileOut;
+  std::ofstream jsonOut;
+  std::cout << "Yield fila name: " << file_name << std::endl;
+  fileOut.open(file_name+".txt");                                                                                                                           
+  jsonOut.open(file_name+".js");                                                                                                                            
+  jsonOut<<"{"<<std::endl;
 
   // First extract selections from the JSON
   // Full parsing is handled by the serializer.h
