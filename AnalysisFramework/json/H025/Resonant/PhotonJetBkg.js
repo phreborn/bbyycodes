@@ -76,7 +76,7 @@
 
     "samples" : {
 
-        "yyjj":    {
+        "yy":    {
             "datafiles" : {
                 "mc16a" : "mc16d.Sherpa2_myy_90_175.root",
                 "mc16d" : "mc16d.Sherpa2_myy_90_175.root",
