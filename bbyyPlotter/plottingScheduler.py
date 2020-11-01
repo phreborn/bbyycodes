@@ -42,14 +42,23 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 signalDict = SignalDict()
 
-debug = True # Set to true to see added samples
+debug = False # Set to true to see added samples
 DictOn = False # Set to false if you want to use the original binninb and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
  
-def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
+def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/", signal="",region=""):
                 
     XsubRange = False
 
     if UNBLIND: print 'WARNING: You have unblinded the analysis! Are you sure you want to do this?'
+
+    if region !="": 
+        print ("You have specified the selection: "+region)
+        selections=[region]
+
+    if signal !="":
+        print ("You have specified the signal: "+signal)
+        signals=[signal]
+
 
     for selection in selections:
 
@@ -308,7 +317,9 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
     parser.add_argument("-p", "--plotDump", help="Option for making plots in different formats.", action="store_true", default=False) 
     parser.add_argument("-UB", "--UNBLIND", help="",action="store_true",default=False) 
-  
+    parser.add_argument("-s", "--signal", help="Specify the signal when running",default="")
+    parser.add_argument("-r", "--region", help="Specify the region when running",default="")
+
     options = parser.parse_args()
 
     # Input and output directories
