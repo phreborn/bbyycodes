@@ -42,7 +42,7 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 signalDict = SignalDict()
 
-debug = False # Set to true to see added samples
+debug = True # Set to true to see added samples
 DictOn = False # Set to false if you want to use the original binninb and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
  
 def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/"):
@@ -142,8 +142,8 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                       continue 
                   elif ('H' in sample and 'HH' not in sample) or sample == 'VBF': continue # To avoid double-counting the single Higgs backgrounds
                   else:                                                                                         
+                      if debug : print "Adding "+sample+" with yield "+str(newHisto.Integral())
 
-                      if debug : print "Adding "+sample
                       addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description']) 
                       getSumHist(newHisto, sumHist)
                       
@@ -160,7 +160,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                         getSumHist(newHisto, higgsHist)                        
 
                 # Add the combined single Higgs backgrounds back in, unless specified otherwise
-                if debug : print "Adding single Higgs"
+                if debug : print "Adding single Higgs with yield "+str(higgsHist.Integral())
                 addStack(higgsHist, stackHist, 4, theLegend, 'Single Higgs')   
                 getSumHist(higgsHist, sumHist)
             
@@ -195,7 +195,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
             #for nbin in range(0,sumHist.GetNbinsX()):
                 #sumHist.SetBinError(nbin, sumHist.GetBinError(nbin)*20) 
 
-            sumHist.SetMarkerSize(1)
+            sumHist.SetMarkerSize(0)
             sumHist.SetFillColor(12)
             sumHist.SetFillStyle(3144)#3357)
             theLegend.AddEntry(sumHist,"Total SM", "f")
