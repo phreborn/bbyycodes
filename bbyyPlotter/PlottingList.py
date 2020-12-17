@@ -32,10 +32,7 @@ samplesToStack = [
                     '15_to_18_data',
                     'ttyy_nohad',
                     'ttyy_had',
-                    #'tty_nohad',
-                    #'yybj',
-                    #'yycj',
-                    #'yyjj',
+                    'yy', 
                     'HH',
                     # Then all of the single H backgrounds (these are combined, by default)     
                     'ggH',

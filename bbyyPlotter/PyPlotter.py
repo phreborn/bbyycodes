@@ -113,3 +113,23 @@ def CheckXrange(theHisto, new_xmin, new_xmax):
 
     return status
 
+def MergeBackgrounds(MergeBkgList, Reg, Bkg, yields):
+
+    Merge = []
+    Merge_unc = []
+    NoHBkg = []
+    for r in Reg:
+        events = 0
+        unc = 0
+        for b in Bkg:
+            if (b in MergeBkgList):
+                events += yields[b][r][0]
+                unc +=  yields[b][r][1]**2
+
+        Merge.append(events)
+        Merge_unc.append(sqrt(unc))
+
+    for b in Bkg:
+        if (b not in MergeBkgList): NoHBkg.append(b)
+
+    return (Merge, Merge_unc, NoHBkg)

@@ -15,7 +15,7 @@ import collections
 from math import sqrt
 from PyPlotter import *
 from histoDictionary import *
-from PlottingList import*
+import PlottingList as p
 
 # ROOT global plot settings
 r.gROOT.LoadMacro("./atlasstyle-00-03-05/AtlasStyle.C")
@@ -51,14 +51,22 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
 
     if UNBLIND: print 'WARNING: You have unblinded the analysis! Are you sure you want to do this?'
 
-    if region !="": 
+    print(region)
+
+    if region !="none": 
         print ("You have specified the selection: "+region)
         selections=[region]
+    else:
+        selections = p.selections
 
-    if signal !="":
+    if signal !="none":
         print ("You have specified the signal: "+signal)
         signals=[signal]
+    else:
+        signals = p.signals
 
+    histosToPlot = p.histosToPlot
+    samplesToStack = p.samplesToStack
 
     for selection in selections:
 
@@ -317,8 +325,8 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
     parser.add_argument("-p", "--plotDump", help="Option for making plots in different formats.", action="store_true", default=False) 
     parser.add_argument("-UB", "--UNBLIND", help="",action="store_true",default=False) 
-    parser.add_argument("-s", "--signal", help="Specify the signal when running",default="")
-    parser.add_argument("-r", "--region", help="Specify the region when running",default="")
+    parser.add_argument("-s", "--signal", help="Specify the signal when running",default="none")
+    parser.add_argument("-r", "--region", help="Specify the region when running",default="none")
 
     options = parser.parse_args()
 
