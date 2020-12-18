@@ -25,9 +25,9 @@ cd ../run
 
 **You can now produce histograms by typing, for example:**
 
-./hhbbyy computeYieldsEffs_allSelections_HHNLOBugFix.js
+./hhbbyy H026/Non_Resonant/test.js
 
-**or by using any of the JSON files linked through the *json* soft link (you will find two folders, namely H024 and H025, which contain configurations for the 2 production campaigns).**
+**or by using any of the JSON files linked through the *json* soft link (you will find three folders, namely H024, H025, H026  which contain configurations for the 3 production campaigns).**
 
 **You can also submit your jobs on condor, otherwise it takes quite some time to run over all the samples.**
 

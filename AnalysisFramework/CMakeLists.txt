@@ -42,6 +42,7 @@ set(hhbbyy_SCRIPTS
         computeYieldsEffs_photonJetBkg.js
         computeYieldsEffs_allSelections_resonantSignals.js
         computeYieldsEffs_allSelections_nonResonantSignals.js
+        H026/Non_Resonant/test.js
    )
 
 foreach(_script ${hhbbyy_SCRIPTS})

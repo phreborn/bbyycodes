@@ -44,6 +44,10 @@ Q: How do I generate MC-only plots, all plotting formats (.C, .eps, .root, .pdf)
 
 A: Run "python plottingScheduler.py -i path_to_inputs -o path_to_output -H -m -p".
 
+Q: How do I generate the non-resonant int note plots (h026 2 b-jet requirement)?
+
+A: python plottingScheduler.py -i /afs/cern.ch/user/j/jpearkes/work/public/bbyy_histograms/Baseline_skimmed_2bjet/ -p
+ 
 Also note that three signals have currently been added to the histoDictionary, corresponding to a non-resonant signal and two resonant scalar signals. The code can be easily modified to include additional signals by adding the MC name to the histoDictionary and including the signal in the signal list specified in the plottingScheduler. 
 
 # Blinding:

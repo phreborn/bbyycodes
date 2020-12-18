@@ -25,7 +25,7 @@ def PlottingDict():
             'units' : 'GeV',
             'x-min' : 105,
             'x-max' : 160,
-            'rebin' : 1
+            'rebin' : 1 
 
         },
         'sumHisto_pT_yy_': {
@@ -97,6 +97,15 @@ def PlottingDict():
             'units' : '',
             'x-min' : 1.0,
             'x-max' : 5.0,
+            'rebin' : 5
+
+        },
+        'sumHisto_dR_yy_': { 
+            'x-axis title': '#Delta#it{R}(#gamma,#gamma)',
+            'y-axis title': 'Events / 0.2',
+            'units' : '',
+            'x-min' : 0.0,
+            'x-max' : 3.0,
             'rebin' : 5
 
         },
@@ -199,8 +208,27 @@ def PlottingDict():
             'x-max' : 500,
             'rebin' : 1
 
-        }
+        },
 
+        'sumHisto_nonRes_XGBoost_btag77_BCal_withTop_lowMass_Score_': {
+            'x-axis title': 'Low Mass BDT Score',
+            'y-axis title': 'Events',
+            'units' : 'GeV',
+            'x-min' : 0.0,
+            'x-max' : 1.0,
+            'rebin' : 1
+
+        },
+
+        'sumHisto_nonRes_XGBoost_btag77_BCal_withTop_highMass_Score_': {
+            'x-axis title': 'High Mass BDT Score',
+            'y-axis title': 'Events',
+            'units' : 'GeV',
+            'x-min' : 0.0,
+            'x-max' : 1.0,
+            'rebin' : 1
+
+        }
 
     }
 
@@ -213,15 +241,23 @@ def SampleDict():
             'legend description': '#it{t#bar{t}#gamma}',
         },
         'ttyy_nohad': {
-            'color': 2,
+            'color':    (74, 217, 217),
+            'legend description': 'Non-had #it{t#bar{t}#gamma#gamma}',
+        },
+        'ttyy_noallhad': {
+            'color':    (74, 217, 217),
             'legend description': 'Non-had #it{t#bar{t}#gamma#gamma}',
         },
         'ttyy_had': { 
-            'color': 1,
+            'color':  (233, 241, 223),## hh dark blue 
+            'legend description': 'Hadronic #it{t#bar{t}#gamma#gamma}',
+        },
+        'ttyy_allhad': { 
+            'color':  (233, 241, 223), ## hh dark blue 
             'legend description': 'Hadronic #it{t#bar{t}#gamma#gamma}',
         },
         'yy': {
-            'color': 5,
+            'color':  (54, 177, 191), ## hh med turq
             'legend description': 'SM #it{#gamma#gamma}',
         },
 
@@ -238,18 +274,30 @@ def SampleDict():
             'legend description': '#it{#gamma#gammabj}',
         },
         'HH': { 
-            'color': 7,
+            'color': (253, 197, 54), # HH dark yellow 
             'legend description': '#it{HH}',
+        },
+        'HH_NLO': { 
+            'color': (253, 197, 54), # HH dark yellow 
+            'legend description': '#it{HH} (NLO)',
         },
         'ggH': { 
             'color': 28,
             'legend description': '#it{ggH}',
         },
+        'ggH_PowhegPy8': { 
+            'color': 28,
+            'legend description': '#it{ggH}',
+        },
         'VBF': { 
-            'color': 30,
-            'legend description': 'VBF #it{H}',
+            'color':  (242, 56, 90), # HH red
+            'legend description': 'VBF #it{HH}',
         },
         'WpH': { 
+            'color': 10,
+            'legend description': '#it{W^{+}H}',
+        },
+        'WpH_PowhegPy8': { 
             'color': 10,
             'legend description': '#it{W^{+}H}',
         },
@@ -257,16 +305,36 @@ def SampleDict():
             'color': 12,
             'legend description': '#it{W^{-}H}',
         },
+        'WmH_PowhegPy8': { 
+            'color': 12,
+            'legend description': '#it{W^{-}H}',
+        },
         'ZH': { 
-            'color': 6,
+            'color': (74, 217, 217), ## hh light turquoise
+            'legend description': '#it{ZH}',
+        },
+        'ZH_PowhegPy8': { 
+            'color': (74, 217, 217), ## hh light turquoise
+            'legend description': '#it{ZH}',
+        },
+        'ZH_PowhegH7': { 
+            'color': (74, 217, 217), ## hh light turquoise
             'legend description': '#it{ZH}',
         },
         'ggZH': { 
             'color': 9,
             'legend description': '#it{ggZH}',
         },
+        'ggZH_PowhegPy8': { 
+            'color': 9,
+            'legend description': '#it{ggZH}',
+        },
         'ttH': { 
-            'color': 40,
+            'color':  (54, 177, 191), # hh medium turquoise
+            'legend description': '#it{ttH}',
+        },
+        'ttH_PowhegPy8': { 
+            'color': (54, 177, 191), # hh medium turquoise
             'legend description': '#it{ttH}',
         },
         'bbH': { 
@@ -280,6 +348,10 @@ def SampleDict():
         'tHjb': { 
             'color': 43,
             'legend description': '#it{tHb}+#it{j}',
+        },
+        'VBFH_PowhegPy8': { 
+            'color': 43,
+            'legend description': '#it{VBFH}',
         }
     }
     return dict
@@ -529,7 +601,54 @@ def SelectionDict():
        'Continuum_CR_Zbb_window': {
             'legend upper': 'Continuum bkg CR for ZH',
             'legend lower': '',
-           }
+           },
+
+       'XGBoost_btag77_withTop_BCal_looseScore_HMass': {
+            'legend upper': '#it{M_{X}} #geq 350 GeV',
+            'legend lower': 'BDT Loose',
+           },
+
+        'XGBoost_btag77_withTop_BCal_tightScore_HMass': {
+            'legend upper': '#it{M_{X}} #geq 350 GeV',
+            'legend lower': 'BDT Tight',
+           },
+
+        'XGBoost_btag77_withTop_BCal_looseScore_LMass': {
+            'legend upper': '#it{M_{X}} #leq 350 GeV',
+            'legend lower': 'BDT Loose',
+           },
+
+        'XGBoost_btag77_withTop_BCal_tightScore_LMass': {
+            'legend upper': '#it{M_{X}} #leq 350 GeV',
+            'legend lower': 'BDT Tight',
+           },
+
+
+        'Validation': {
+            'legend upper': 'Pre-Selection',
+            'legend lower': '',
+           },
+
+
+        'Pass_yy': {
+            'legend upper': 'Pass HGam ',
+            'legend lower': '',
+           },
+
+        'Validation_2bjet': {
+            'legend upper': 'Pre-Selection + 2 b-jet',
+            'legend lower': '',
+           },
+
+
+
+        'VBF_btag77_withTop_BCal': {
+            'legend upper': 'VBF',
+            'legend lower': '',
+           },
+
+
+
 
     }
 
