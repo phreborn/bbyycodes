@@ -9,11 +9,18 @@
 import os
 import sys
 import ROOT as r
+from ROOT import gROOT
 from array import array
 import collections
 from math import sqrt
 
-def initializeLegend(x1=0.65, y1=0.70, x2=0.75, y2=0.73):
+def initializeLegend(separateHiggsBackgrounds,len_signals, x1=0.1, y1=0.55, x2=0.90, y2=0.95):
+
+    if separateHiggsBackgrounds or len_signals>6: 
+        y1 = 0.35
+    if len_signals >10: 
+        y1 = 0.15
+
     aLegend = r.TLegend(x1, y1, x2, y2);
     aLegend.SetLineColor(r.kWhite);
     aLegend.SetFillColor(r.kWhite);
@@ -27,7 +34,6 @@ def initializeLegend(x1=0.65, y1=0.70, x2=0.75, y2=0.73):
 def getScaledHistogram(name, theHistos, scale=1):
     histo = theHistos.Get(name)
     histo.Scale(1/scale)
-  
     return histo
 
 def shape(histo, color, legend, legendText):
@@ -43,13 +49,18 @@ def shape_alt(histo, color):
 
 
 def addStack(histo, stack, color, legend, legendText):
-    histo.SetFillColor(color)
+    if isinstance(color, tuple): # JP, use RGB values
+        color1 = gROOT.GetColor(1)
+        histo.SetFillColor(color1.GetColor(*color))
+    else:
+        histo.SetFillColor(color)
     histo.SetLineColor(r.kBlack)
+    histo.SetLineWidth(0)
     stack.Add(histo)
     legend.AddEntry(histo, legendText, "f")
 
 def addSignalStack(histo, stack, color, legend, legendText):
-    histo.SetLineWidth(5)
+    histo.SetLineWidth(0.01)
     histo.SetLineColor(color)
     stack.Add(histo)
     legend.AddEntry(histo, legendText, "l")
@@ -113,3 +124,20 @@ def CheckXrange(theHisto, new_xmin, new_xmax):
 
     return status
 
+def setBlindedValuestoZero(dataHist, histo, UNBLIND=False):
+  if not UNBLIND and 'm_yyjj_' in histo: 
+      for xbin in range(0, dataHist.GetNbinsX()+1):
+          if dataHist.GetXaxis().GetBinCenter(xbin) > 0.0: 
+              dataHist.SetBinContent(xbin,0.0) 
+              dataHist.SetBinError(xbin,0.0) 
+  if not UNBLIND and 'm_yy_' in histo: 
+      for xbin in range(0, dataHist.GetNbinsX()+1):
+          if dataHist.GetXaxis().GetBinCenter(xbin) > 120.0 and dataHist.GetXaxis().GetBinCenter(xbin) < 130.0: 
+              dataHist.SetBinContent(xbin,0.0) 
+              dataHist.SetBinError(xbin,0.0) 
+  if not UNBLIND and 'm_jj_' in histo: 
+      for xbin in range(0, dataHist.GetNbinsX()+1):
+          if dataHist.GetXaxis().GetBinCenter(xbin) > 70.0 and dataHist.GetXaxis().GetBinCenter(xbin) < 140.0: 
+              dataHist.SetBinContent(xbin,0.0) 
+              dataHist.SetBinError(xbin,0.0) 
+  return dataHist
