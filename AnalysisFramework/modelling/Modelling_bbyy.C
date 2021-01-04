@@ -158,7 +158,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
     //const TString categoryNames[]={"LM_A", "LM_A_noNegWeights",  "Pass_yy", "Pass_yy_noNegWeights", "XGBoost_btag77_Nominal_looseScore_LMass", "XGBoost_btag77_Nominal_looseScore_LMass_noNegWeights", "Validation", "Validation_noNegWeights"};
   
     //const TString categoryNames[]={"LM_A", "LM_A_noNegWeights"}; 
-    const TString categoryNames[]={"XGBoost_btag77_Nominal_BCal_looseScore_HMass","XGBoost_btag77_Nominal_BCal_looseScore_LMass","XGBoost_btag77_Nominal_BCal_tightScore_HMass","XGBoost_btag77_Nominal_BCal_tightScore_LMass"};
+    const TString categoryNames[]={"loose_HMass","loose_LMass","tight_HMass","tight_LMass"};
 
     //To check ggF and VBF
     //const TString categoryNames[]={"LM_A", "Pass_yy", "TEST", "Validation", "VBF_btag77", "VBF_btag77_85", "VBF_btag77_BCal", "VBF_btag77_85_BCal", "XGBoost_btag77_85_Nominal_BCal_looseScore_HMass", "XGBoost_btag77_85_Nominal_BCal_looseScore_LMass", "XGBoost_btag77_85_Nominal_BCal_tightScore_HMass", "XGBoost_btag77_85_Nominal_BCal_tightScore_LMass", "XGBoost_btag77_85_Nominal_looseScore_HMass", "XGBoost_btag77_85_Nominal_looseScore_LMass", "XGBoost_btag77_85_Nominal_tightScore_HMass", "XGBoost_btag77_85_Nominal_tightScore_LMass", "XGBoost_btag77_Nominal_BCal_looseScore_HMass", "XGBoost_btag77_Nominal_BCal_looseScore_LMass", "XGBoost_btag77_Nominal_BCal_tightScore_HMass", "XGBoost_btag77_Nominal_BCal_tightScore_LMass", "XGBoost_btag77_Nominal_looseScore_HMass", "XGBoost_btag77_Nominal_looseScore_LMass", "XGBoost_btag77_Nominal_tightScore_HMass", "XGBoost_btag77_Nominal_tightScore_LMass"};  
