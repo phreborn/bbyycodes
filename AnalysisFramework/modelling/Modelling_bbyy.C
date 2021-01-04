@@ -119,7 +119,7 @@ void AddText(double x = 0.0, double y = 0.0, TString string = "dummy", int value
 
 // }
 
-void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
+void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TString sig_name = "HH", TString funct = "DSCB")
 {
     RooMsgService::instance().getStream(1).removeTopic(RooFit::NumIntegration) ;
     RooMsgService::instance().getStream(1).removeTopic(RooFit::Fitting) ;
@@ -139,13 +139,14 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
 
     // Set up signal files to run over  --------------------
     TString filePrefixName = "data/";
+    TString sigNames[] = {sig_name};
     //TString sigNames[] = parseInputStrings(sigString);
-    TString sigNames[] = {"HH"};
-    //TString sigNames[] = {"yy"};
+    //TString sigNames[] = {"HH"};
+    //TString sigNames[] = {"yyjj"};
     //TString sigNames[] = {"HH", "ZH_PowhegH7", "ttH_PowhegHw7"};
     //TString sigNames[] = {"HH", "VBF"};
     //TString sigNames[] = {"VBF"};
-    //TString sigNames[]={"HH", "bbH", "ggH", "ggZH", "tHjb", "ttH","tWH","WmH","WpH","ZH"};
+    //TString sigNames[]={"HH", "bbH", "ggH", "ggZH", "tHjb", "ttH","tWH","WmH","WpH","ZH","VBF","yyjj"};
     const int nSig = sizeof(sigNames) / sizeof(*sigNames); // TODO: this is ugly, C! Should throw error if 0
     std::cout << "nSig = " << nSig << std::endl;
 
@@ -157,7 +158,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
     //const TString categoryNames[]={"LM_A", "LM_A_noNegWeights",  "Pass_yy", "Pass_yy_noNegWeights", "XGBoost_btag77_Nominal_looseScore_LMass", "XGBoost_btag77_Nominal_looseScore_LMass_noNegWeights", "Validation", "Validation_noNegWeights"};
   
     //const TString categoryNames[]={"LM_A", "LM_A_noNegWeights"}; 
-    const TString categoryNames[]={"XGBoost_btag77_85_Nominal_looseScore_HMass"};
+    const TString categoryNames[]={"XGBoost_btag77_Nominal_BCal_looseScore_HMass","XGBoost_btag77_Nominal_BCal_looseScore_LMass","XGBoost_btag77_Nominal_BCal_tightScore_HMass","XGBoost_btag77_Nominal_BCal_tightScore_LMass"};
 
     //To check ggF and VBF
     //const TString categoryNames[]={"LM_A", "Pass_yy", "TEST", "Validation", "VBF_btag77", "VBF_btag77_85", "VBF_btag77_BCal", "VBF_btag77_85_BCal", "XGBoost_btag77_85_Nominal_BCal_looseScore_HMass", "XGBoost_btag77_85_Nominal_BCal_looseScore_LMass", "XGBoost_btag77_85_Nominal_BCal_tightScore_HMass", "XGBoost_btag77_85_Nominal_BCal_tightScore_LMass", "XGBoost_btag77_85_Nominal_looseScore_HMass", "XGBoost_btag77_85_Nominal_looseScore_LMass", "XGBoost_btag77_85_Nominal_tightScore_HMass", "XGBoost_btag77_85_Nominal_tightScore_LMass", "XGBoost_btag77_Nominal_BCal_looseScore_HMass", "XGBoost_btag77_Nominal_BCal_looseScore_LMass", "XGBoost_btag77_Nominal_BCal_tightScore_HMass", "XGBoost_btag77_Nominal_BCal_tightScore_LMass", "XGBoost_btag77_Nominal_looseScore_HMass", "XGBoost_btag77_Nominal_looseScore_LMass", "XGBoost_btag77_Nominal_tightScore_HMass", "XGBoost_btag77_Nominal_tightScore_LMass"};  
@@ -171,13 +172,13 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
     // Set up naming of output files -------------------
     // TODO: Change this so that it is more general than HH and H or sample name
     TString outputPrefix;
-    if (nSig == 10 || nSig == 3) { outputPrefix = "HH_and_H"; }
+    if (nSig == 11 || nSig == 3) { outputPrefix = "HH_and_H"; }
     else if (nSig == 2) { outputPrefix = "ggF_and_VBF"; }
     else if (nSig == 1) { outputPrefix = sigNames[0]; }
     else outputPrefix = "Unknown";
 
-    TString fitFunctions[] = {"DSCB","ExpGaussExp","Bukin","Exponential"};
-    int nfitFunc = 4; 
+    TString fitFunctions[] = {funct};//,"Exponential"};//,"ExpGaussExp","Bukin","Exponential"};
+    int nfitFunc = 1; //4 
 
     // Do fit for the individual categories --------------------------------
     for (int icat = 0; icat < nCat; icat++) {
