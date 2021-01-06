@@ -13,11 +13,11 @@ DECLARE_ALGORITHM( NtupleDumper , NtupleDumper )
 void replaceAll(std::string &str, const std::string& from, const std::string& to)
 {
 
-   size_t start_pos = 0;
-   while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-   }
+  size_t start_pos = 0;
+  while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+    str.replace(start_pos, from.length(), to);
+    start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+  }
 
 
 }
@@ -26,37 +26,37 @@ void replaceAll(std::string &str, const std::string& from, const std::string& to
 
 void NtupleDumper::execute()
 {
-  
+
   std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-  
-  // Fetch the JSON 
-  mytest::JSONData& document=Controller::GetDocument();
-  
+
+  // Fetch the JSON
+  mytest::JSONData& document = Controller::GetDocument();
+
 
   bool dumpNtuple = false; //ntuple dumper is off by default, add a line in the JSON file if you want to activate it
 
   // First extract selections from the JSON
   // Full parsing is handled by the serializer.h
-  std::vector<std::string> cutFlows={};
-  for (auto is:document.selections.selMap)
+  std::vector<std::string> cutFlows = {};
+  for (auto is : document.selections.selMap)
   {
-    std::cout << " new selection being added to the list "<<is.first<<std::endl;
+    std::cout << " new selection being added to the list " << is.first << std::endl;
     cutFlows.push_back(is.first);
   }
 
   // Now extract the desired MC campaigns to run on
-  std::vector<std::string> mcCampaigns={};
-  for (auto is:document.luminosity.lumiMap)
+  std::vector<std::string> mcCampaigns = {};
+  for (auto is : document.luminosity.lumiMap)
   {
-    std::cout << " MC campaigns being added to the list "<<is.first<<std::endl;
+    std::cout << " MC campaigns being added to the list " << is.first << std::endl;
     mcCampaigns.push_back(is.first);
   }
 
   // For logging purposes, used later
   std::string logging;
 
-  std::map<std::string,TH1F*,std::less<std::string> > sumhistoMap;
-  
+  std::map<std::string, TH1F*, std::less<std::string> > sumhistoMap;
+
   float theXStimesBR = 1.0;
   // Add a map for the resonant signal x-section * BR
   std::map<std::string, float> XStimesBR; // in fb, and normalised to 1 fb^-1
@@ -82,187 +82,188 @@ void NtupleDumper::execute()
   std::vector< std::string > treeList = {"weight", "weight_2", "m_yy", "m_jj"};
 
   std::string truthMatch = "";
- 
+
   TFile *outfile;
   std::vector< std::string > outName;
   std::vector< std::string > outNameMerge;
   ROOT::RDF::RSnapshotOptions opts;
-  //opts.fLazy = true;  
-  opts.fMode="RECREATE";
+  //opts.fLazy = true;
+  opts.fMode = "RECREATE";
   using SnapRet_t = ROOT::RDF::RResultPtr<ROOT::RDF::RInterface<ROOT::Detail::RDF::RLoopManager>>;
 
   DIR* dir = opendir("plots");
   if (!dir) const int dir_err = mkdir("plots", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
-  for (auto iSample:document.samples.samples) {
-    mytest::aSample thisSample=document.samples.samples[iSample.first];
-    const std::string sampleName=iSample.first;
-    
-    for (auto iMC: mcCampaigns){
-      const std::string mc=iMC;
-      for (auto iCut: cutFlows){
-        outfile = new TFile(("plots/"+sampleName+"_"+iCut+".root").c_str(),"RECREATE");
-   
-        for (auto ikk:document.variables.varMap) {
-          std::string variableName=ikk.first;
-          std::string variableValue=(ikk.second).first;
-          int nbins=(ikk.second).second.nBins;
-          double lowerBin=(ikk.second).second.lowerBin;
-          double upperBin=(ikk.second).second.upperBin;
-          std::string his="sumHisto_"+variableName+"_"+iCut;
-          TH1F *sumHisto=new TH1F(his.c_str(),his.c_str(),nbins,lowerBin,upperBin);
-          sumhistoMap[his]=sumHisto;
+  for (auto iSample : document.samples.samples) {
+    mytest::aSample thisSample = document.samples.samples[iSample.first];
+    const std::string sampleName = iSample.first;
+
+    for (auto iMC : mcCampaigns) {
+      const std::string mc = iMC;
+      for (auto iCut : cutFlows) {
+        outfile = new TFile(("plots/" + sampleName + "_" + iCut + ".root").c_str(), "RECREATE");
+
+        for (auto ikk : document.variables.varMap) {
+          std::string variableName = ikk.first;
+          std::string variableValue = (ikk.second).first;
+          int nbins = (ikk.second).second.nBins;
+          double lowerBin = (ikk.second).second.lowerBin;
+          double upperBin = (ikk.second).second.upperBin;
+          std::string his = "sumHisto_" + variableName + "_" + iCut;
+          std::cout << "his string" << his << std::endl;
+          TH1F *sumHisto = new TH1F(his.c_str(), his.c_str(), nbins, lowerBin, upperBin);
+          sumhistoMap[his] = sumHisto;
         }
 
         // Adding an additional truth-matching feature, which we only need when
         // running on the yy samples to get the yycj, yybj, yyjj separation
-        //std::string truthMatch = "";        
+        //std::string truthMatch = "";
         if (sampleName == "yybj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
         if (sampleName == "yycj") truthMatch = " && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
         if (sampleName == "yyjj") truthMatch = " && (HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4EMTopoJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
 
         // Have a specific XStimesBR if we are running on a resonant signal
         if (sampleName.find("toHH") != std::string::npos) {
-         std::string sampleNameShort; 
-         sampleNameShort = sampleName;
-         int pos = sampleNameShort.find("toHH")+4; // not beautiful, should be changed
-         sampleNameShort.erase(pos,-1); //erase everything that comes after "toHH". This allows to attach strings in the names of the resonant samples in the json files, which might be useful for making the validation plots, and at the same time keep the same mapping for the XS.
-         theXStimesBR = XStimesBR[sampleNameShort];
-      }
-        
-        logging=sampleName+"_"+mc+"_"+iCut;
+          std::string sampleNameShort;
+          sampleNameShort = sampleName;
+          int pos = sampleNameShort.find("toHH") + 4; // not beautiful, should be changed
+          sampleNameShort.erase(pos, -1); //erase everything that comes after "toHH". This allows to attach strings in the names of the resonant samples in the json files, which might be useful for making the validation plots, and at the same time keep the same mapping for the XS.
+          theXStimesBR = XStimesBR[sampleNameShort];
+        }
+
+        logging = sampleName + "_" + mc + "_" + iCut;
 
         // Pick up the selections for each of the different categories
-        std::string select=document.selections.selMap[iCut];
-        select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed"+truthMatch);
-        if (sampleName=="data") select=document.selections.dataSel;
+        std::string select = document.selections.selMap[iCut];
+        select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed" + truthMatch);
+        if (sampleName == "data") select = document.selections.dataSel;
         // Below removed to now
         //if (document.selections.weight.empty()) select+="*"+document.selections.weight;
 
-        // Pick up the luminosity 
-        double lumi=document.luminosity.lumiMap[iMC];
-        dumpNtuple=document.dumper.dumperMap[iMC];
+        // Pick up the luminosity
+        double lumi = document.luminosity.lumiMap[iMC];
+        dumpNtuple = document.dumper.dumperMap[iMC];
         // Data and MC directories from JSON
-        std::string dataDir=document.directories.dirMap[iMC];
-        if (sampleName=="data") dataDir=document.directories.dataDir;
+        std::string dataDir = document.directories.dirMap[iMC];
+        if (sampleName == "data") dataDir = document.directories.dataDir;
 
         // File name
-        std::string fileName=thisSample.sampleMap[iMC];
+        std::string fileName = thisSample.sampleMap[iMC];
 
         //////////////// Below is a hack until we have a proper fix
         // This part is a place holder until we have all MC. We are duplicating mc16d with the luminosity of mc16d and mc16e!!
-        if (fileName=="mc16d.PowhegPy8_NNPDF30_VBFH125.MxAODDetailed.e6636_s3126_r10201_p3665.h024.root")
-          dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
-        if (fileName=="mc16d.aMCnloHwpp_hh_yybb_AF2.MxAODDetailed.e4419_a875_r10201_p3629.h024.root")
-          dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
-        if (fileName=="mc16d.MGPy8_ttgamma_nonallhadronic_AF2.MxAODDetailed.e6155_a875_r10201_p3703.h024.root")
-          dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
-        if (fileName=="mc16a_hh_yybb_NLO.root" || fileName=="mc16d_hh_yybb_NLO.root" || fileName=="mc16e_hh_yybb_NLO.root")
-          dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples/";
-        if (fileName=="15_16_data.root" || fileName=="17_data.root" || fileName=="18_data.root")
-          dataDir="root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples/";
+        if (fileName == "mc16d.PowhegPy8_NNPDF30_VBFH125.MxAODDetailed.e6636_s3126_r10201_p3665.h024.root")
+          dataDir = "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
+        if (fileName == "mc16d.aMCnloHwpp_hh_yybb_AF2.MxAODDetailed.e4419_a875_r10201_p3629.h024.root")
+          dataDir = "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
+        if (fileName == "mc16d.MGPy8_ttgamma_nonallhadronic_AF2.MxAODDetailed.e6155_a875_r10201_p3703.h024.root")
+          dataDir = "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
+        if (fileName == "mc16a_hh_yybb_NLO.root" || fileName == "mc16d_hh_yybb_NLO.root" || fileName == "mc16e_hh_yybb_NLO.root")
+          dataDir = "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples/";
+        if (fileName == "15_16_data.root" || fileName == "17_data.root" || fileName == "18_data.root")
+          dataDir = "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples/";
         ////////////////
 
-        TFile* file=ROOTHelper::GetTFile(sampleName,mc,dataDir+fileName);
-        std::string histoName=thisSample.histoName;
-        TH1* histo=dynamic_cast<TH1*>(file->Get(histoName.c_str()));
-        double sum1=0,sum2=0,sum3=0;
-	if (histo) {
-           sum1=histo->GetBinContent(1);//“N_{xAOD}
-           //sum1=histo->GetBinContent(4);//No_Duplicate -- this is a temporary solution to avoid usage of duplicate events which are present both in h024 and h025
-           sum2=histo->GetBinContent(2);//N_{DxAOD}
-           sum3=histo->GetBinContent(3);//AllEvents
+        TFile* file = ROOTHelper::GetTFile(sampleName, mc, dataDir + fileName);
+        std::string histoName = thisSample.histoName;
+        TH1* histo = dynamic_cast<TH1*>(file->Get(histoName.c_str()));
+        double sum1 = 0, sum2 = 0, sum3 = 0;
+        if (histo) {
+          sum1 = histo->GetBinContent(1); //“N_{xAOD}
+          //sum1=histo->GetBinContent(4);//No_Duplicate -- this is a temporary solution to avoid usage of duplicate events which are present both in h024 and h025
+          sum2 = histo->GetBinContent(2); //N_{DxAOD}
+          sum3 = histo->GetBinContent(3); //AllEvents
         }
         //First, determine the sum of weights from the MxAOD object
-        double sum_weights=(sum1/sum2)*sum3; //AllEvents*(NxAOD/DxAOD) -- for signal samples it does not matter since the number of events in the DxAOD is the same as the number in MxAOD, but it does matter for backgrounds, which have skimming applied at the DxAOD level 
-        TTree* tree=(TTree*)file->Get("CollectionTree");
-		
-	// Now loop over the variables, scale to the appropriate lumi, and add the histogram
+        double sum_weights = (sum1 / sum2) * sum3; //AllEvents*(NxAOD/DxAOD) -- for signal samples it does not matter since the number of events in the DxAOD is the same as the number in MxAOD, but it does matter for backgrounds, which have skimming applied at the DxAOD level
+        TTree* tree = (TTree*)file->Get("CollectionTree");
+
+        // Now loop over the variables, scale to the appropriate lumi, and add the histogram
         // to the histo map.
-        for(auto iVar : document.variables.varMap){
+        for (auto iVar : document.variables.varMap) {
           std::string var = iVar.second.first;
           std::string varName = iVar.first;
-	  std::string hName=varName+"_"+logging;
-	  std::string hN="sumHisto_"+varName+"_"+iCut;					
-          int nbins=(iVar.second).second.nBins;
-          double lowerBin=(iVar.second).second.lowerBin;
-          double upperBin=(iVar.second).second.upperBin;
-          std::cout<<"   ++++ bins "<<nbins<<" "<<lowerBin<<" "<<upperBin<<" hname "<<hName<<std::endl;
-	  std::shared_ptr<TH1F> his = std::make_shared<TH1F>(hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin);
-	  std::string vvar=var+" >> "+hName;
-          std::cout << "Drawing with selection: " << select.c_str() << std::endl;
-          tree->Draw(vvar.c_str(),select.c_str(),"HIST");
-	  //auto his = df_filter.Histo1D({hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin},var.c_str());
-          //std::cout << "HIST ENTRIES ===== " << his->GetEntries() << std::endl;
-	  his->Scale(lumi*theXStimesBR/sum_weights);
-          //std::cout<< "Scale by = "<< lumi*theXStimesBR/sum_weights << std::endl;
+          std::string hName = varName + "_" + logging;
+          std::string hN = "sumHisto_" + varName + "_" + iCut;
+          int nbins = (iVar.second).second.nBins;
+          double lowerBin = (iVar.second).second.lowerBin;
+          double upperBin = (iVar.second).second.upperBin;
+          std::cout << "   ++++ bins " << nbins << " " << lowerBin << " " << upperBin << " hname " << hName << std::endl;
+          std::shared_ptr<TH1F> his = std::make_shared<TH1F>(hName.c_str(), hName.c_str(), nbins, lowerBin, upperBin);
+          std::string vvar = var + " >> " + hName;
+          std::cout << "Drawing vvar" << vvar.c_str() << " with selection: " << select.c_str() << std::endl;
+          tree->Draw(vvar.c_str(), select.c_str(), "HIST");
+          //auto his = df_filter.Histo1D({hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin},var.c_str());
+          std::cout << "HIST ENTRIES ===== " << his->GetEntries() << std::endl;
+          his->Scale(lumi * theXStimesBR / sum_weights);
+          std::cout<< "Scale by = "<< lumi*theXStimesBR/sum_weights << std::endl;
           //sumhistoMap[hN]->Add(his.GetPtr());
-	  sumhistoMap[hN]->Add(his.get());
-          //std::cout<< "added histo =====" << std::endl;
-          //std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << std::endl;
+          sumhistoMap[hN]->Add(his.get());
+          std::cout<< "added histo =====" << std::endl;
+          std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << std::endl;
         }//iVar
-	
-	if (dumpNtuple) {
-     
-          std::cout <<"In DUMP NTUPLE" <<std::endl;
-          
-	  ROOT::RDataFrame df(*tree);
-          
+
+        if (dumpNtuple) {
+
+          std::cout << "In DUMP NTUPLE" << std::endl;
+
+          ROOT::RDataFrame df(*tree);
+
           std::string select_clean;
-          select_clean = select; 
-          replaceAll(select_clean,"@","");
-             
-	  auto df_filter = df.Filter(select_clean);
-	  //std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
-	  double df_weight = lumi*theXStimesBR/sum_weights;
+          select_clean = select;
+          replaceAll(select_clean, "@", "");
+
+          auto df_filter = df.Filter(select_clean);
+          //std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
+          double df_weight = lumi * theXStimesBR / sum_weights;
           auto df_out = df_filter.Define("weight", std::to_string(df_weight));
-          ROOT::RDF::RNode df_with_defines(df_out);  
-          for(auto iVar : document.variables.varMap) {
-	    std::string var = iVar.second.first;
+          ROOT::RDF::RNode df_with_defines(df_out);
+          for (auto iVar : document.variables.varMap) {
+            std::string var = iVar.second.first;
             std::string varName = iVar.first;
             for (auto j : treeList) {
               if ( varName == j ) {
-                 //std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
-                 df_with_defines = df_with_defines.Define(varName, var);
-                 //std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;   
+                //std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
+                df_with_defines = df_with_defines.Define(varName, var);
+                //std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;
               }
             }
           }
-         
+
           for (auto j : treeList) {
-            std::cout<< "print treeList:" << j <<std::endl;
-          } 
-	  df_with_defines.Snapshot(tree->GetName(),"plots/"+sampleName+"_"+mc+"_"+iCut+"_tree.root",treeList, opts);
-          outName.push_back(sampleName+"_"+iCut+"_tree.root");
-          outNameMerge.push_back(sampleName+"_*_"+iCut+"_tree.root");
-          std::cout<< "I have just created a snapshot" << std::endl;
-	}
-        outfile->cd();
-        std::cout<< "Before Loop to write histos  ===== " << std::endl;
-        for (auto iy:sumhistoMap){
-          std::cout<< "In Loop to write histos  ===== " << std::endl;
-          iy.second->Write();
-          std::cout<< "check ===== " << std::endl;
+            std::cout << "print treeList:" << j << std::endl;
+          }
+          df_with_defines.Snapshot(tree->GetName(), "plots/" + sampleName + "_" + mc + "_" + iCut + "_tree.root", treeList, opts);
+          outName.push_back(sampleName + "_" + iCut + "_tree.root");
+          outNameMerge.push_back(sampleName + "_*_" + iCut + "_tree.root");
+          std::cout << "I have just created a snapshot" << std::endl;
         }
-        std::cout<< "Before clear map ===== " << std::endl;
+        outfile->cd();
+        std::cout << "Before Loop to write histos  ===== " << std::endl;
+        for (auto iy : sumhistoMap) {
+          std::cout << "In Loop to write histos  ===== " << std::endl;
+          iy.second->Write();
+          std::cout << "check ===== " << std::endl;
+        }
+        std::cout << "Before clear map ===== " << std::endl;
         sumhistoMap.clear();
-        std::cout<< "After clear map ===== " << std::endl;
+        std::cout << "After clear map ===== " << std::endl;
         outfile->ls();
         outfile->Close();
       }//selections
     } // MCCampaigns
     if (dumpNtuple) { //merge trees per MC campaign
-       for (int i=0; i<outName.size(); i++) {
-         std::cout<< "In loop for hadd  ===== " << std::endl;
-         std::cout<< "Before Merging  ===== " << std::endl;
-         std::string hadd = "hadd -f ./plots/"+outName.at(i)+" ./plots/"+outNameMerge.at(i);
-         std::cout<< "I am about to execute this:" << hadd << std::endl;
-         system(hadd.c_str());
-       }
-       system("rm ./plots/*mc16*_tree.root");    
-     } 
+      for (int i = 0; i < outName.size(); i++) {
+        std::cout << "In loop for hadd  ===== " << std::endl;
+        std::cout << "Before Merging  ===== " << std::endl;
+        std::string hadd = "hadd -f ./plots/" + outName.at(i) + " ./plots/" + outNameMerge.at(i);
+        std::cout << "I am about to execute this:" << hadd << std::endl;
+        system(hadd.c_str());
+      }
+      system("rm ./plots/*mc16*_tree.root");
+    }
   }
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
   std::cout << "Execution time difference = " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[s]" << std::endl;
-  std::cout<<std::endl<<std::endl<<" NtupleDumper::execute() done !!!! "<<std::endl<<std::endl;
+  std::cout << std::endl << std::endl << " NtupleDumper::execute() done !!!! " << std::endl << std::endl;
 }

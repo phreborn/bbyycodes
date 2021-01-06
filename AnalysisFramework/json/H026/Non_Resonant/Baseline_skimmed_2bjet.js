@@ -8,9 +8,9 @@
     "mc16e": "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h026_diphotonselection/mc16e/"
   },
   "dumper": {
-    "mc16a": false,
-    "mc16d": false,
-    "mc16e": false
+    "mc16a": true,
+    "mc16d": true,
+    "mc16e": true
   },
   "variables": {
     "m_yy": {
@@ -86,7 +86,7 @@
       }
     },
     "weight": {
-      "var": "HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight*HGamEventInfoAuxDyn.weightFJvt",
+      "var": "HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight",
       "bins": {
         "nbins": 200,
         "lbins": -10,

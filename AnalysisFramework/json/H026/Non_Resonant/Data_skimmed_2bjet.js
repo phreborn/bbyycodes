@@ -8,9 +8,9 @@
     "data3": "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h026_diphotonselection/data/"
   },
   "dumper": {
-    "data1": false,
-    "data2": false,
-    "data3": false
+    "data1": true,
+    "data2": true,
+    "data3": true
   },
   "variables": {
     "m_yy": {
