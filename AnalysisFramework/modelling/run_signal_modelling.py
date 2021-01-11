@@ -1,7 +1,7 @@
 import os
 
 
-output_dir = "NonRes_v0"
+output_dir = "NonRes_v1"
 
 samples = ["HH","ttH","ZH","ggH","bbH","tHjb","tWH","ggZH","WmH","WpH","VBF"]
 
