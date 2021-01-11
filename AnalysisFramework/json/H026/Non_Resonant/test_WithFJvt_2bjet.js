@@ -26,7 +26,7 @@
       }
     },
     "weight": {
-      "var": "HGamEventInfoAuxDyn.weightFJvt",
+      "var": "HGamEventInfoAuxDyn.weight*FJvt",
       "bins": {
         "nbins": 200,
         "lbins": -10,

@@ -241,9 +241,12 @@ void VariablePlotter::execute()
           ReplaceAll(select_clean, "@", "");
 
           auto df_filter = df.Filter(select_clean);
+          df.Alias("FJvt", "HGamEventInfoAuxDyn.weightFJvt"); // Required with ROOT version < 6.20, bug when using names contained within other names with a dot in them
           std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
           double df_SF = lumi * theXStimesBR / sum_weights;
           auto df_out = df_filter.Define("SF", std::to_string(df_SF));
+          
+          //.Define("..", "HGamEventInfoAuxDyn.weight*FJvt")
           ROOT::RDF::RNode df_with_defines(df_out);
           for (auto iVar : document.variables.varMap) {
             std::string var = iVar.second.first;
