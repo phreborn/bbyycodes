@@ -172,8 +172,8 @@ void VariablePlotter::execute()
         // File name
         std::string fileName = thisSample.sampleMap[iMC];
 
-        //////////////// Below is a hack until we have a proper fix
         // This part is a place holder until we have all MC. We are duplicating mc16d with the luminosity of mc16d and mc16e!!
+        // Only used for h024, but kept in for backward compatibility
         if (fileName == "mc16d.PowhegPy8_NNPDF30_VBFH125.MxAODDetailed.e6636_s3126_r10201_p3665.h024.root")
           dataDir = "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h024/mc16d/Nominal/";
         if (fileName == "mc16d.aMCnloHwpp_hh_yybb_AF2.MxAODDetailed.e4419_a875_r10201_p3629.h024.root")
@@ -241,12 +241,11 @@ void VariablePlotter::execute()
           ReplaceAll(select_clean, "@", "");
 
           auto df_filter = df.Filter(select_clean);
-          df.Alias("FJvt", "HGamEventInfoAuxDyn.weightFJvt"); // Required with ROOT version < 6.20, bug when using names contained within other names with a dot in them
+          df.Alias("FJvt", "HGamEventInfoAuxDyn.weightFJvt"); // Using alias to prevent clash between weight and weightFJvt, bug in ROOT version <= 6.20 when using variables names that are substrings with a dot in them
           std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
           double df_SF = lumi * theXStimesBR / sum_weights;
           auto df_out = df_filter.Define("SF", std::to_string(df_SF));
           
-          //.Define("..", "HGamEventInfoAuxDyn.weight*FJvt")
           ROOT::RDF::RNode df_with_defines(df_out);
           for (auto iVar : document.variables.varMap) {
             std::string var = iVar.second.first;
@@ -255,7 +254,7 @@ void VariablePlotter::execute()
               if ( varName == j ) {
                 std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
                 df_with_defines = df_with_defines.Define(varName, var);
-                std::cout << "Defined"  << std::endl;
+                //std::cout << "Defined"  << std::endl;
                 if (j == "weight") {
                   auto df_total_weight = std::to_string(df_SF) + "*" + var;
                   df_with_defines = df_with_defines.Define("total_weight", df_total_weight);
