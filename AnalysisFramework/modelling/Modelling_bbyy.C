@@ -476,28 +476,28 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
             fout << "</Model>" << endl;
             fout.close();
 
-            TString outputCateFileName = xmlDir + "/category_" + categoryName + ".xml";
+            //TString outputCateFileName = xmlDir + "/category_" + categoryName + ".xml";
             TString inputTemplateFileName = xmlDir + "/category_template.xml";
             ifstream fin(inputTemplateFileName);
             assert(fin);
-            ofstream fout_category(outputCateFileName);
+            //ofstream fout_category(outputCateFileName);
             
             // JP commented this background stuff, seems broken/not applicable?
-            // std::string line;
-            // TString bkgHistName=histName;
-            // bkgHistName.ReplaceAll("sig","bkg");
-            // TH1* bkgHist=(TH1*)f.Get(bkgHistName);
-            // double bkgIntegral=bkgHist->Integral();
-
-            // while(getline(fin, line)){
-            //   TString l=line.c_str();
-            //   l.ReplaceAll("#category#", categoryName);
-            //   l.ReplaceAll("#sigYield#", Form("%f", hintegral));
-            //   l.ReplaceAll("#inputHistFile#", fileName);
-            //   l.ReplaceAll("#histName#", bkgHistName);
-            //   l.ReplaceAll("#bkgYield#", Form("%f", bkgIntegral));
-            //   fout_category<<l<<endl;
-            // }
+	    /*std::string line;
+	    TString bkgHistName=histName;
+            bkgHistName.ReplaceAll("sig","bkg");
+            TH1* bkgHist=(TH1*)fTree.Get(bkgHistName);
+            double bkgIntegral=bkgHist->Integral();
+	    
+            while(getline(fin, line)){
+	      TString l=line.c_str();
+	      l.ReplaceAll("#category#", categoryName);
+	      l.ReplaceAll("#sigYield#", Form("%f", hintegral));
+              l.ReplaceAll("#inputHistFile#", fileName);
+	      l.ReplaceAll("#histName#", bkgHistName);
+	      l.ReplaceAll("#bkgYield#", Form("%f", bkgIntegral));
+	      fout_category<<l<<endl;
+	      }*/
             totalSignal += hintegral;
         }
     }
