@@ -25,6 +25,8 @@ parser.add_argument("-ZH", "--merge_ZH", help="merge ZH and ggZH backgrounds", a
 parser.add_argument("-WH", "--merge_WH", help="merge WmH and WpH backgrounds", action="store_true", default=False)
 parser.add_argument("-yyjj", "--separateyyjets", help="separate di-photon + jets backgrounds", action="store_true", default=False)
 parser.add_argument("-ttyy", "--mergettyy", help="merge ttbar di-photon backgrounds", action="store_false", default=False)
+parser.add_argument("-HH", "--merge_HH", help="merge HH ggF and VBF samples", action="store_true", default=False)
+
 parser.add_argument("-d", "--decimals", help="Number of decimals to round to", default=3)
 
 
@@ -35,6 +37,8 @@ separateyyjetsBackgrounds = opts.separateyyjets
 mergettyyBackgrounds = opts.mergettyy
 merge_ZH = opts.merge_ZH
 merge_WH = opts.merge_WH
+merge_HH = opts.merge_HH
+
 
 name =  opts.name.split(".")[0]
 if (opts.separateSingleHiggs): name +="_separateSingleHiggs"
@@ -49,6 +53,7 @@ n = opts.decimals
 SingleHiggs = ['ggH','VBFH','WpH','WmH','ZH','ggZH','ttH','bbH','tWH','tHjb']
 ZH_m = ["ZH","ggZH"]
 WH_m = ["WpH", "WmH"]
+HH_m = ["HH", "VBF"]
 
 yyjets = ['yy'] # Useful if you have decided to split yy+jets by jet flavour!
 
@@ -86,6 +91,10 @@ for r in Reg:
     Total_SM.append(SM)
     Total_SM_unc.append(sqrt(SM_unc))
 
+if merge_HH:
+    HH, HH_unc, NoHHBkg = MergeBackgrounds(HH_m, Reg, Bkg, yields)
+    Bkg = NoHHBkg
+
 if not separateyyjetsBackgrounds:
     yyjets, yyjets_unc, NojjyyBkg =  MergeBackgrounds(yyjets, Reg, Bkg, yields)
     Bkg = NojjyyBkg
@@ -106,7 +115,6 @@ else:
         WH, WH_unc, NoWHBkg = MergeBackgrounds(WH_m, Reg, Bkg, yields)
         Bkg = NoWHBkg
 
-
 ##################################
 # Writting latex file
 #################################
@@ -123,11 +131,11 @@ Tex.write(" \\\ \n \\noalign{\smallskip}\hline\\noalign{\smallskip}")
 
 # Main body
 if not separateHiggsBackgrounds: Bkg = NoHBkg
-for b in Bkg:
-    bkg_name = b.replace("_"," ")
-    Tex.write(" \n "+bkg_name+" ")
+
+if merge_HH:
+    Tex.write(" \n HH ggF+VBF ")
     for r in Reg:
-        Tex.write(" & $"+str(round(yields[b][r][0],n))+" \pm "+str(round(yields[b][r][1],n))+"$ ")
+        Tex.write(" & $"+str(round(HH[Reg.index(r)],n))+" \pm "+str(round(HH_unc[Reg.index(r)],n))+"$ ")
     Tex.write(" \\\ ")
 
 if separateHiggsBackgrounds and merge_ZH:
@@ -136,23 +144,30 @@ if separateHiggsBackgrounds and merge_ZH:
         Tex.write(" & $"+str(round(ZH[Reg.index(r)],n))+" \pm "+str(round(ZH_unc[Reg.index(r)],n))+"$ ")
     Tex.write(" \\\ ")
 
-if separateHiggsBackgrounds and merge_WH:
+if separateHiggsBackgrounds and merge_HH:
     Tex.write(" \n WH ")
     for r in Reg:
         Tex.write(" & $"+str(round(WH[Reg.index(r)],n))+" \pm "+str(round(WH_unc[Reg.index(r)],n))+"$ ")
     Tex.write(" \\\ ")
 
+if not separateHiggsBackgrounds:
+    Tex.write(" \n Single Higgs ")
+    for r in Reg:
+        Tex.write(" & $"+str(round(SingleH[Reg.index(r)],n))+" \pm "+str(round(SingleH_unc[Reg.index(r)],n))+"$ ")
+    Tex.write(" \\\ ")
+
+for b in Bkg:
+
+    bkg_name = b.replace("_"," ")
+    Tex.write(" \n "+bkg_name+" ")
+    for r in Reg:
+        Tex.write(" & $"+str(round(yields[b][r][0],n))+" \pm "+str(round(yields[b][r][1],n))+"$ ")
+    Tex.write(" \\\ ")
 
 if mergettyyBackgrounds:
     Tex.write(" \n ttyy ")
     for r in Reg:
         Tex.write(" & $"+str(round(ttyy[Reg.index(r)],n))+" \pm "+str(round(ttyy_unc[Reg.index(r)],n))+"$ ")
-    Tex.write(" \\\ ")
-
-if not separateHiggsBackgrounds: 
-    Tex.write(" \n Single Higgs ")
-    for r in Reg:
-        Tex.write(" & $"+str(round(SingleH[Reg.index(r)],n))+" \pm "+str(round(SingleH_unc[Reg.index(r)],n))+"$ ")
     Tex.write(" \\\ ")
 
 if not separateyyjetsBackgrounds:
