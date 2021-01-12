@@ -105,7 +105,6 @@ void VariablePlotter::execute()
     mytest::aSample thisSample = document.samples.samples[iSample.first];
     const std::string sampleName = iSample.first;
 
-
     for (auto iCut : cutFlows) {
 
       for (auto ikk : document.variables.varMap) {
@@ -115,7 +114,7 @@ void VariablePlotter::execute()
         double lowerBin = (ikk.second).second.lowerBin;
         double upperBin = (ikk.second).second.upperBin;
         std::string his = "sumHisto_" + variableName + "_" + iCut;
-        TH1F *sumHisto = new TH1F(his.c_str(), his.c_str(), nbins, lowerBin, upperBin);
+	TH1F *sumHisto = new TH1F(his.c_str(), his.c_str(), nbins, lowerBin, upperBin);
         std::cout << "his = " << his << std::endl;
         sumhistoMap[his] = sumHisto;
       }
@@ -131,9 +130,8 @@ void VariablePlotter::execute()
         std::cout << "in CUT FLOWS" << std::endl;
 
         // Adding an additional truth-matching feature, which we only need when
-        // running on the yy samples to get the yycj, yybj, yyjj separation
-
-        //std::string truthMatch = "";        
+        // running on the yy samples to get the yycj, yybj, yylj separation
+        //std::string truthMatch = "";
         if (sampleName == "yybj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
         if (sampleName == "yycj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
         if (sampleName == "yylj") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
@@ -213,9 +211,14 @@ void VariablePlotter::execute()
           double upperBin = (iVar.second).second.upperBin;
           std::cout << "   ++++ bins " << nbins << " " << lowerBin << " " << upperBin << " hname " << hName << std::endl;
           std::shared_ptr<TH1F> his = std::make_shared<TH1F>(hName.c_str(), hName.c_str(), nbins, lowerBin, upperBin);
+
+	  if (var.find("*FJvt") != std::string::npos) {                                               
+            var = var.std::string::replace(var.find("*FJvt"), var.find("*FJvt")+std::string("*FJvt").length(), "*HGamEventInfoAuxDyn.weightFJvt"); // / Avoiding error when plotting weight variable using using the alias *FJvt. This alias is used to prevent clash between weight and weightFJvt when producing the trees, bug in ROOT version <= 6.20 when using variables names that are substrings with a dot in them                                
+	  }
           std::string vvar = var + " >> " + hName;
-          std::cout << "Drawing with selection: " << select.c_str() << " and weight: " << weight.c_str() << " and weighted selection " << weighted_selection.c_str() << std::endl;
-          //tree->Draw(vvar.c_str(),select.c_str(),"HIST");
+          //std::cout << "Drawing with selection: " << select.c_str() << " and weight: " << weight.c_str() << " and weighted selection " << weighted_selection.c_str() << std::endl;
+	  std::cout << "Drawing weighted selection " << weighted_selection.c_str() << std::endl;
+          //tree->Draw(vvar.c_str(),select.c_str(),"HIST")	  
           tree->Draw(vvar.c_str(), weighted_selection.c_str(), "HIST");
           //tree->Draw(vvar.c_str(),"","HIST");
           //auto his = df_filter.Histo1D({hName.c_str(),hName.c_str(),nbins,lowerBin,upperBin},var.c_str());
@@ -233,17 +236,18 @@ void VariablePlotter::execute()
 
         if (dumpNtuple) {
 
-          std::cout << "In DUMP NTUPLE from VariablePlotter.cxx" << std::endl;
+          //std::cout << "In DUMP NTUPLE from VariablePlotter.cxx" << std::endl;
 
           ROOT::RDataFrame df(*tree);
 
-          std::string select_clean;
+	  std::string select_clean;
           select_clean = select;
+
           ReplaceAll(select_clean, "@", "");
 
           auto df_filter = df.Filter(select_clean);
           df.Alias("FJvt", "HGamEventInfoAuxDyn.weightFJvt"); // Using alias to prevent clash between weight and weightFJvt, bug in ROOT version <= 6.20 when using variables names that are substrings with a dot in them
-          std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
+          //std::cout <<  "DF ENTRIES ===== " << *(df_filter.Count()) << std::endl;
           double df_SF = lumi * theXStimesBR / sum_weights;
           auto df_out = df_filter.Define("SF", std::to_string(df_SF));
           
@@ -260,14 +264,15 @@ void VariablePlotter::execute()
                   auto df_total_weight = std::to_string(df_SF) + "*" + var;
                   df_with_defines = df_with_defines.Define("total_weight", df_total_weight);
                 }
-                std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;
+                //std::cout<< "Print after custom Define, I have just added variable " << varName <<std::endl;
               }
             }
           }
 
-          for (auto j : treeList) {
-            std::cout << "print treeList:" << j << std::endl;
-          }
+          /*for (auto j : treeList) {
+	    std::cout << "print treeList:" << j << std::endl;
+	    }*/
+
           df_with_defines.Snapshot(tree->GetName(), "plots/" + sampleName + "_" + mc + "_" + iCut + "_tree.root", treeList, opts);
           std::cout << "I have just created a snapshot for " << "plots/" + sampleName + "_" + mc + "_" + iCut + "_tree.root" <<  std::endl;
 
@@ -305,6 +310,7 @@ void VariablePlotter::execute()
     MC_counter = 0;
     //std::cout<< "Before clear map ===== " << std::endl;
     sumhistoMap.clear();
+
     //std::cout<< "After clear map ===== " << std::endl;
 
   }//samples
