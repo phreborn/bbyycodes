@@ -4,8 +4,8 @@ import os
 output_dir = "NonRes"
 path = "../run/plots/" # Where are your input files?  default = "data"
 
-#samples = ["ttH","ZH","ggH","bbH","tHjb","tWH","ggZH","WmH","WpH","VBF"]
-samples = ["HH","singleHiggs","yy"]
+#samples = ["ttH","ZH","ggH","bbH","tHjb","tWH","ggZH","WmH","WpH","VBFH","VBF"]
+samples = ["HH_ggF_VBF","singleHiggs","yy"]
 
 selections = ["loose_HMass","loose_LMass","tight_HMass","tight_LMass"]
 

@@ -154,6 +154,10 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
       sigNames.push_back("ZH");
       sigNames.push_back("VBFH");
 
+    } else if (sig_name == "HH_ggF_VBF"){
+      sigNames.push_back("HH");
+      sigNames.push_back("VBF");
+
     } else {
       sigNames.push_back(sig_name);      
     } 
