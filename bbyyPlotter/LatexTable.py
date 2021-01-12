@@ -20,7 +20,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--path", help="path to income json file", default="../AnalysisFramework/run/")
 parser.add_argument("-n", "--name", help="name of income json file", default="yields.js")
 parser.add_argument("-o", "--output", help="path to output", default="")
-parser.add_argument("-SH", "--separateSingleHiggs", help="separate single Higgs backgrounds", action="store_true", default=True)
+parser.add_argument("-SH", "--separateSingleHiggs", help="separate single Higgs backgrounds", action="store_true", default=False)
+parser.add_argument("-ZH", "--merge_ZH", help="merge ZH and ggZH backgrounds", action="store_true", default=False)
+parser.add_argument("-WH", "--merge_WH", help="merge WmH and WpH backgrounds", action="store_true", default=False)
 parser.add_argument("-yyjj", "--separateyyjets", help="separate di-photon + jets backgrounds", action="store_true", default=False)
 parser.add_argument("-ttyy", "--mergettyy", help="merge ttbar di-photon backgrounds", action="store_false", default=False)
 parser.add_argument("-d", "--decimals", help="Number of decimals to round to", default=3)
@@ -31,6 +33,9 @@ opts = parser.parse_args()
 separateHiggsBackgrounds = opts.separateSingleHiggs
 separateyyjetsBackgrounds = opts.separateyyjets
 mergettyyBackgrounds = opts.mergettyy
+merge_ZH = opts.merge_ZH
+merge_WH = opts.merge_WH
+
 
 File = opts.path+opts.name
 out = opts.output
@@ -38,6 +43,8 @@ n = opts.decimals
 
 # Single Higgs backgrounds
 SingleHiggs = ['ggH', 'VBF','WpH','WmH','ZH','ggZH','ttH','bbH','tWH','tHjb']
+ZH_m = ["ZH","ggZH"]
+WH_m = ["WpH", "WmH"]
 
 yyjets = ['yyjj'] 
 
@@ -84,6 +91,16 @@ if mergettyyBackgrounds:
 if not separateHiggsBackgrounds:
     SingleH, SingleH_unc, NoHBkg =  MergeBackgrounds(SingleHiggs, Reg, Bkg, yields)
 
+else:
+    if merge_ZH:
+        ZH, ZH_unc, NoZHBkg = MergeBackgrounds(ZH_m, Reg, Bkg, yields)
+        Bkg = NoZHBkg
+        
+    if merge_WH:
+        WH, WH_unc, NoWHBkg = MergeBackgrounds(WH_m, Reg, Bkg, yields)
+        Bkg = NoWHBkg
+
+
 ##################################
 # Writting latex file
 #################################
@@ -107,6 +124,19 @@ for b in Bkg:
         Tex.write(" & $"+str(round(yields[b][r][0],n))+" \pm "+str(round(yields[b][r][1],n))+"$ ")
     Tex.write(" \\\ ")
 
+if separateHiggsBackgrounds and merge_ZH:
+    Tex.write(" \n ZH ")
+    for r in Reg:
+        Tex.write(" & $"+str(round(ZH[Reg.index(r)],n))+" \pm "+str(round(ZH_unc[Reg.index(r)],n))+"$ ")
+    Tex.write(" \\\ ")
+
+if separateHiggsBackgrounds and merge_WH:
+    Tex.write(" \n WH ")
+    for r in Reg:
+        Tex.write(" & $"+str(round(WH[Reg.index(r)],n))+" \pm "+str(round(WH_unc[Reg.index(r)],n))+"$ ")
+    Tex.write(" \\\ ")
+
+
 if mergettyyBackgrounds:
     Tex.write(" \n ttyy ")
     for r in Reg:
@@ -123,7 +153,7 @@ if not separateyyjetsBackgrounds:
     Tex.write(" \n yy+jets ")
     for r in Reg:
         Tex.write(" & $"+str(round(yyjets[Reg.index(r)],n))+" \pm "+str(round(yyjets_unc[Reg.index(r)],n))+"$ ")
-    Tex.write(" \\\ ")
+    Tex.write(" \\\ ")    
 
 Tex.write(" \hline ")                                                               
 Tex.write(" \n Total SM ")
