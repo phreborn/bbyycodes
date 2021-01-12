@@ -25,7 +25,8 @@ cd ../run
 
 **You can now produce histograms by typing, for example:**
 
-./hhbbyy H026/Non_Resonant/test.js
+./hhbbyy json/H026/Non_Resonant/Baseline_skimmed_2bjet.js
+./hhbbyy json/H026/Non_Resonant/Data_skimmed_2bjet.js
 
 **or by using any of the JSON files linked through the *json* soft link (you will find three folders, namely H024, H025, H026  which contain configurations for the 3 production campaigns).**
 
