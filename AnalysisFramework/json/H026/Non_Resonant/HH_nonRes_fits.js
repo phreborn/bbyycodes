@@ -1,8 +1,8 @@
 {
-  "sequencer":["VariablePlotter","YieldCalculator"],
+  "sequencer":["YieldCalculator","VariablePlotter"],
 
     "name":{
-        "yields" : "HH_nonres_SRs_yields_btag77_withTop_BCal"
+        "yields" : "HH_nonres_yields_btag77_withTop_BCal"
     },
 
   "directories": {
