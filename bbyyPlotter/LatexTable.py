@@ -36,17 +36,21 @@ mergettyyBackgrounds = opts.mergettyy
 merge_ZH = opts.merge_ZH
 merge_WH = opts.merge_WH
 
+name =  opts.name.split(".")[0]
+if (opts.separateSingleHiggs): name +="_separateSingleHiggs"
+
+print(name)
 
 File = opts.path+opts.name
 out = opts.output
 n = opts.decimals
 
 # Single Higgs backgrounds
-SingleHiggs = ['ggH', 'VBF','WpH','WmH','ZH','ggZH','ttH','bbH','tWH','tHjb']
+SingleHiggs = ['ggH','VBFH','VBF','WpH','WmH','ZH','ggZH','ttH','bbH','tWH','tHjb']
 ZH_m = ["ZH","ggZH"]
 WH_m = ["WpH", "WmH"]
 
-yyjets = ['yyjj'] 
+yyjets = ['yy'] # Useful if you have decided to split yy+jets by jet flavour!
 
 ttyy = ['ttyy_had', 'ttyy_nohad']
 
@@ -60,10 +64,12 @@ yields = json.load(F)
 
 for i in yields.keys():    
     Bkg.append(i)
+    Bkg.sort()
 n_bkg =  len(Bkg)
 
 for j in yields[Bkg[0]].keys():
     Reg.append(j)
+    Reg.sort()
     columns+="l"
 
 n_reg = len(Reg)
@@ -105,8 +111,8 @@ else:
 # Writting latex file
 #################################
 
-Tex = open(out+"YieldTable.tex", "w")
-Tex.write("\n \\begin{table} \n \\begin{center} \n \setlength{\\tabcolsep}{0.0pc} \n \\begin{tabular*}{\\textwidth}{@{\extracolsep{\\fill}}l"+columns+"} \n \\noalign{\smallskip}\hline\\noalign{\smallskip} \n {\\bf Yield Table} ")
+Tex = open(out+"YieldTable_"+name+".tex", "w")
+Tex.write("\n \\begin{table} \n \\begin{center} \n \setlength{\\tabcolsep}{0.0pc} \n \\begin{tabular*}{\\textwidth}{@{\extracolsep{\\fill}}l"+columns+"} \n \\noalign{\smallskip}\hline\\noalign{\smallskip} \n  ")
 
 
 # Header line
@@ -172,5 +178,5 @@ Tex.write("\n \\noalign{\smallskip}\hline\\noalign{\smallskip} \n \end{tabular*}
 # Tex.write("\n \\caption{Yield Table for "+histo.replace("_","\_")+" in the different regions} \n \label{YieldTable_"+histo.replace("_","\_")+"}")
 Tex.write("\n  \end{table}")
 print ("Done!")
-print("Output written to YieldTable.tex")
+print("Output written to YieldTable_"+name+".tex")
 
