@@ -46,7 +46,7 @@ out = opts.output
 n = opts.decimals
 
 # Single Higgs backgrounds
-SingleHiggs = ['ggH','VBFH','VBF','WpH','WmH','ZH','ggZH','ttH','bbH','tWH','tHjb']
+SingleHiggs = ['ggH','VBFH','WpH','WmH','ZH','ggZH','ttH','bbH','tWH','tHjb']
 ZH_m = ["ZH","ggZH"]
 WH_m = ["WpH", "WmH"]
 
