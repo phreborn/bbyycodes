@@ -152,7 +152,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
       sigNames.push_back("WmH");
       sigNames.push_back("WpH");
       sigNames.push_back("ZH");
-      sigNames.push_back("VBF");
+      sigNames.push_back("VBFH");
 
     } else {
       sigNames.push_back(sig_name);      
