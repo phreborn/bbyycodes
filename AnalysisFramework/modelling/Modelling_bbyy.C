@@ -44,7 +44,7 @@ const double xmin = 115, xmax = 135;
 
 
 
-TH1D* readSignal(TString categoryName, std::vector<TString> sigNames, int nSig, TString histName) {
+TH1D* readSignal(TString categoryName, std::vector<TString> sigNames, int nSig, TString histName, TString path) {
 
     TH1D *hSig = NULL;
     double yield[nSig];
@@ -53,7 +53,7 @@ TH1D* readSignal(TString categoryName, std::vector<TString> sigNames, int nSig, 
     for (int i = 0; i < nSig; i++) {
 
         // Open data file and get the histogram we want
-        TString fileName = "data/" + sigNames[i] + "_" + categoryName + ".root";
+        TString fileName = path + "/" + sigNames[i] + "_" + categoryName + ".root";
         std::cout << "FileName = " << fileName << std::endl;
         TFile f(fileName);
 
@@ -120,7 +120,7 @@ void AddText(double x = 0.0, double y = 0.0, TString string = "dummy", int value
 
 // }
 
-void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TString sig_name = "HH", TString selection = "XGBoost_btag77_Nominal_tightScore_LMass", TString funct = "DSCB")
+void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TString sig_name = "HH", TString selection = "XGBoost_btag77_Nominal_tightScore_LMass", TString path = "data", TString funct = "DSCB")
 {
     RooMsgService::instance().getStream(1).removeTopic(RooFit::NumIntegration) ;
     RooMsgService::instance().getStream(1).removeTopic(RooFit::Fitting) ;
@@ -139,7 +139,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
     int ndf = 0;
 
     // Set up signal files to run over  --------------------
-    TString filePrefixName = "data/";
+    TString filePrefixName = path + "/";
 
     std::vector<TString> sigNames;
 
@@ -190,12 +190,12 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
         std::cout << "histName = " << histName << std::endl;
         // Tree for unbinned fit
         // Open data file and get the histogram we want
-        TString fileName = "data/" + sigNames[0] + "_" + categoryNames[icat]+ "_tree.root"; // BUG IS HERE
+        TString fileName = path + "/" + sigNames[0] + "_" + categoryNames[icat]+ "_tree.root"; // BUG IS HERE
         std::cout << "FileName = " << fileName << std::endl;
         TFile fTree(fileName);
         TTree *tree = (TTree*) fTree.Get("CollectionTree");
         std::cout<< "tree name = " << tree->GetName() << std::endl;
-        TH1D* MassInc = readSignal(categoryNames[icat], sigNames, nSig, histName);
+        TH1D* MassInc = readSignal(categoryNames[icat], sigNames, nSig, histName, path);
         MassInc = CommonFunc::RerangeTH1D(MassInc, xmin, xmax);
         MassInc->SetDirectory(nullptr);
         //  MassInc->Draw();
