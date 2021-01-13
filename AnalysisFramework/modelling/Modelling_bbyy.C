@@ -36,15 +36,12 @@ using namespace RooFit ;
 
 // !!!Please pay attention to this range, it can change your fit results (some functions, like Bukin, are particularly sensitive to it))
 //For myy fits on HH and H signals
-const double xmin = 115, xmax = 135;
-////const double xmin=50, xmax=180;
 
 //For myy fits on continuum background
-//const double xmin = 105, xmax = 160;
 
 
 
-TH1D* readSignal(TString categoryName, std::vector<TString> sigNames, int nSig, TString histName, TString path) {
+TH1D* readSignal(TString categoryName, std::vector<TString> sigNames, int nSig, TString histName, TString path, double xmin, double xmax) {
 
     TH1D *hSig = NULL;
     double yield[nSig];
@@ -120,7 +117,7 @@ void AddText(double x = 0.0, double y = 0.0, TString string = "dummy", int value
 
 // }
 
-void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TString sig_name = "HH", TString selection = "XGBoost_btag77_Nominal_tightScore_LMass", TString path = "data", TString funct = "DSCB")
+void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TString sig_name = "HH", TString selection = "XGBoost_btag77_Nominal_tightScore_LMass", TString path = "data", TString funct = "DSCB", const double xmin = 115, const double xmax = 135)
 {
     RooMsgService::instance().getStream(1).removeTopic(RooFit::NumIntegration) ;
     RooMsgService::instance().getStream(1).removeTopic(RooFit::Fitting) ;
@@ -143,7 +140,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
 
     std::vector<TString> sigNames;
 
-    if (sig_name == "singleHiggs") { 
+    if (sig_name == "singleHiggsProcesses") {   //  Pushing more  than one element works only for binned fits
       sigNames.push_back("bbH");
       sigNames.push_back("ggZH");
       sigNames.push_back("tHjb");
@@ -154,7 +151,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
       sigNames.push_back("ZH");
       sigNames.push_back("VBFH");
 
-    } else if (sig_name == "HH_ggF_VBF"){
+    } else if (sig_name == "HH_signals"){
       sigNames.push_back("HH");
       sigNames.push_back("VBF");
 
@@ -194,12 +191,12 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
         std::cout << "histName = " << histName << std::endl;
         // Tree for unbinned fit
         // Open data file and get the histogram we want
-        TString fileName = path + "/" + sigNames[0] + "_" + categoryNames[icat]+ "_tree.root"; // BUG IS HERE
+        TString fileName = path + "/" + sigNames[0] + "_" + categoryNames[icat]+ "_tree.root"; // BUG IS HERE -unbinned fits  only use sigNames[0] because they build m_yy from this tree! -> One  should first hadd the processes.
         std::cout << "FileName = " << fileName << std::endl;
         TFile fTree(fileName);
         TTree *tree = (TTree*) fTree.Get("CollectionTree");
         std::cout<< "tree name = " << tree->GetName() << std::endl;
-        TH1D* MassInc = readSignal(categoryNames[icat], sigNames, nSig, histName, path);
+        TH1D* MassInc = readSignal(categoryNames[icat], sigNames, nSig, histName, path, xmin, xmax);
         MassInc = CommonFunc::RerangeTH1D(MassInc, xmin, xmax);
         MassInc->SetDirectory(nullptr);
         //  MassInc->Draw();
