@@ -471,7 +471,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TStr
 	      fout << "  <ModelItem Name=\"RooBukin::signalPdf(:observable:, Bukin_Xp_"+sig_name+"_myy, Bukin_sigp_"+sig_name+"_myy, Bukin_xi_"+sig_name+"_myy, Bukin_rho1_"+sig_name+"_myy, Bukin_rho2_"+sig_name+"_myy)\"/>" << endl;
             }
             else if (fitFunctionName == "Exponential") {
-	      fout << "  <ModelItem Name=\"RooExp:::signalPdf(:observable:, Exp_c_"+sig_name+"_myy)\"/>" << endl;
+	      fout << "  <ModelItem Name=\"RooExponential::signalPdf(:observable:, Exp_c_"+sig_name+"_myy)\"/>" << endl;
             }
 
             fout << "</Model>" << endl;
