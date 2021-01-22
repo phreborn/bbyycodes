@@ -60,7 +60,7 @@ def addStack(histo, stack, color, legend, legendText):
     legend.AddEntry(histo, legendText, "f")
 
 def addSignalStack(histo, stack, color, legend, legendText):
-    histo.SetLineWidth(0.01)
+    histo.SetLineWidth(2)
     histo.SetLineColor(color)
     stack.Add(histo)
     legend.AddEntry(histo, legendText, "l")
@@ -123,6 +123,29 @@ def CheckXrange(theHisto, new_xmin, new_xmax):
         status = True
 
     return status
+
+
+def MergeBackgrounds(MergeBkgList, Reg, Bkg, yields):
+
+    Merge = []
+    Merge_unc = []
+    NoHBkg = []
+    for r in Reg:
+        events = 0
+        unc = 0
+        for b in Bkg:
+            if (b in MergeBkgList):
+                events += yields[b][r][0]
+                unc +=  yields[b][r][1]**2
+
+        Merge.append(events)
+        Merge_unc.append(sqrt(unc))
+
+    for b in Bkg:
+        if (b not in MergeBkgList): NoHBkg.append(b)
+
+    return (Merge, Merge_unc, NoHBkg)
+
 
 def setBlindedValuestoZero(dataHist, histo, UNBLIND=False):
   if not UNBLIND and 'm_yyjj_' in histo: 

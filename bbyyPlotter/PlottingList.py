@@ -35,14 +35,9 @@ histosToPlot = [
 samplesToStack = [
                     '15_to_18_data',
                     #'ttyy_nohad',
-
-                    #'yybj',
-                    #'yycj',
-                    #'yyjj',
-                    
-                    'yy',
-
-
+                    #'ttyy_had',
+                    'yy', 
+                    #'HH',
                     # Then all of the single H backgrounds (these are combined, by default)     
                     #'ggH',
                     #'WpH',
@@ -53,7 +48,6 @@ samplesToStack = [
                     #'bbH',
                     #'tWH',
                     #'tHjb',
-
 
                     # h025 -----------------
                     #'ttH_PowhegPy8',

@@ -95,8 +95,8 @@ def PlottingDict():
             'x-axis title': '#Delta#it{R}(#gamma,#gamma)',
             'y-axis title': 'Events / 0.2',
             'units' : '',
-            'x-min' : 0.0,
-            'x-max' : 3.0,
+            'x-min' : 1.0,
+            'x-max' : 5.0,
             'rebin' : 5
 
         },
@@ -113,8 +113,8 @@ def PlottingDict():
             'x-axis title': '#Delta#it{R}(j,j)',
             'y-axis title': 'Events / 0.2',
             'units' : '',
-            'x-min' : 0.0,
-            'x-max' : 3.0,
+            'x-min' : 1.0,
+            'x-max' : 5.0,
             'rebin' : 1
 
         },
@@ -176,17 +176,17 @@ def PlottingDict():
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (std) [GeV]',
             'y-axis title': 'Events / 25 GeV',
             'units' : 'GeV',
-            'x-min' : 200,
-            'x-max' : 500,
-            'rebin' : 1
+            'x-min' : 100,
+            'x-max' : 400,
+            'rebin' : 2
 
         },
         'sumHisto_m_yyjj_HM_': {
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (std, High-mass) [GeV]',
             'y-axis title': 'Events / 25 GeV',
             'units' : 'GeV',
-            'x-min' : 200,
-            'x-max' : 500,
+            'x-min' : 100,
+            'x-max' : 400,
             'rebin' : 1
 
         },
@@ -499,7 +499,79 @@ def SelectionDict():
             'legend upper': 'Resonant selection',
             'legend lower': '',
 
-        },        
+        },  
+
+       'Resonant_BDT_260': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X260 signal',
+
+        },
+
+       'Resonant_BDT_280': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X280 signal',
+       },
+
+       'Resonant_BDT_300': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X300 signal',
+       },
+
+       'Resonant_BDT_325': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X325 signal',
+       },
+
+       'Resonant_BDT_350': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X350 signal',
+       },
+
+       'Resonant_BDT_400': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X400 signal',
+       },
+
+       'Resonant_BDT_450': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X450 signal',
+       },
+
+       'Resonant_BDT_500': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X500 signal',
+       },
+
+       'Resonant_BDT_550': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X550 signal',
+       },
+
+       'Resonant_BDT_600': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X600 signal',
+       },
+
+       'Resonant_BDT_700': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X700 signal',
+       },
+
+       'Resonant_BDT_800': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X800 signal',
+       },
+
+       'Resonant_BDT_900': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X900 signal',
+       },
+
+       'Resonant_BDT_1000': {
+            'legend upper': 'Resonant selection',
+            'legend lower': 'X1000 signal',
+       },
+
 
        'Resonant_Zbb_window': {
             'legend upper': 'Resonant for ZH',

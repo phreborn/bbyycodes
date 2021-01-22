@@ -29,30 +29,28 @@
 #include "../../bbyyPlotter/atlasstyle-00-03-05/AtlasUtils.C"
 
 using namespace RooFit ;
-
+#include <iostream>
 #include <sstream>
 #include <vector>
 
 
 // !!!Please pay attention to this range, it can change your fit results (some functions, like Bukin, are particularly sensitive to it))
 //For myy fits on HH and H signals
-const double xmin = 115, xmax = 135;
-////const double xmin=50, xmax=180;
 
 //For myy fits on continuum background
-//const double xmin = 105, xmax = 160;
 
 
 
-TH1D* readSignal(TString categoryName, TString sigNames[], int nSig, TString histName) {
+TH1D* readSignal(TString categoryName, std::vector<TString> sigNames, int nSig, TString histName, TString path, double xmin, double xmax) {
+
     TH1D *hSig = NULL;
-
     double yield[nSig];
+
     // Loop through the samples to fit
     for (int i = 0; i < nSig; i++) {
 
         // Open data file and get the histogram we want
-        TString fileName = "data/" + sigNames[i] + "_" + categoryName + ".root";
+        TString fileName = path + "/" + sigNames[i] + "_" + categoryName + ".root";
         std::cout << "FileName = " << fileName << std::endl;
         TFile f(fileName);
 
@@ -119,7 +117,7 @@ void AddText(double x = 0.0, double y = 0.0, TString string = "dummy", int value
 
 // }
 
-void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
+void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true, TString sig_name = "HH", TString selection = "XGBoost_btag77_Nominal_tightScore_LMass", TString path = "data", TString funct = "DSCB", const double xmin = 115, const double xmax = 135)
 {
     RooMsgService::instance().getStream(1).removeTopic(RooFit::NumIntegration) ;
     RooMsgService::instance().getStream(1).removeTopic(RooFit::Fitting) ;
@@ -138,30 +136,35 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
     int ndf = 0;
 
     // Set up signal files to run over  --------------------
-    TString filePrefixName = "data/";
-    //TString sigNames[] = parseInputStrings(sigString);
-    TString sigNames[] = {"HH"};
-    //TString sigNames[] = {"yy"};
-    //TString sigNames[] = {"HH", "ZH_PowhegH7", "ttH_PowhegHw7"};
-    //TString sigNames[] = {"HH", "VBF"};
-    //TString sigNames[] = {"VBF"};
-    //TString sigNames[]={"HH", "bbH", "ggH", "ggZH", "tHjb", "ttH","tWH","WmH","WpH","ZH"};
-    const int nSig = sizeof(sigNames) / sizeof(*sigNames); // TODO: this is ugly, C! Should throw error if 0
+    TString filePrefixName = path + "/";
+
+    std::vector<TString> sigNames;
+
+    if (sig_name == "singleHiggsProcesses") {   //  Pushing more  than one element works only for binned fits
+      sigNames.push_back("bbH");
+      sigNames.push_back("ggZH");
+      sigNames.push_back("tHjb");
+      sigNames.push_back("ttH");
+      sigNames.push_back("tWH");
+      sigNames.push_back("WmH");
+      sigNames.push_back("WpH");
+      sigNames.push_back("ZH");
+      sigNames.push_back("VBFH");
+
+    } else if (sig_name == "HH_signals"){
+      sigNames.push_back("HH");
+      sigNames.push_back("VBF");
+
+    } else {
+      sigNames.push_back(sig_name);      
+    } 
+
+    const int nSig = sigNames.size(); // TODO: this is ugly, C! Should throw error if 0
     std::cout << "nSig = " << nSig << std::endl;
 
-    // Set up the categories for the fit --------------------
+    // Set up the categories for the fit --------------------                                                                                
+    const TString categoryNames[] = {selection};
     //const TString categoryNames[] = {"LM_A", "LM_B", "HM_A", "HM_B"}; // JP
-    //const TString categoryNames[1]={"Validation"}; //to use when fitting mbb because the above categories have a cut in mbb, so not suitable for a fit
-
-    //To check negative weights
-    //const TString categoryNames[]={"LM_A", "LM_A_noNegWeights",  "Pass_yy", "Pass_yy_noNegWeights", "XGBoost_btag77_Nominal_looseScore_LMass", "XGBoost_btag77_Nominal_looseScore_LMass_noNegWeights", "Validation", "Validation_noNegWeights"};
-  
-    //const TString categoryNames[]={"LM_A", "LM_A_noNegWeights"}; 
-    const TString categoryNames[]={"XGBoost_btag77_85_Nominal_looseScore_HMass"};
-
-    //To check ggF and VBF
-    //const TString categoryNames[]={"LM_A", "Pass_yy", "TEST", "Validation", "VBF_btag77", "VBF_btag77_85", "VBF_btag77_BCal", "VBF_btag77_85_BCal", "XGBoost_btag77_85_Nominal_BCal_looseScore_HMass", "XGBoost_btag77_85_Nominal_BCal_looseScore_LMass", "XGBoost_btag77_85_Nominal_BCal_tightScore_HMass", "XGBoost_btag77_85_Nominal_BCal_tightScore_LMass", "XGBoost_btag77_85_Nominal_looseScore_HMass", "XGBoost_btag77_85_Nominal_looseScore_LMass", "XGBoost_btag77_85_Nominal_tightScore_HMass", "XGBoost_btag77_85_Nominal_tightScore_LMass", "XGBoost_btag77_Nominal_BCal_looseScore_HMass", "XGBoost_btag77_Nominal_BCal_looseScore_LMass", "XGBoost_btag77_Nominal_BCal_tightScore_HMass", "XGBoost_btag77_Nominal_BCal_tightScore_LMass", "XGBoost_btag77_Nominal_looseScore_HMass", "XGBoost_btag77_Nominal_looseScore_LMass", "XGBoost_btag77_Nominal_tightScore_HMass", "XGBoost_btag77_Nominal_tightScore_LMass"};  
-
     const int nCat = sizeof(categoryNames) / sizeof(*categoryNames); // TODO: this is ugly, C! Should throw error if 0
     
     TString binningName;
@@ -171,31 +174,29 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
     // Set up naming of output files -------------------
     // TODO: Change this so that it is more general than HH and H or sample name
     TString outputPrefix;
-    if (nSig == 10 || nSig == 3) { outputPrefix = "HH_and_H"; }
-    else if (nSig == 2) { outputPrefix = "ggF_and_VBF"; }
-    else if (nSig == 1) { outputPrefix = sigNames[0]; }
-    else outputPrefix = "Unknown";
+    //if (nSig == 11 || nSig == 3) { outputPrefix = "HH_and_H"; }
+    //else if (nSig == 2) { outputPrefix = "ggF_and_VBF"; }
+    //else if (nSig == 1) { outputPrefix = sigNames[0]; }
+    //else outputPrefix = "Unknown";
+    outputPrefix = sig_name;
 
-    TString fitFunctions[] = {"DSCB","ExpGaussExp","Bukin","Exponential"};
-    int nfitFunc = 4; 
+    TString fitFunctions[] = {funct};//"DSCB","ExpGaussExp","Bukin","Exponential"};
+    int nfitFunc = 1; //4; 
 
     // Do fit for the individual categories --------------------------------
     for (int icat = 0; icat < nCat; icat++) {
 
-
-        TString categoryName = "CATEGORY_" + categoryNames[icat];
+        TString categoryName = categoryNames[icat];
         TString histName = "sumHisto_m_yy_" + categoryNames[icat]; // to fit myy
         std::cout << "histName = " << histName << std::endl;
-
         // Tree for unbinned fit
         // Open data file and get the histogram we want
-        TString fileName = "data/" + sigNames[0] + "_" + categoryNames[icat]+ "_tree.root";
+        TString fileName = path + "/" + sigNames[0] + "_" + categoryNames[icat]+ "_tree.root"; // BUG IS HERE -unbinned fits  only use sigNames[0] because they build m_yy from this tree! -> One  should first hadd the processes.
         std::cout << "FileName = " << fileName << std::endl;
         TFile fTree(fileName);
         TTree *tree = (TTree*) fTree.Get("CollectionTree");
         std::cout<< "tree name = " << tree->GetName() << std::endl;
-
-        TH1D* MassInc = readSignal(categoryNames[icat], sigNames, nSig, histName);
+        TH1D* MassInc = readSignal(categoryNames[icat], sigNames, nSig, histName, path, xmin, xmax);
         MassInc = CommonFunc::RerangeTH1D(MassInc, xmin, xmax);
         MassInc->SetDirectory(nullptr);
         //  MassInc->Draw();
@@ -220,7 +221,6 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
              std::cout<< " weights no Weights = " << ds_noWeights.weight() << endl ; 
         }*/
 
-
         // Crystal Ball Components
         const int NPAR_DSCB  = 6;
         RooRealVar CB_mean("CB_mean", "mean of CB", 124.5, 123., 126.) ;
@@ -233,7 +233,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
         RooTwoSidedCBShape sig_DSCB_histo("cb1", "Signal Component 2", x, CB_mean, CB_sigma, CB_alphaLo, CB_nLo, CB_alphaHi, CB_nHi); 
         RooTwoSidedCBShape sig_DSCB_tree("cb1", "Signal Component 2", m_yy, CB_mean, CB_sigma, CB_alphaLo, CB_nLo, CB_alphaHi, CB_nHi); 
         RooRealVar *varInName_DSCB[NPAR_DSCB] = {&CB_alphaLo, &CB_mean, &CB_nLo, &CB_sigma, &CB_alphaHi, &CB_nHi};
-        TString varOutName_DSCB[NPAR_DSCB] = {"alphaCBLo", "meanNom", "nCBLo", "sigmaCBNom", "alphaCBHi", "nCBHi"};
+        TString varOutName_DSCB[NPAR_DSCB] = {"alphaCBLo_"+sig_name+"_myy", "meanNom_"+sig_name+"_myy", "nCBLo_"+sig_name+"_myy", "sigmaCBNom_"+sig_name+"_myy", "alphaCBHi_"+sig_name+"_myy", "nCBHi_"+sig_name+"_myy"};
        
         if (binned) sig_DSCB = &sig_DSCB_histo;
         else sig_DSCB = &sig_DSCB_tree;
@@ -248,7 +248,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
         RooExpGaussExpShape sig_EGE_histo("EGE1", "Signal Component EGE", x, EGE_mean, EGE_sigma, EGE_kLo, EGE_kHi); 
         RooExpGaussExpShape sig_EGE_tree("EGE1", "Signal Component EGE", m_yy, EGE_mean, EGE_sigma, EGE_kLo, EGE_kHi); 
         RooRealVar *varInName_EGE[NPAR_EGE] = {&EGE_mean, &EGE_sigma, &EGE_kLo, &EGE_kHi};
-        TString varOutName_EGE[NPAR_EGE] = {"EGE_mean", "EGE_sigma", "EGE_kLo", "EGE_kHi"};
+        TString varOutName_EGE[NPAR_EGE] = {"EGE_mean_"+sig_name+"_myy", "EGE_sigma_"+sig_name+"_myy", "EGE_kLo_"+sig_name+"_myy", "EGE_kHi_"+sig_name+"_myy"};
      
         if (binned) sig_EGE = &sig_EGE_histo;
         else sig_EGE = &sig_EGE_tree;
@@ -265,7 +265,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
         RooBukinPdf sig_Bukin_histo("Bukin1", "Signal Component Bukin", x, Bukin_Xp, Bukin_sigp, Bukin_xi, Bukin_rho1, Bukin_rho2); 
         RooBukinPdf sig_Bukin_tree("Bukin1", "Signal Component Bukin", m_yy, Bukin_Xp, Bukin_sigp, Bukin_xi, Bukin_rho1, Bukin_rho2); 
         RooRealVar *varInName_Bukin[NPAR_BUKIN] = {&Bukin_Xp, &Bukin_sigp, &Bukin_xi, &Bukin_rho1, &Bukin_rho2};
-        TString varOutName_Bukin[NPAR_BUKIN] = {"Bukin_Xp", "Bukin_sigp", "Bukin_xi", "Bukin_rho1", "Bukin_rho2"};
+        TString varOutName_Bukin[NPAR_BUKIN] = {"Bukin_Xp_"+sig_name+"_myy", "Bukin_sigp_"+sig_name+"_myy", "Bukin_xi_"+sig_name+"_myy", "Bukin_rho1_"+sig_name+"_myy", "Bukin_rho2_"+sig_name+"_myy"};
 
         if (binned) sig_Bukin = &sig_Bukin_histo;
         else sig_Bukin = &sig_Bukin_tree;
@@ -278,7 +278,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
         RooExponential sig_Exp_histo("Exp", "Exp", x, Exp_c);
         RooExponential sig_Exp_tree("Exp", "Exp", m_yy, Exp_c);
         RooRealVar *varInName_Exp[NPAR_BUKIN] = {&Exp_c};
-        TString varOutName_Exp[NPAR_BUKIN] = {"Exp_c"};
+        TString varOutName_Exp[NPAR_BUKIN] = {"Exp_c_"+sig_name+"_myy"};
 
         if (binned) sig_Exp = &sig_Exp_histo;
         else sig_Exp = &sig_Exp_tree;
@@ -296,7 +296,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
             RooFitResult* fitr;
             // Fit signal PDF to Data
             // There HAS to be a better way to do this for the multiple functions, running into problems with different classes for sig
-            if (ifitFunc == 0) {
+            if (fitFunctionName == "DSCB") {
             	NPAR_XML = NPAR_DSCB;
                 if (binned){
                     //If you use Minos rather than Hesse it will neglect the MC stat uncertainty and only use Poisson errors using the normalization of the distribution as mean
@@ -310,7 +310,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
                 fitr->Print("v");
                 n_param = fitr->floatParsFinal().getSize() + 1; // + 1 is there to account for the normalization that is done internally in RootFit, I am not explicitely floating it
             }
-            else if (ifitFunc == 1) {
+            else if (fitFunctionName == "ExpGaussExp") {
             	NPAR_XML = NPAR_EGE;
                 if (binned){
                     fitr = sig_EGE->fitTo(dh, Minos(kFALSE),Hesse(kTRUE), Save(),PrintLevel(1), RooFit::SumW2Error(true));
@@ -322,7 +322,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
                 fitr->Print("v"); 
                 n_param = fitr->floatParsFinal().getSize() + 1; // + 1 is there to account for the normalization that is done internally in RootFit, I am not explicitely floating it
             }
-            else if (ifitFunc == 2) {
+            else if (fitFunctionName == "Bukin") {
             	NPAR_XML = NPAR_BUKIN;
                 if (binned){
                     fitr = sig_Bukin->fitTo(dh, Minos(kFALSE), Hesse(kTRUE), Save(),PrintLevel(1), RooFit::SumW2Error(true));
@@ -334,7 +334,7 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
                 fitr->Print("v"); 
                 n_param = fitr->floatParsFinal().getSize() + 1; // + 1 is there to account for the normalization that is done internally in RootFit, I am not explicitely floating it
             }
-            else if (ifitFunc == 3) {
+            else if (fitFunctionName == "Exponential") {
                 NPAR_XML = NPAR_EXP;
                 if (binned){
                     fitr = sig_Exp->fitTo(dh, Minos(kFALSE), Hesse(kTRUE), Save(),PrintLevel(1), RooFit::SumW2Error(true));
@@ -366,22 +366,22 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
                 ds.plotOn(xframe, MarkerColor(kBlack), DataError(RooAbsData::SumW2));
                 //ds.statOn(xframe,Layout(0.50,0.90,0.80));
             }
-            if (ifitFunc == 0) { // TODO: Again, has to be a better way 
+            if (fitFunctionName == "DSCB") { // TODO: Again, has to be a better way 
             	sig_DSCB->plotOn(xframe, LineColor(kTeal + 3));
                 sig_DSCB->paramOn(xframe, Format("NEA"));
                 xframe->getAttText()->SetTextSize(0.02);
             }
-            else if (ifitFunc == 1) {
+            else if (fitFunctionName == "ExpGaussExp") {
                 sig_EGE->plotOn(xframe, LineColor(kRed + 1));
                 sig_EGE->paramOn(xframe, Format("NEA"));
                 xframe->getAttText()->SetTextSize(0.02);
             }
-            else if (ifitFunc == 2) {
+            else if (fitFunctionName == "Bukin") {
                 sig_Bukin->plotOn(xframe, LineColor(kBlue + 1));
                 sig_Bukin->paramOn(xframe, Format("NEA"));
                 xframe->getAttText()->SetTextSize(0.02);           
             } 
-            else if (ifitFunc == 3) {
+            else if (fitFunctionName == "Exponential") {
                 sig_Exp->plotOn(xframe, LineColor(800));
                 sig_Exp->paramOn(xframe, Format("NEA"));
                 xframe->getAttText()->SetTextSize(0.02);
@@ -450,50 +450,55 @@ void Modelling_bbyy( TString xmlDir = "xml/config/v8/", bool binned = true)
             
             for (int ivar = 0; ivar < NPAR_XML; ivar++) {
             	// TODO: Again, has to be a better way 
-            	if (ifitFunc == 0) {fout << "  <Item Name=\"" + varOutName_DSCB[ivar] + Form("[%f]\"/>", varInName_DSCB[ivar]->getVal()) << endl; }
-            	else if (ifitFunc == 1) {fout << "  <Item Name=\"" + varOutName_EGE[ivar] + Form("[%f]\"/>", varInName_EGE[ivar]->getVal()) << endl; }
-            	else if (ifitFunc == 2) {fout << "  <Item Name=\"" + varOutName_Bukin[ivar] + Form("[%f]\"/>", varInName_Bukin[ivar]->getVal()) << endl; }
-                else if (ifitFunc == 3) {fout << "  <Item Name=\"" + varOutName_Exp[ivar] + Form("[%f]\"/>", varInName_Exp[ivar]->getVal()) << endl; }
+            	if (fitFunctionName == "DSCB") {fout << "  <Item Name=\"" + varOutName_DSCB[ivar] + Form("[%f]\"/>", varInName_DSCB[ivar]->getVal()) << endl; }
+            	else if (fitFunctionName == "ExpGaussExp") {fout << "  <Item Name=\"" + varOutName_EGE[ivar] + Form("[%f]\"/>", varInName_EGE[ivar]->getVal()) << endl; }
+            	else if (fitFunctionName == "Bukin") {fout << "  <Item Name=\"" + varOutName_Bukin[ivar] + Form("[%f]\"/>", varInName_Bukin[ivar]->getVal()) << endl; }
+                else if (fitFunctionName == "Exponential") {fout << "  <Item Name=\"" + varOutName_Exp[ivar] + Form("[%f]\"/>", varInName_Exp[ivar]->getVal()) << endl; }
             }
-            fout << Form("  <Item Name=\"expr::mean('@0+@1-125', meanNom, mH[125])\"/>") << endl;
-            if (ifitFunc == 0) { // TODO: Again, has to be a better way 
-                fout << Form("  <ModelItem Name=\"RooTwoSidedCBShape::signalPdf(:observable:, mean, sigmaCBNom, alphaCBLo, nCBLo, alphaCBHi, nCBHi)\"/>") << endl;
+
+	    if (fitFunctionName == "DSCB" || fitFunctionName == "ExpGaussExp") { 
+	      fout << "  <Item Name=\"expr::mean_"+sig_name+"_myy('@0+@1-125', meanNom_"+sig_name+"_myy, mH[125])\"/>" << endl;
+	    }
+            if (fitFunctionName == "DSCB") { // TODO: Again, has to be a better way 
+	      //fout << Form("  <ModelItem Name=\"RooTwoSidedCBShape::signalPdf(:observable:, mean, sigmaCBNom, alphaCBLo, nCBLo, alphaCBHi, nCBHi)\"/>") << endl;
+              fout << "  <ModelItem Name=\"RooTwoSidedCBShape::signalPdf(:observable:, mean_"+sig_name+"_myy, sigmaCBNom_"+sig_name+"_myy, alphaCBLo_"+sig_name+"_myy, nCBLo_"+sig_name+"_myy, alphaCBHi_"+sig_name+"_myy, nCBHi_"+sig_name+"_myy)\"/>" << endl;
+	    }
+            else if (fitFunctionName == "ExpGaussExp") {
+	      //fout << "  <ModelItem Name=\"RooExpGaussExpShape::signalPdf(:observable:, mean, sigmaEGENom, kLo, kHi)\"/>" << endl; //VCAIRO
+	      fout << "  <ModelItem Name=\"RooExpGaussExpShape::signalPdf(:observable:, mean_"+sig_name+"_myy, sigmaEGENom_"+sig_name+"_myy, kLo_"+sig_name+"_myy, kHi_"+sig_name+"_myy)\"/>" << endl; 
             }
-            else if (ifitFunc == 1) {
-                fout << Form("  <ModelItem Name=\"RooExpGaussExpShape::signalPdf(:observable:, mean, sigmaEGENom, kLo, kHi)\"/>") << endl; //VCAIRO
+            else if (fitFunctionName == "Bukin") {
+	      fout << "  <ModelItem Name=\"RooBukin::signalPdf(:observable:, Bukin_Xp_"+sig_name+"_myy, Bukin_sigp_"+sig_name+"_myy, Bukin_xi_"+sig_name+"_myy, Bukin_rho1_"+sig_name+"_myy, Bukin_rho2_"+sig_name+"_myy)\"/>" << endl;
             }
-            else if (ifitFunc == 2) {
-                fout << Form("  <ModelItem Name=\"RooBukin::signalPdf(:observable:, Bukin_Xp, Bukin_sigp, Bukin_xi, Bukin_rho1, Bukin_rho2)\"/>") << endl;
-            }
-            else if (ifitFunc == 3) {
-                fout << Form("  <ModelItem Name=\"RooExp:::signalPdf(:observable:, Exp_c)\"/>") << endl;
+            else if (fitFunctionName == "Exponential") {
+	      fout << "  <ModelItem Name=\"RooExponential::signalPdf(:observable:, Exp_c_"+sig_name+"_myy)\"/>" << endl;
             }
 
             fout << "</Model>" << endl;
             fout.close();
 
-            TString outputCateFileName = xmlDir + "/category_" + categoryName + ".xml";
+            //TString outputCateFileName = xmlDir + "/category_" + categoryName + ".xml";
             TString inputTemplateFileName = xmlDir + "/category_template.xml";
             ifstream fin(inputTemplateFileName);
             assert(fin);
-            ofstream fout_category(outputCateFileName);
+            //ofstream fout_category(outputCateFileName);
             
             // JP commented this background stuff, seems broken/not applicable?
-            // std::string line;
-            // TString bkgHistName=histName;
-            // bkgHistName.ReplaceAll("sig","bkg");
-            // TH1* bkgHist=(TH1*)f.Get(bkgHistName);
-            // double bkgIntegral=bkgHist->Integral();
-
-            // while(getline(fin, line)){
-            //   TString l=line.c_str();
-            //   l.ReplaceAll("#category#", categoryName);
-            //   l.ReplaceAll("#sigYield#", Form("%f", hintegral));
-            //   l.ReplaceAll("#inputHistFile#", fileName);
-            //   l.ReplaceAll("#histName#", bkgHistName);
-            //   l.ReplaceAll("#bkgYield#", Form("%f", bkgIntegral));
-            //   fout_category<<l<<endl;
-            // }
+	    /*std::string line;
+	    TString bkgHistName=histName;
+            bkgHistName.ReplaceAll("sig","bkg");
+            TH1* bkgHist=(TH1*)fTree.Get(bkgHistName);
+            double bkgIntegral=bkgHist->Integral();
+	    
+            while(getline(fin, line)){
+	      TString l=line.c_str();
+	      l.ReplaceAll("#category#", categoryName);
+	      l.ReplaceAll("#sigYield#", Form("%f", hintegral));
+              l.ReplaceAll("#inputHistFile#", fileName);
+	      l.ReplaceAll("#histName#", bkgHistName);
+	      l.ReplaceAll("#bkgYield#", Form("%f", bkgIntegral));
+	      fout_category<<l<<endl;
+	      }*/
             totalSignal += hintegral;
         }
     }

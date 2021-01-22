@@ -70,6 +70,9 @@ void JSONParser::CreateDocument(json& jj)
     else if (key == "dumper") {
       document.dumper = pp;
     }
+    else if (key == "name") {
+      document.name = pp;
+    }
 
   }	
 }
