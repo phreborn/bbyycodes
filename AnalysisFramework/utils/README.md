@@ -51,13 +51,13 @@ yy samples, before m_yyjj cut = yy_m_yyjj.js
 
 ## Step 2
 
-**Then scale the MC yy, data-driven yj and jj by the purities we get from 2x2D sideband method [HGamBackgroundStudies](https://gitlab.cern.ch/zijia/bbyy_bkg_2x2d/-/tree/master/source/HGamCore/HGamBackgroundStudies) , and save the reweighted histograms**
+**Then scale the MC yy, data-driven yj and jj by the purities we get from 2x2D sideband method using this package: [HGamBackgroundStudies](https://gitlab.cern.ch/zijia/bbyy_bkg_2x2d/-/tree/master/source/HGamCore/HGamBackgroundStudies).**
 
-**Purities are saved in Nonresonant_purity.root and Resonant_purity.root**
+**Purities are saved in Nonresonant_purity.root and Resonant_purity.root.**
 
-**In Resonant case, the purities are obtianed before m_yyjj cut to avoid low statistics**
+**In Resonant case, the purities are obtianed before m_yyjj cut to avoid low statistics.**
 
-**The yy, yj and jj components are scaled to (data - ttyy) in SB**
+**The yy, yj and jj components are scaled to (data - ttyy) in SB.**
 
 cd AnalysisFramework/utils
 
@@ -79,9 +79,11 @@ cd AnalysisFramework/utils
 
 ## Step 3 (For resonant case)
 
-**ApplySF_Resonant will print out the SFs to be applied in the reweighted histograms**
+**ApplySF_Resonant will print out the SFs to be applied in the histograms.**
 
-**Go to AnalysisFramework and produce the hostograms again using new json files where SFs are applied to the weights**
+**Go to AnalysisFramework and produce the hostograms again using new json files where SFs are applied to the weights.**
+
+**Now nominal cuts are applied, adding m_yyjj cut.**
 
 yy samples, nominal selections = yy.js
 
