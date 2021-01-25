@@ -95,8 +95,8 @@ def PlottingDict():
             'x-axis title': '#Delta#it{R}(#gamma,#gamma)',
             'y-axis title': 'Events / 0.2',
             'units' : '',
-            'x-min' : 1.0,
-            'x-max' : 5.0,
+            'x-min' : 0.0,
+            'x-max' : 3.0,
             'rebin' : 5
 
         },
@@ -113,8 +113,8 @@ def PlottingDict():
             'x-axis title': '#Delta#it{R}(j,j)',
             'y-axis title': 'Events / 0.2',
             'units' : '',
-            'x-min' : 1.0,
-            'x-max' : 5.0,
+            'x-min' : 0.0,
+            'x-max' : 3.0,
             'rebin' : 1
 
         },
@@ -176,17 +176,17 @@ def PlottingDict():
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (std) [GeV]',
             'y-axis title': 'Events / 25 GeV',
             'units' : 'GeV',
-            'x-min' : 100,
-            'x-max' : 400,
-            'rebin' : 2
+            'x-min' : 200,
+            'x-max' : 500,
+            'rebin' : 1
 
         },
         'sumHisto_m_yyjj_HM_': {
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} (std, High-mass) [GeV]',
             'y-axis title': 'Events / 25 GeV',
             'units' : 'GeV',
-            'x-min' : 100,
-            'x-max' : 400,
+            'x-min' : 200,
+            'x-max' : 500,
             'rebin' : 1
 
         },
@@ -256,21 +256,59 @@ def SampleDict():
             'color':  (233, 241, 223), ## hh dark blue 
             'legend description': 'Hadronic #it{t#bar{t}#gamma#gamma}',
         },
+	'15_to_18_data_yj': {
+	    'color':  41,
+            'legend description': 'DataDriven #it{#gammaj}',
+        },
+	'15_to_18_data_jj': {
+	    'color':  44,
+            'legend description': 'DataDriven #it{jj}',
+        },
+	'15_to_18_data_yj_reweighted': {
+	    'color':  41,
+            'legend description': 'DataDriven #it{#gammaj}',
+        },
+	'15_to_18_data_jj_reweighted': {
+	    'color':  44,
+            'legend description': 'DataDriven #it{jj}',
+        },
+
+        'Resonance': {
+            'color':  5, ## Resonance
+            'legend description': 'HH Resonance}',
+        },
+
         'yy': {
             'color':  (54, 177, 191), ## hh med turq
             'legend description': 'SM #it{#gamma#gamma}',
         },
+	'yy_reweighted': {
+	    'color':  (54, 177, 191), ## hh med turq
+		'legend description': 'SM #it{#gamma#gamma}',
+	},
 
         'yycj': {
-            'color': 46,
+            'color': (84, 197, 170), #46,
             'legend description': '#it{#gamma#gammacj}',
         },
         'yyjj': {
-            'color': 5,
-            'legend description': '#it{#gamma#gamma+jj}',
+            'color': (54, 177, 190), #5,
+            'legend description': '#it{#gamma#gammajj}',
         },
         'yybj': {
-            'color': 38,
+            'color': (24, 107, 180),  #38,
+            'legend description': '#it{#gamma#gammabj}',
+        },
+        'yycj_reweighted': {
+            'color': (84, 197, 170), #46,
+            'legend description': '#it{#gamma#gammacj}',
+        },
+        'yyjj_reweighted': {
+            'color': (54, 177, 190), #5,
+            'legend description': '#it{#gamma#gammajj}',
+        },
+        'yybj_reweighted': {
+            'color': (24, 107, 180),  #38,
             'legend description': '#it{#gamma#gammabj}',
         },
         'HH': { 
@@ -499,79 +537,7 @@ def SelectionDict():
             'legend upper': 'Resonant selection',
             'legend lower': '',
 
-        },  
-
-       'Resonant_BDT_260': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X260 signal',
-
-        },
-
-       'Resonant_BDT_280': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X280 signal',
-       },
-
-       'Resonant_BDT_300': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X300 signal',
-       },
-
-       'Resonant_BDT_325': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X325 signal',
-       },
-
-       'Resonant_BDT_350': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X350 signal',
-       },
-
-       'Resonant_BDT_400': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X400 signal',
-       },
-
-       'Resonant_BDT_450': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X450 signal',
-       },
-
-       'Resonant_BDT_500': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X500 signal',
-       },
-
-       'Resonant_BDT_550': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X550 signal',
-       },
-
-       'Resonant_BDT_600': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X600 signal',
-       },
-
-       'Resonant_BDT_700': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X700 signal',
-       },
-
-       'Resonant_BDT_800': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X800 signal',
-       },
-
-       'Resonant_BDT_900': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X900 signal',
-       },
-
-       'Resonant_BDT_1000': {
-            'legend upper': 'Resonant selection',
-            'legend lower': 'X1000 signal',
-       },
-
+        },        
 
        'Resonant_Zbb_window': {
             'legend upper': 'Resonant for ZH',
@@ -646,6 +612,72 @@ def SelectionDict():
             'legend upper': 'VBF',
             'legend lower': '',
            },
+
+	
+	'X260toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(260)#it{HH} ',
+            'legend lower': '',
+            },
+
+        'X280toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(280)#it{HH} ',
+            'legend lower': '',
+            },
+
+        'X300toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(300)#it{HH} ',
+            'legend lower': '',
+            },
+
+        'X325toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(325)#it{HH} ',
+            'legend lower': '',
+            },
+
+        'X350toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(350)#it{HH} ',
+            'legend lower': '',
+            },
+
+        'X400toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(400)#it{HH} ',
+            'legend lower': '',
+        },
+        'X450toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(450)#it{HH} ',
+            'legend lower': '',
+        },
+        'X500toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(500)#it{HH} ',
+            'legend lower': '',
+        },
+        'X550toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(550)#it{HH} ',
+            'legend lower': '',
+        },
+        'X600toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(600)#it{HH} ',
+            'legend lower': '',
+        },
+        'X700toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(700)#it{HH} ',
+            'legend lower': '',
+        },
+       'X800toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(800)#it{HH} ',
+            'legend lower': '',
+        },
+
+       'X900toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(900)#it{HH} ',
+            'legend lower': '',
+        },
+
+        'X1000toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(1000)#it{HH} ',
+            'legend lower': '',
+        },
+
 
 
 
