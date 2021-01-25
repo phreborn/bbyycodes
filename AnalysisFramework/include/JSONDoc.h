@@ -42,6 +42,10 @@ namespace mytest {
     std::map <std::string, std::string, std::less<std::string> > nameMap;
   };
 
+  struct Reweight {
+    std::map <std::string, std::string, std::less<std::string> > reweightMap;
+  };
+
   struct Lumi {
     std::map <std::string, double, std::less<std::string> > lumiMap;
   };
@@ -71,6 +75,7 @@ namespace mytest {
     Sel selections;
     Lumi luminosity;
     Name name;
+    Reweight reweight;
     Bins bins;
     MCSamples samples;
     Dumper dumper;

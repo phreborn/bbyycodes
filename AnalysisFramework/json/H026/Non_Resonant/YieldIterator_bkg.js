@@ -1,10 +1,6 @@
 {
   "sequencer":["YieldCalculator"],
 
-    "name":{
-	"yields" : "Background_yields"
-    },
-    
     "directories":{
         "mc16a" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h026_diphotonselection/mc16a/",
         "mc16d" : "root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-hdbs/diHiggs/yybb/skimmed_samples_h026_diphotonselection/mc16d/",
@@ -81,88 +77,7 @@
 		"mc16e" : "mc16e.PowhegPy8_WmH125J.root"
             },
             "histoName" : "CutFlow_PowhegPy8_WmH125J_noDalitz_weighted"
-	},
-
-	"ZH":     {
-            "datafiles" : {
-		"mc16a" : "mc16a.PowhegPy8_ZH125J.root",
-		"mc16d" : "mc16d.PowhegPy8_ZH125J.root",
-		"mc16e" : "mc16e.PowhegPy8_ZH125J.root"
-            },
-            "histoName" : "CutFlow_PowhegPy8_ZH125J_noDalitz_weighted"
-	},
-
-	"ggZH":   {
-            "datafiles" : {
-		"mc16a" : "mc16a.PowhegPy8_ggZH125.root",
-		"mc16d" : "mc16d.PowhegPy8_ggZH125.root",
-		"mc16e" : "mc16e.PowhegPy8_ggZH125.root"
-            },
-            "histoName" : "CutFlow_PowhegPy8_ggZH125_noDalitz_weighted"
-	},
-	
-	"ttH":    {
-            "datafiles" : {
-		"mc16a" : "mc16a.PowhegPy8_ttH125_fixweight.root",
-		"mc16d" : "mc16d.PowhegPy8_ttH125_fixweight.root",
-		"mc16e" : "mc16e.PowhegPy8_ttH125_fixweight.root"
-            },
-            "histoName" : "CutFlow_PowhegPy8_ttH125_fixweight_noDalitz_weighted"
-	},
-
-	"bbH":    {
-            "datafiles" : {
-		"mc16a" : "mc16a.PowhegPy8_bbH125.root",
-		"mc16d" : "mc16d.PowhegPy8_bbH125.root",
-		"mc16e" : "mc16e.PowhegPy8_bbH125.root"
-            },
-            "histoName" : "CutFlow_PowhegPy8_bbH125_noDalitz_weighted"
-	},
-
-	"tWH":    {
-            "datafiles" : {
-		"mc16a" : "mc16a.aMCnloPy8_tWH125.root",
-		"mc16d" : "mc16d.aMCnloPy8_tWH125.root",
-		"mc16e" : "mc16e.aMCnloPy8_tWH125.root"
-            },
-            "histoName" : "CutFlow_aMCnloPy8_tWH125_noDalitz_weighted"
-	},
-
-	"tHjb":   {
-            "datafiles" : {
-		"mc16a" : "mc16a.aMCnloPy8_tHjb125_4fl_shw_fix.root",
-		"mc16d" : "mc16d.aMCnloPy8_tHjb125_4fl_shw_fix.root",
-		"mc16e" : "mc16e.aMCnloPy8_tHjb125_4fl_shw_fix.root"
-            },
-            "histoName" : "CutFlow_aMCnloPy8_tHjb125_4fl_noDalitz_weighted"
-	},
-
-	"ttyy_nohad":     {
-            "datafiles" : {
-		"mc16a" : "mc16a.MGPy8_ttgammagamma_noallhad_AF2.root",
-		"mc16d" : "mc16d.MGPy8_ttgammagamma_noallhad_AF2.root",
-		"mc16e" : "mc16e.MGPy8_ttgammagamma_noallhad_AF2.root"
-            },
-            "histoName" : "CutFlow_MGPy8_ttgammagamma_noallhad_AF2_noDalitz_weighted"
-	},
-
-	"ttyy_had":       {
-            "datafiles" : {
-		"mc16a" : "mc16a.MGPy8_ttgammagamma_allhad_AF2.root",
-		"mc16d" : "mc16d.MGPy8_ttgammagamma_allhad_AF2.root",
-		"mc16e" : "mc16e.MGPy8_ttgammagamma_allhad_AF2.root"
-            },
-            "histoName" : "CutFlow_MGPy8_ttgammagamma_allhad_AF2_noDalitz_weighted"
-	},
-
-        "yyjj":    {
-            "datafiles" : {
-		"mc16a" : "mc16a.Sherpa2_diphoton_myy_90_175.root",
-		"mc16d" : "mc16d.Sherpa2_diphoton_myy_90_175.root",
-                "mc16e" : "mc16e.Sherpa2_diphoton_myy_90_175.root"
-            },
-            "histoName" : "CutFlow_Sherpa2_myy_90_175_noDalitz_weighted"
-        }
+	}
 	
     }
     
