@@ -150,7 +150,7 @@ if separateHiggsBackgrounds and merge_HH:
         Tex.write(" & $"+str(round(WH[Reg.index(r)],n))+" \pm "+str(round(WH_unc[Reg.index(r)],n))+"$ ")
     Tex.write(" \\\ ")
 
-if not separateHiggsBackgrounds:
+if not separateHiggsBackgrounds and SingleHiggs[0] in yields.keys():
     Tex.write(" \n Single Higgs ")
     for r in Reg:
         Tex.write(" & $"+str(round(SingleH[Reg.index(r)],n))+" \pm "+str(round(SingleH_unc[Reg.index(r)],n))+"$ ")
@@ -170,7 +170,7 @@ if mergettyyBackgrounds:
         Tex.write(" & $"+str(round(ttyy[Reg.index(r)],n))+" \pm "+str(round(ttyy_unc[Reg.index(r)],n))+"$ ")
     Tex.write(" \\\ ")
 
-if not separateyyjetsBackgrounds:
+if not separateyyjetsBackgrounds and yyjets[0] in yields.keys():
     Tex.write(" \n yy+jets ")
     for r in Reg:
         Tex.write(" & $"+str(round(yyjets[Reg.index(r)],n))+" \pm "+str(round(yyjets_unc[Reg.index(r)],n))+"$ ")
