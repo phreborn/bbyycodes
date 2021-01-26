@@ -23,7 +23,7 @@ void YieldIterator::execute()
 
   std::ofstream fileOut;
   std::ofstream jsonOut;
-  std::cout << "Yield fila name: " << file_name << std::endl;
+  std::cout << "Yield file name: " << file_name << std::endl;
   fileOut.open(file_name+".txt");                                                                                                                           
   jsonOut.open(file_name+".js");                                                                                                                            
   jsonOut<<"{"<<std::endl;
@@ -154,6 +154,7 @@ void YieldIterator::execute()
         
 	  TFile* file=ROOTHelper::GetTFile(sampleName,mc,dataDir+fileName);
 	  std::string histoName=thisSample.histoName;
+	  //std::cout << histoName << std::endl;
 	  TH1* histo=dynamic_cast<TH1*>(file->Get(histoName.c_str()));
 	  double sum1=0,sum2=0,sum3=0;
 	  if (histo) {
@@ -197,7 +198,6 @@ void YieldIterator::execute()
 	    }
 
 	    his->Scale(lumi*theXStimesBR/sum_weights);
-	  
 	    double e;
 	    double integ = his->IntegralAndError(0,his->GetNbinsX(),e);
 	    total_counts+=tree->GetEntries(select.c_str());
@@ -244,9 +244,7 @@ void YieldIterator::execute()
       }
       jsonOut<<"}"<<sampleCommaIfInternal<<std::endl;
     }
-    //jsonOut<<"}"<<sampleCommaIfInternal<<std::endl;
 
-    //jsonOut<<"}"<<sampleCommaIfInternal<<std::endl;
   }
   fileOut.close();
   jsonOut<<"}"<<std::endl;
