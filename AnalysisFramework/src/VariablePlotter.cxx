@@ -68,7 +68,7 @@ void VariablePlotter::execute()
   // For logging purposes, used later
   std::string logging;
 
-  std::map<std::string, TH1F*, std::less<std::string> > sumhistoMap;
+  //std::map<std::string, TH1F*, std::less<std::string> > sumhistoMap;
 
   float theXStimesBR = 1.0;
   // Add a map for the resonant signal x-section * BR
@@ -114,37 +114,42 @@ void VariablePlotter::execute()
     std::string sampleName=iSample.first;
     const std::string basic_sampleName=iSample.first;
     
-    for (auto iCut : cutFlows) {
-      
-      for (auto ikk : document.variables.varMap) {
-	std::string variableName = ikk.first;
-	std::string variableValue = (ikk.second).first;
-	int nbins = (ikk.second).second.nBins;
-	double lowerBin = (ikk.second).second.lowerBin;
-	double upperBin = (ikk.second).second.upperBin;
-	std::string his = "sumHisto_" + variableName + "_" + iCut;
-	TH1F *sumHisto = new TH1F(his.c_str(), his.c_str(), nbins, lowerBin, upperBin);
-	std::cout << "his = " << his << std::endl;
-	sumhistoMap[his] = sumHisto;
-      }
-    }
-      
-    for (auto iMC : mcCampaigns) {
-      const std::string mc = iMC;
-      MC_counter++;
+    for (auto iWeight=reweight_name.begin();iWeight!=reweight_name.end();++iWeight){ //Remaking this into\                                   
+
+      std::string weight_name = *iWeight;
+      if (weight_name.empty() and reweight_name.size() > 1) {sampleName = basic_sampleName+"_unweighted";}
+      if (!weight_name.empty()) {sampleName = basic_sampleName+"_"+weight_name;} //Add reweighting to sample name                         
+                                                                                                                                           
+      std::cout << " \n "<< sampleName << " \n " << std::endl;
+
+
+      std::map<std::string, TH1F*, std::less<std::string> > sumhistoMap;
+
       for (auto iCut : cutFlows) {
-
-	for (auto iWeight=reweight_name.begin();iWeight!=reweight_name.end();++iWeight){ //Remaking this into iterator loop to be able to construct the json 
-	  
-	  std::string weight_name = *iWeight;
-	  if (weight_name.empty() and reweight_name.size() > 1) {sampleName = basic_sampleName+"_unweighted";} 
-	  if (!weight_name.empty()) {sampleName = basic_sampleName+"_"+weight_name;} //Add reweighting to sample name                             
-	  std::cout << sampleName << std::endl;
-
-	  outfile = new TFile(("plots/" + sampleName + "_" + iCut + ".root").c_str(), "RECREATE");
 	
-	  std::cout << "in CUT FLOWS" << std::endl;
-	  
+	for (auto ikk : document.variables.varMap) {
+	  std::string variableName = ikk.first;
+	  std::string variableValue = (ikk.second).first;
+	  int nbins = (ikk.second).second.nBins;
+	  double lowerBin = (ikk.second).second.lowerBin;
+	  double upperBin = (ikk.second).second.upperBin;
+	  std::string his = "sumHisto_" + variableName + "_" + iCut;
+	  TH1F *old_histo = (TH1F*)gROOT->FindObject(his.c_str()); //Fixing memory leak 
+	  if (old_histo) delete old_histo; //Fixing memory leak
+	  TH1F *sumHisto = new TH1F(his.c_str(), his.c_str(), nbins, lowerBin, upperBin); 
+	  sumhistoMap[his] = sumHisto;
+	}
+      }
+      
+      for (auto iMC : mcCampaigns) {
+	const std::string mc = iMC;
+	MC_counter++;
+	std::cout <<  iMC  << std::endl;
+	for (auto iCut : cutFlows) {
+      	  
+	  outfile = new TFile(("plots/" + sampleName + "_" + iCut + ".root").c_str(), "RECREATE");
+	  std::cout << iCut << std::endl;
+
 	  // Adding an additional truth-matching feature, which we only need when
 	  // running on the yy samples to get the yycj, yybj, yylj separation
 	  //std::string truthMatch = "";
@@ -204,7 +209,7 @@ void VariablePlotter::execute()
 	  
 	  TFile* file = ROOTHelper::GetTFile(sampleName, mc, dataDir + fileName);
 	  std::string histoName = thisSample.histoName;
-	  std::cout << "Histo Name " << thisSample.histoName << std::endl;
+	  //if (MC_counter == 1) std::cout << "Histo Name " << thisSample.histoName << std::endl;
 	  TH1* histo = dynamic_cast<TH1*>(file->Get(histoName.c_str()));
 	  double sum1 = 0, sum2 = 0, sum3 = 0;
 	  if (histo) {
@@ -215,7 +220,6 @@ void VariablePlotter::execute()
 	  }
 	  //First, determine the sum of weights from the MxAOD object
 	  double sum_weights = (sum1 / sum2) * sum3; //AllEvents*(NxAOD/DxAOD) -- for signal samples it does not matter since the number of events in the DxAOD is the same as the number in MxAOD, but it does matter for backgrounds, which have skimming applied at the DxAOD level
-	  std::cout << "sum_weights " << sum_weights << std::endl;
 	  TTree* tree = (TTree*)file->Get("CollectionTree");
 
 	  // Now loop over the variables, scale to the appropriate lumi, and add the histogram
@@ -228,7 +232,7 @@ void VariablePlotter::execute()
 	    int nbins = (iVar.second).second.nBins;
 	    double lowerBin = (iVar.second).second.lowerBin;
 	    double upperBin = (iVar.second).second.upperBin;
-	    std::cout << "   ++++ bins " << nbins << " " << lowerBin << " " << upperBin << " hname " << hName << std::endl;
+	    //if (MC_counter == 1) std::cout << "   ++++ bins " << nbins << " " << lowerBin << " " << upperBin << " hname " << hName << std::endl;
 	    std::shared_ptr<TH1F> his = std::make_shared<TH1F>(hName.c_str(), hName.c_str(), nbins, lowerBin, upperBin);
 	    
 	    if (var.find("*FJvt") != std::string::npos) {                                               
@@ -236,7 +240,7 @@ void VariablePlotter::execute()
 	    }
 	    std::string vvar = var + " >> " + hName;
 	    //std::cout << "Drawing with selection: " << select.c_str() << " and weight: " << weight.c_str() << " and weighted selection " << weighted_selection.c_str() << std::endl;
-	    std::cout << "Drawing weighted selection " << weighted_selection.c_str() << std::endl;
+	    //if (MC_counter == 1) std::cout << "Drawing weighted selection " << weighted_selection.c_str() << std::endl;
 	    //tree->Draw(vvar.c_str(),select.c_str(),"HIST")	  
 	    tree->Draw(vvar.c_str(), weighted_selection.c_str(), "HIST");
 	    //tree->Draw(vvar.c_str(),"","HIST");
@@ -251,11 +255,10 @@ void VariablePlotter::execute()
 	    //std::cout<< "added histo =====" << std::endl;
 	    //std::cout<< "VAR = " << var << ",     VAR NAME = " << varName << ", iMC = " << iMC << std::endl;
 	  }//iVar
-	  std::cout << "Finished creating histograms" << std::endl;
 	
 	  if (dumpNtuple) {
 	    
-	    //std::cout << "In DUMP NTUPLE from VariablePlotter.cxx" << std::endl;
+	    //std::cout << "Dumping ntuple" << std::endl;
 
 	    ROOT::RDataFrame df(*tree);
 	    
@@ -280,9 +283,8 @@ void VariablePlotter::execute()
 		    var = var+"*"+document.reweight.reweightMap[weight_name];
 		  }
 		  
-		  std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
+		  //if (MC_counter == 1) std::cout<< "In dump ntuple, varName =======" << varName << ", var ======" << var << std::endl;
 		  df_with_defines = df_with_defines.Define(varName, var);
-		  //std::cout << "Defined"  << std::endl;
 		  if (j == "weight") {
 		    auto df_total_weight = std::to_string(df_SF) + "*" + var;
 		    df_with_defines = df_with_defines.Define("total_weight", df_total_weight);
@@ -297,7 +299,7 @@ void VariablePlotter::execute()
 	      }*/
 	    
 	    df_with_defines.Snapshot(tree->GetName(), "plots/" + sampleName + "_" + mc + "_" + iCut + "_tree.root", treeList, opts);
-	    std::cout << "I have just created a snapshot for " << "plots/" + sampleName + "_" + mc + "_" + iCut + "_tree.root" <<  std::endl;
+	    //std::cout << "I have just created a snapshot for " << "plots/" + sampleName + "_" + mc + "_" + iCut + "_tree.root" <<  std::endl;
 	    
 	    if (MC_counter == 1) {
 	      outName.push_back(sampleName + "_" + iCut + "_tree.root");
@@ -312,32 +314,30 @@ void VariablePlotter::execute()
 	      iy.second->Write();
 	    //std::cout<< "check ===== " << iy.first << " " << hasEnding(iy.first,iCut) <<std::endl;
 	  }
-	  outfile->ls();
+	  if (MC_counter == 1) outfile->ls();
 	  outfile->Close();
-	}//extra-weight   
-      }//CutFlows
-    } // MCCampaigns
+	  
+	}//CutFlows
+      } // MCCampaigns
+      MC_counter = 0;
+    }//extra-weight		      
+  }//samples                                                                                                           
 
-    if (dumpNtuple) { //merge trees per MC campaign
-      for (int i = 0; i < outName.size(); i++) {
-	//std::cout<< "In loop for hadd  ===== " << std::endl;
-	//std::cout<< "Before Merging  ===== " << std::endl;
-	std::cout<< "=======THIS IS OUTNAME: " << outName.at(i) << ", and this is OUTNAMEMERGE: " << outNameMerge.at(i) << std::endl;
-	std::string hadd = "hadd -f ./plots/" + outName.at(i) + " ./plots/" + outNameMerge.at(i);
-	std::cout << "I am about to execute this:" << hadd << std::endl;
-	system(hadd.c_str());
-      }
-      system("rm ./plots/*mc16*_tree.root");
+
+  if (dumpNtuple) { //merge trees per MC campaign
+    for (int i = 0; i < outName.size(); i++) {
+      //std::cout<< "In loop for hadd  ===== " << std::endl;
+      //std::cout<< "Before Merging  ===== " << std::endl;
+      //std::cout<< "=======THIS IS OUTNAME: " << outName.at(i) << ", and this is OUTNAMEMERGE: " << outNameMerge.at(i) << std::endl;
+      std::string hadd = "hadd -f ./plots/" + outName.at(i) + " ./plots/" + outNameMerge.at(i);
+      //std::cout << "I am about to execute this:" << hadd << std::endl;
+      system(hadd.c_str());
     }
+    system("rm ./plots/*mc16*_tree.root");
+  }
     
-    outName.clear();
-    outNameMerge.clear();
-    MC_counter = 0;
-    //std::cout<< "Before clear map ===== " << std::endl;
-    sumhistoMap.clear();
-    
-    //std::cout<< "After clear map ===== " << std::endl;
-  }//samples
+  outName.clear();
+  outNameMerge.clear();
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
   std::cout << "Execution time difference = " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[s]" << std::endl;
   std::cout << std::endl << std::endl << " VariablePlotter::execute() done !!!! " << std::endl << std::endl;
