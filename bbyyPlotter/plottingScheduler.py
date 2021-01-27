@@ -15,7 +15,7 @@ import collections
 from math import sqrt
 from PyPlotter import *
 from histoDictionary import *
-import PlottingList as p
+from PlottingList import*
 
 # ROOT global plot settings
 r.gROOT.LoadMacro("./atlasstyle-00-03-05/AtlasStyle.C")
@@ -42,7 +42,9 @@ sampleDict = SampleDict()
 selectionDict = SelectionDict()
 signalDict = SignalDict()
 
+debug = False # Set to true to see added samples
 rebin = False # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
+
 
 def createUpperPad(mcOnly=True, logOn=False):
   if mcOnly: 
@@ -57,26 +59,9 @@ def createUpperPad(mcOnly=True, logOn=False):
       padhigh.SetLogy()
   return padhigh
 
-def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBackgrounds=False,inputPath="",outputPath="./Plots/", signal="",region=""):
+def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggsBackgrounds=False, inputPath="", outputPath="./Plots/"):
               
   XsubRange = False
-
-  print(region)
-  if region !="none":
-      print ("You have specified the selection: "+region)
-      selections=[region]
-  else:
-      selections = p.selections
-        
-  if signal !="none":
-      print ("You have specified the signal: "+signal)
-      signals=[signal]
-  else:
-      signals = p.signals
-
-  histosToPlot = p.histosToPlot
-  samplesToStack = p.samplesToStack
-
 
   if UNBLIND:
       print('WARNING: You have unblinded the analysis! Are you sure you want to do this?')
@@ -118,7 +103,8 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
           # Loop over the samples, adding them to the THStack 
           for sample in samplesToStack: 
               infile = r.TFile.Open(inDir+sample+'_'+selection+'.root')
-              theHisto = infile.Get(path+histo+selection)  
+              theHisto = infile.Get(path+histo+selection)
+	      print(path+histo+selection) 
               r.gROOT.cd() 
               '''
               if rebin: 
@@ -157,7 +143,6 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
                     addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                     getSumHist(newHisto, sumHist)
                 else:
-
                   if not('H' in sample) or ('HH' in sample): # single Higgs will be merged seperately below
                         addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                         getSumHist(newHisto, sumHist)
@@ -208,23 +193,22 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
               if XsubRange : 
                 dataGraph.GetXaxis().SetLimits(low_edge,high_edge)
               dataGraph.Draw("EP SAME") #JP
-
+          '''
           # Inject the non SM-HH/VBF signals
 
           for sample in signals:                
-              print ("Signal = ",sample)
+              if debug: 
+                print ("Signal = ",sample)
               infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
               theHisto = infile.Get(path + histo+selection)
-              print("hola")
               if (sample == signals[0]):
                   y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
-              print("adios")
               if rebin: theHisto.Rebin(histoDict[str(histo)]['rebin'])
               r.gROOT.cd()
               newHisto = theHisto.Clone()
               addSignalStack(newHisto, sigHist, signalDict[str(sample)]['color'], theLegend, signalDict[str(sample)]['legend description'])
           sigHist.Draw("HIST nostack SAME")
-
+          '''
           # Set up ATLAS label
           l = r.TLatex()
           l.SetNDC()
@@ -338,7 +322,7 @@ def main(plotDump=False,UNBLIND=False,mcOnly=False,logOn=False,separateHiggsBack
           # del ratioGraph
                   
 if __name__ == "__main__":
-    
+  
   # Adding an argument parser, which we might want to use  a
   from argparse import ArgumentParser
   parser = ArgumentParser()
@@ -349,8 +333,6 @@ if __name__ == "__main__":
   parser.add_argument("-o", "--outputPath", help="Path to the output directory.",default="./Plots/") 
   parser.add_argument("-p", "--plotDump", help="Option for making plots in different formats.", action="store_true", default=False) 
   parser.add_argument("-UB", "--UNBLIND", help="",action="store_true",default=False) 
-  parser.add_argument("-s", "--signal", help="Specify the signal when running",default="none")
-  parser.add_argument("-r", "--region", help="Specify the region when running",default="none")
 
   options = parser.parse_args()
 
@@ -359,13 +341,12 @@ if __name__ == "__main__":
   outDir = options.outputPath
   if not os.path.exists(outDir):
          os.makedirs(outDir)
-         print ("The output directory did not exist, I have just created one: ", outDir)
+         print "The output directory did not exist, I have just created one: ", outDir   
 
   # Defining dictionary to be passed to the main function
   option_dict = dict((k, v) for k, v in vars(options).iteritems() if v is not None)
-  print (option_dict)
+  print option_dict
   main(**option_dict)
-
 
 
 
