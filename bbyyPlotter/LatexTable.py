@@ -27,7 +27,7 @@ parser.add_argument("-yyjj", "--separateyyjets", help="separate di-photon + jets
 parser.add_argument("-ttyy", "--mergettyy", help="merge ttbar di-photon backgrounds", action="store_false", default=False)
 parser.add_argument("-HH", "--merge_HH", help="merge HH ggF and VBF samples", action="store_true", default=False)
 
-parser.add_argument("-d", "--decimals", help="Number of decimals to round to", default=3)
+parser.add_argument("-d", "--decimals", help="Number of decimals to round to", default="3")
 
 
 opts = parser.parse_args()
@@ -47,7 +47,7 @@ print(name)
 
 File = opts.path+opts.name
 out = opts.output
-n = opts.decimals
+n = int(opts.decimals)
 
 # Single Higgs backgrounds
 SingleHiggs = ['ggH','VBFH','WpH','WmH','ZH','ggZH','ttH','bbH','tWH','tHjb']
@@ -55,7 +55,7 @@ ZH_m = ["ZH","ggZH"]
 WH_m = ["WpH", "WmH"]
 HH_m = ["HH", "VBF"]
 
-yyjets = ['yy'] # Useful if you have decided to split yy+jets by jet flavour!
+yyjets_list = ['yy'] # Useful if you have decided to split yy+jets by jet flavour!
 
 ttyy = ['ttyy_had', 'ttyy_nohad']
 
@@ -96,7 +96,7 @@ if merge_HH:
     Bkg = NoHHBkg
 
 if not separateyyjetsBackgrounds:
-    yyjets, yyjets_unc, NojjyyBkg =  MergeBackgrounds(yyjets, Reg, Bkg, yields)
+    yyjets, yyjets_unc, NojjyyBkg =  MergeBackgrounds(yyjets_list, Reg, Bkg, yields)
     Bkg = NojjyyBkg
 
 if mergettyyBackgrounds:
@@ -150,7 +150,7 @@ if separateHiggsBackgrounds and merge_HH:
         Tex.write(" & $"+str(round(WH[Reg.index(r)],n))+" \pm "+str(round(WH_unc[Reg.index(r)],n))+"$ ")
     Tex.write(" \\\ ")
 
-if not separateHiggsBackgrounds:
+if not separateHiggsBackgrounds and SingleHiggs[0] in yields.keys():
     Tex.write(" \n Single Higgs ")
     for r in Reg:
         Tex.write(" & $"+str(round(SingleH[Reg.index(r)],n))+" \pm "+str(round(SingleH_unc[Reg.index(r)],n))+"$ ")
@@ -170,7 +170,7 @@ if mergettyyBackgrounds:
         Tex.write(" & $"+str(round(ttyy[Reg.index(r)],n))+" \pm "+str(round(ttyy_unc[Reg.index(r)],n))+"$ ")
     Tex.write(" \\\ ")
 
-if not separateyyjetsBackgrounds:
+if not separateyyjetsBackgrounds and (yyjets_list[0] in yields.keys()):
     Tex.write(" \n yy+jets ")
     for r in Reg:
         Tex.write(" & $"+str(round(yyjets[Reg.index(r)],n))+" \pm "+str(round(yyjets_unc[Reg.index(r)],n))+"$ ")

@@ -97,6 +97,15 @@ namespace mytest {
   
   }
 
+  void from_json(const json& j, Reweight& p)
+  {
+    for (auto it = j.begin(); it != j.end(); ++it) {
+      p.reweightMap [it.key()]=it.value();
+    }
+
+  }
+
+
   void from_json(const json& j, Dumper& p)
   {
     for (auto it = j.begin(); it != j.end(); ++it) {

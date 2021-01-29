@@ -73,6 +73,10 @@ void JSONParser::CreateDocument(json& jj)
     else if (key == "name") {
       document.name = pp;
     }
+    else if (key == "reweight") {
+      document.reweight = pp;
+    }
+
 
   }	
 }
