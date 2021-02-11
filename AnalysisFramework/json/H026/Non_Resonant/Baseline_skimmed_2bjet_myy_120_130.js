@@ -105,8 +105,8 @@
     "btag77_withTop_BCal_looseScore_LMass": "(HGamEventInfoAuxDyn.isPassed == 1 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.DL1r_FixedCutBEff_77[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix] && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.DL1r_FixedCutBEff_77[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]  && (((HGamEventInfoAuxDyn.yybb_nonRes_XGBoost_btag77_BCal_Cat/1000) % 10) == 4) && HGamEventInfoAuxDyn.m_yy*0.001 > 120 && HGamEventInfoAuxDyn.m_yy*0.001 < 130)   "
   },
   "lumi": {
-    "mc16a": 36209.04,
-    "mc16d": 44385.7,
+    "mc16a": 36207.66,
+    "mc16d": 44307.4,
     "mc16e": 58450.1
   },
   "samples": {
