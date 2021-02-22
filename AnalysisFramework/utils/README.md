@@ -63,6 +63,8 @@ cd AnalysisFramework/utils
 
 **== Non-resonant case ==**
 
+This will produce the new histograms that can be directly used in bbyyPlotter.
+
 ./compile.sh ApplySF 
 
 ./ApplySF.sh
@@ -70,6 +72,8 @@ cd AnalysisFramework/utils
 
 
 **== Resonant case ==**
+
+This will print out the SFs to be added By Hand into the new json files.
 
 ./compile.sh ApplySF_Resonant
 
@@ -79,11 +83,9 @@ cd AnalysisFramework/utils
 
 ## Step 3 (For resonant case)
 
-**ApplySF_Resonant will print out the SFs to be applied in the histograms.**
-
 **Go to AnalysisFramework and produce the hostograms again using new json files where SFs are applied to the weights.**
 
-**Now nominal cuts are applied, adding m_yyjj cut.**
+**Now nominal cuts are applied, adding m_yyjj cut back.**
 
 yy samples, nominal selections = yy.js
 

@@ -32,9 +32,9 @@ int main(int argc, char** argv)
 	TString varName=argv[6];
 
 
-	TString dir = "/afs/cern.ch/work/z/zijia/private/hgam-HHyybb-v1_10_11/code/AnalysisFramework/run/plots/";
+	TString dir = "../run/plots/";
 
-	TFile * purityFile = new TFile("/afs/cern.ch/work/z/zijia/private/hgam-HHyybb-v1_10_11/code/AnalysisFramework/Nonresonant_purity.root", "read");
+	TFile * purityFile = new TFile("Nonresonant_purity.root", "read");
 	TH1F * ggHist = (TH1F *) purityFile->Get("gg"); 
 	TH1F * jgHist = (TH1F *) purityFile->Get("jg"); 
 	TH1F * jjHist = (TH1F *) purityFile->Get("jj"); 
@@ -79,6 +79,7 @@ int main(int argc, char** argv)
 
 	float purity, N_data, N_ttyy, N_target;	
 	N_data = dataHist_1->Integral();
+	cout<<"ttyyallHist_1= "<<ttyyallHist_1->Integral()<<" ttyynoHist_1= "<<ttyynoHist_1->Integral()<<endl;
 	N_ttyy = ttyyallHist_1->Integral() + ttyynoHist_1->Integral();
 	N_target = targetHist_1->Integral();
 
@@ -140,7 +141,6 @@ int main(int argc, char** argv)
 
 	}
 
-	//cout<<regionName<<endl;
 
 	TFile * yyFile = new TFile(dir+Form("yy_%s.root", regionName.Data()), "read");
 	TH1F * yyHist_1 = (TH1F *) yyFile->Get(Form("sumHisto_%s_%s", varNames[0].Data(), regionName.Data()));
@@ -153,7 +153,10 @@ int main(int argc, char** argv)
 		N_target = new_N_target;
 	}
 
+	//float SF = purity * (N_data) / N_target;
 	float SF = purity * (N_data - N_ttyy) / N_target;
+	cout<<"purity = "<<purity<<endl;
+	cout<<N_data<<" - "<<N_ttyy<<" / "<<N_target<<endl;
 	if (N_target==0) SF=1;
 
 	outHist_1->Scale(SF);

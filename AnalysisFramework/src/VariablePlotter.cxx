@@ -158,19 +158,25 @@ void VariablePlotter::execute()
 	  if (sampleName == "yylj") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
 
 	  // Have a specific XStimesBR if we are running on a resonant signal
+	  /*
 	  if (sampleName.find("toHH") != std::string::npos) {
 	    std::string sampleNameShort;
 	    sampleNameShort = sampleName;
 	    int pos = sampleNameShort.find("toHH") + 4; // not beautiful, should be changed
 	    sampleNameShort.erase(pos, -1); //erase everything that comes after "toHH". This allows to attach strings in the names of the resonant samples in the json files, which might be useful for making the validation plots, and at the same time keep the same mapping for the XS.
 	    theXStimesBR = XStimesBR[sampleNameShort];
+	    std::cout<<"ZIHANG XSBR= "<<theXStimesBR<<std::endl;
 	  }
+	  */
 	  
 	  logging = sampleName + "_" + mc + "_" + iCut;
 
 	  // Pick up the selections for each of the different categories
 	  std::string select = document.selections.selMap[iCut];
+	  //std::cout<<"ZIHANG select= "<<select<<std::endl;
+	  if (select.find("HGamEventInfoAuxDyn.isPassed") != std::string::npos) {
 	  select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed" + truthMatch);
+	  }
 	  if (sampleName == "data") select = document.selections.dataSel;
 	  // Below removed to now
 	  //if (document.selections.weight.empty()) select+="*"+document.selections.weight;
