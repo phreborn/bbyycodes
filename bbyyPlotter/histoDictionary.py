@@ -275,7 +275,7 @@ def SampleDict():
 
         'Resonance': {
             'color':  5, ## Resonance
-            'legend description': 'HH Resonance}',
+            'legend description': 'HH Resonance',
         },
 
         'yy': {

@@ -219,7 +219,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           r.ATLASLabel(l1,l2,"Internal")
           l.SetTextFont(42)
           l.SetTextSize(0.04)
-          l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139.7 fb^{-1}")
+          l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139.0 fb^{-1}")
           l.DrawLatex(l1, 0.80, selectionDict[str(selection)]['legend upper'])
           l.DrawLatex(l1, 0.76, selectionDict[str(selection)]['legend lower'])
           
