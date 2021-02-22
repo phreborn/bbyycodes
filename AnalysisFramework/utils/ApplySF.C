@@ -83,7 +83,7 @@ int main(int argc, char** argv)
 	N_ttyy = ttyyallHist_1->Integral() + ttyynoHist_1->Integral();
 	N_target = targetHist_1->Integral();
 
-	if (targetName.Contains("yy")|| targetName.Contains("yybj") || targetName.Contains("yycj") || targetName.Contains("yyjj")) {
+	if (targetName.Contains("yy")|| targetName.Contains("yybj") || targetName.Contains("yycj") || targetName.Contains("yylj")) {
 		TH1F * purityHist = (TH1F*)ggHist->Clone("purity");
 		if (regionName.Contains("Validation_2bjet")) {
 			purity=purityHist->GetBinContent(5);
@@ -149,7 +149,7 @@ int main(int argc, char** argv)
 	TH1F * yyHist_4 = (TH1F *) yyFile->Get(Form("sumHisto_%s_%s", varNames[3].Data(), regionName.Data()));
 	TH1F * yyHist_5 = (TH1F *) yyFile->Get(Form("sumHisto_%s_%s", varNames[4].Data(), regionName.Data()));
 	float new_N_target = yyHist_1->Integral();
-	if (targetName.Contains("yybj") || targetName.Contains("yycj") || targetName.Contains("yyjj")) {
+	if (targetName.Contains("yybj") || targetName.Contains("yycj") || targetName.Contains("yylj")) {
 		N_target = new_N_target;
 	}
 
