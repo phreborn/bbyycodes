@@ -30,9 +30,7 @@
   
       "weight" : "HGamEventInfoAuxDyn.crossSectionBRfilterEff*HGamEventInfoAuxDyn.weight*HGamEventInfoAuxDyn.yybb_weight*HGamEventInfoAuxDyn.weightFJvt",
 
-
-      "X500toHH_BDT_Selection_h026_optimized" : "(HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.DL1r_FixedCutBEff_77[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix] && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.DL1r_FixedCutBEff_77[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix] && 1/sqrt( pow(0.65,2)+pow(0.35,2) ) * sqrt( pow(0.65,2)*pow((HGamEventInfoAuxDyn.yybb_Res_BDT_BCal_yy_Score+1)/2,2) + pow(0.35,2)*pow((HGamEventInfoAuxDyn.yybb_Res_BDT_BCal_ttH_Score+1)/2,2) ) > 0.75 && HGamEventInfoAuxDyn.yybb_BCal_m_yyjj_tilde > ((495.738-2*14.1286)*1000) &&  HGamEventInfoAuxDyn.yybb_BCal_m_yyjj_tilde < ((495.738+2*14.1286)*1000))"
-    
+   "X251toHH_BDT_Selection_h026_optimized" : "(HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.DL1r_FixedCutBEff_77[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix] && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.DL1r_FixedCutBEff_77[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix] && 1/sqrt( pow(0.65,2)+pow(0.35,2) ) * sqrt( pow(0.65,2)*pow((HGamEventInfoAuxDyn.yybb_Res_BDT_BCal_yy_Score+1)/2,2) + pow(0.35,2)*pow((HGamEventInfoAuxDyn.yybb_Res_BDT_BCal_ttH_Score+1)/2,2) ) > 0.7 && HGamEventInfoAuxDyn.yybb_BCal_m_yyjj_tilde > ((249.075-2*3.47843)*1000) &&  HGamEventInfoAuxDyn.yybb_BCal_m_yyjj_tilde < ((249.075+2*3.47843)*1000))" 
  
     },
 
@@ -48,14 +46,15 @@
 
 	"Resonance":{
         "datafiles" : { 
-          "mc16a" : "mc16a.MGH7_X500tohh_bbyy_AF2.root",
-          "mc16d" : "mc16d.MGH7_X500tohh_bbyy_AF2.root",
-          "mc16e" : "mc16e.MGH7_X500tohh_bbyy_AF2.root"
+          "mc16a" : "mc16a.MGH7_X251tohh_bbyy_AF2.root",
+          "mc16d" : "mc16d.MGH7_X251tohh_bbyy_AF2.root",
+          "mc16e" : "mc16e.MGH7_X251tohh_bbyy_AF2.root"
         },
-        "histoName" : "CutFlow_MGH7_X500tohh_bbyy_AF2_noDalitz_weighted"
+        "histoName" : "CutFlow_MGH7_X251tohh_bbyy_AF2_noDalitz_weighted"
       },
-
-	"HH":    {
+        
+        
+    "HH":    {
         "datafiles" : {
           "mc16a" : "mc16a.PowhegH7_HHbbyy_cHHH01d0.root",
           "mc16d" : "mc16d.PowhegH7_HHbbyy_cHHH01d0.root",
@@ -186,6 +185,11 @@
         },
         "histoName" : "CutFlow_aMCnloPy8_tWH125_noDalitz_weighted"
       } 
-     }
+       
+    }
+    
+    
+    
+    
 
 }
