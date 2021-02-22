@@ -65,9 +65,9 @@
     {
       "datafiles":
       {
-        "data1": "data1516.root",
-        "data2": "data17.root",
-        "data3": "data18.root"
+        "data1": "data1516_fix.root",
+        "data2": "data17_fix.root",
+        "data3": "data18_fix.root"
       },
       "histoName": "15_to_18_data_jj"
     }
