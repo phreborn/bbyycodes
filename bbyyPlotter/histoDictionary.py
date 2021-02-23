@@ -213,7 +213,7 @@ def PlottingDict():
         'sumHisto_nonRes_XGBoost_btag77_BCal_withTop_lowMass_Score_': {
             'x-axis title': 'Low Mass BDT Score',
             'y-axis title': 'Events',
-            'units' : 'GeV',
+            'units' : ' ',
             'x-min' : 0.0,
             'x-max' : 1.0,
             'rebin' : 1
@@ -223,7 +223,7 @@ def PlottingDict():
         'sumHisto_nonRes_XGBoost_btag77_BCal_withTop_highMass_Score_': {
             'x-axis title': 'High Mass BDT Score',
             'y-axis title': 'Events',
-            'units' : 'GeV',
+            'units' : ' ',
             'x-min' : 0.0,
             'x-max' : 1.0,
             'rebin' : 1

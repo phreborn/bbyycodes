@@ -87,6 +87,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           ratioHist = r.TH1F()
           dataHist = r.TH1F() # For the ratio
           sumHist = r.TH1F()
+          dihiggsHist = r.TH1F()
+          ttyyHist = r.TH1F()
           dataGraph = r.TGraphErrors()
           dataGraph.SetMarkerColor(r.kBlack)
           dataGraph.SetMarkerStyle(r.kFullDotLarge)
@@ -104,7 +106,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           for sample in samplesToStack: 
               infile = r.TFile.Open(inDir+sample+'_'+selection+'.root')
               theHisto = infile.Get(path+histo+selection)
-	      print(path+histo+selection) 
+              print(sample)
+              print(path+histo+selection) 
               r.gROOT.cd() 
               '''
               if rebin: 
@@ -116,12 +119,12 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
               '''
               if y_title == None:     
                   y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])                    
-                                      
+              
               if sample == '15_to_18_data' and not mcOnly:                    
                   dataHist = theHisto.Clone()  # Get the data, not sure why cloning
                   
                   # Blind the m_yy, m_jj and m_yy_jj
-                  dataHist = setBlindedValuestoZero(dataHist, histo, False) 
+                  dataHist = setBlindedValuestoZero(dataHist, histo, True) 
 
                   # Transfer the histo information to a TGraph for upper pad plotting.
                   i = 0 # counter for datapoints on graph
@@ -138,22 +141,23 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
 
               elif sample != '15_to_18_data': # Sample is MC
                 newHisto = theHisto.Clone()
-
                 if separateHiggsBackgrounds:
                     addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                     getSumHist(newHisto, sumHist)
                 else:
                   if not('H' in sample) or ('HH' in sample): # single Higgs will be merged seperately below
-			if ('VBF' in sample) or ('HH' in sample):
-			  print(sample + 'HH ZIHANG')
-			  dihiggsHist = r.TH1F()
-			  getSumHist(newHisto, dihiggsHist)
-			else:
-			  print(sample + 'others ZIHANG')
-                          addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
-                          getSumHist(newHisto, sumHist)
-	  addStack(dihiggsHist, stackHist, (242, 56, 90), theLegend, 'HH')
-	  getSumHist(dihiggsHist, sumHist)
+                    if ('VBF' in sample) or ('HH' in sample): # Merge VBF HH and HH
+                      print(sample + 'HH ZIHANG')
+                      getSumHist(newHisto, dihiggsHist)
+                    elif ("ttyy" in sample): # Merge ttyy had and non-had
+                      getSumHist(newHisto, ttyyHist)
+                    else:
+                      print(sample + 'others ZIHANG')
+                      addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
+                      getSumHist(newHisto, sumHist)
+
+          addStack(ttyyHist, stackHist, (242, 56, 250), theLegend, 'ttyy')
+          getSumHist(ttyyHist, sumHist)
 
           # New loop to combine the single Higgs backgrounds                                                                     
           if not separateHiggsBackgrounds:
@@ -169,6 +173,10 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
               # Add the combined single Higgs backgrounds back in, unless specified otherwise
               addStack(higgsHist, stackHist, (52, 56, 68), theLegend, 'Single Higgs')   
               getSumHist(higgsHist, sumHist)
+
+          # Add HH last
+          addStack(dihiggsHist, stackHist, (242, 56, 90), theLegend, 'HH')
+          getSumHist(dihiggsHist, sumHist)
           
 
           # Plot the MC Stack (stackHist)
@@ -180,7 +188,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           if mcOnly: 
               stackHist.GetXaxis().SetTitle(histoDict[str(histo)]['x-axis title'])
               stackHist.GetYaxis().SetTitleOffset(2)
-	  y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
+          y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
           stackHist.GetYaxis().SetTitle(y_title)
           stackHist.GetXaxis().SetNdivisions(306)
           stackHist.SetMaximum(1.5*stackHist.GetMaximum())
@@ -210,26 +218,26 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           for sample in signals:                
               if debug: 
                 print ("Signal = ",sample)
-	      if (selection == 'Validation_2bjet'):
-                infile = r.TFile.Open(inDir  + 'Resonance_' + sample + '_' + selection + '.root')
-                theHisto = infile.Get(path + histo+ sample + '_'  + selection)
-	      else:
-	        infile = r.TFile.Open(inDir  + 'Resonance_' + selection + '.root')
-		theHisto = infile.Get(path + histo+ selection)
-              #if (sample == signals[0]):
-              y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
-	      #print('ZIHANG' + inDir + 'Resonance_' + selection + '.root')
-	      #print('ZIHANG' + path + histo + selection)
-	      print('ZIHANG' + histo + selection)
-              if rebin: theHisto.Rebin(histoDict[str(histo)]['rebin'])
-              r.gROOT.cd()
-              newHisto = theHisto.Clone()
-	      if (selection == 'Validation_2bjet'):
-                addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +sample)]['color'], theLegend, signalDict[str('Resonance_' +sample)]['legend description'])
-	      else:
-		print('Resonance_' +selection)
-                addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +selection)]['color'], theLegend, signalDict[str('Resonance_' +selection)]['legend description'])
-          sigHist.Draw("HIST nostack SAME")
+                if (selection == 'Validation_2bjet'):
+                        infile = r.TFile.Open(inDir  + 'Resonance_' + sample + '_' + selection + '.root')
+                        theHisto = infile.Get(path + histo+ sample + '_'  + selection)
+                else:
+                  infile = r.TFile.Open(inDir  + 'Resonance_' + selection + '.root')
+                  theHisto = infile.Get(path + histo+ selection)
+                #if (sample == signals[0]):
+                y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
+                #print('ZIHANG' + inDir + 'Resonance_' + selection + '.root')
+                #print('ZIHANG' + path + histo + selection)
+                print('ZIHANG' + histo + selection)
+                if rebin: theHisto.Rebin(histoDict[str(histo)]['rebin'])
+                r.gROOT.cd()
+                newHisto = theHisto.Clone()
+                if (selection == 'Validation_2bjet'):
+                      addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +sample)]['color'], theLegend, signalDict[str('Resonance_' +sample)]['legend description'])
+                else:
+                      print('Resonance_' +selection)
+                      addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +selection)]['color'], theLegend, signalDict[str('Resonance_' +selection)]['legend description'])
+                sigHist.Draw("HIST nostack SAME")
           
           # Set up ATLAS label
           l = r.TLatex()
@@ -270,7 +278,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             
             # Set up ratio plot 
             ratioHist.Divide(sumHist) 
-            ratioHist = setBlindedValuestoZero(ratioHist, histo, False) 
+            ratioHist = setBlindedValuestoZero(ratioHist, histo, True) 
 
             i = 0 # counter for datapoints on graph
             for xbin in range(0, ratioHist.GetNbinsX()+1):
@@ -330,7 +338,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
               #canv.Print(outDir + histo  + selection+ extra + ".eps", "eps")
               #canv.Print(outDir + histo + selection+ extra + ".root", "root")
           else:
-	      print('OKKKK' + outDir + histo+ selection + extra + ".pdf")
+              print('OKKKK' + outDir + histo+ selection + extra + ".pdf")
               canv.Print(outDir + histo+ selection + extra + ".pdf", "pdf")
 
           # del canv
