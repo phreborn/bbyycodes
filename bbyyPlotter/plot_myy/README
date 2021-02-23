@@ -1,0 +1,18 @@
+plot myy distributions
+
+you will need to provide an input workspace and a snapshot of the fit parameters (here coded to be called ucmles_0)
+in xmlAnaWSBuilder this can be done through something like:
+
+  <Asimov Name="setup"   Setup="klambda=1,mu_XS_HH_ggF=1,mu_XS_HH_VBF=1"     Action=""/>
+  <Asimov Name="POISnap"  Setup=""  Action="savesnapshot" SnapshotPOI="nominalPOI"/>
+  <Asimov Name="NPSnap"   Setup="mu=1"     Action="fixsyst:fit:float:savesnapshot:nominalPOI" SnapshotNuis="nominalNuis" SnapshotGlob="nominalGlobs"/>
+  <Asimov Name="asimovData_0" Setup="mu=1,mu_XS_HH=0"	   Action="fit:genasimov:matchglob:savesnapshot:nominalGlobs" SnapshotGlob="conditionalGlobs_0" SnapshotNuis="conditionalNuis_0"/>
+  <Asimov Name="UCMLES0Snap" Setup=""         Action="savesnapshot" SnapshotAll="ucmles_0"/>
+
+(Here mu is a multiplier on both single H and diHiggs, while mu_XS_HH is only on diHiggs. So this corresponds to a background-only fit over the full mass range and we are saving the fitted NP values into the ucmles_0 snapshot)
+
+To plot: 
+source setup.sh #you might have to change a line here to load RooFitExtensions from your own directory; see https://gitlab.cern.ch/atlas_higgs_combination/software/quickFit
+python plot_yybb.py --weighted 0 --category SM_1 --subpanel 0 #some modification of category names needed if applying to resonant categories, but hopefully not too bad
+
+
