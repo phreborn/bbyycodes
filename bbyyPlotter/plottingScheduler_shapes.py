@@ -186,7 +186,7 @@ def main(mcOnly=False,inputPath="",outputPath="./Plots/"):
             r.ATLASLabel(0.493,0.88,"Internal")
             l.SetTextFont(42)
             l.SetTextSize(0.04)
-            l.DrawLatex(0.493, 0.84, "#it{L} = 139.0 fb^{-1}")
+            l.DrawLatex(0.493, 0.84, "#it{L} = 139 fb^{-1}")
             l.DrawLatex(0.493, 0.80, selectionDict[str(selection)]['legend upper'])
             l.DrawLatex(0.493, 0.76, selectionDict[str(selection)]['legend lower'])
             

@@ -45,10 +45,10 @@ samplesToStack = [
 
                    #'yybj_reweighted',
                    #'yycj_reweighted',
-                   #'yyjj_reweighted',
+                   #'yylj_reweighted',
                     #'yybj',
                     #'yycj',
-                    #'yyjj',
+                    #'yylj',
                     
                     'yy',   # Resonant case, SF applied in weight
                     #'yy',   #commented by ZIHANG
@@ -100,7 +100,7 @@ samplesToStack = [
                     'HH',
                     'VBF',
 
-		    'Resonance',
+		    #'Resonance',
 
                  ]
 
@@ -149,21 +149,21 @@ signals = [#'ZH_x10'
 #            'HHlamMinus4',
  #           'HHlamPlus2',
  #           'HHlamMinus2',
-#            'X1000toHH',
-#            'X2000toHH',
-#            'X251toHH',
-#            'X260toHH',
-#            'X280toHH',
-#            'X3000toHH',
-#            'X300toHH',
-#            'X325toHH',
-#            'X350toHH',
-#            'X400toHH',
-#            'X450toHH',
-#            'X500toHH',
-#            'X550toHH',
-#            'X600toHH',
-#            'X700toHH',
-#            'X800toHH',
-#            'X900toHH',
+#            'X1000toHH_BDT_Selection_h026_optimized',
+#            'X2000toHH_BDT_Selection_h026_optimized',
+#            'X251toHH_BDT_Selection_h026_optimized',
+#            'X260toHH_BDT_Selection_h026_optimized',
+#            'X280toHH_BDT_Selection_h026_optimized',
+#            'X3000toHH_BDT_Selection_h026_optimized',
+#            'X300toHH_BDT_Selection_h026_optimized',
+#            'X325toHH_BDT_Selection_h026_optimized',
+#            'X350toHH_BDT_Selection_h026_optimized',
+#            'X400toHH_BDT_Selection_h026_optimized',
+#            'X450toHH_BDT_Selection_h026_optimized',
+#            'X500toHH_BDT_Selection_h026_optimized',
+#            'X550toHH_BDT_Selection_h026_optimized',
+#            'X600toHH_BDT_Selection_h026_optimized',
+#            'X700toHH_BDT_Selection_h026_optimized',
+#            'X800toHH_BDT_Selection_h026_optimized',
+#            'X900toHH_BDT_Selection_h026_optimized',
            ]

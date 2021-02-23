@@ -144,8 +144,16 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                     getSumHist(newHisto, sumHist)
                 else:
                   if not('H' in sample) or ('HH' in sample): # single Higgs will be merged seperately below
-                        addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
-                        getSumHist(newHisto, sumHist)
+			if ('VBF' in sample) or ('HH' in sample):
+			  print(sample + 'HH ZIHANG')
+			  dihiggsHist = r.TH1F()
+			  getSumHist(newHisto, dihiggsHist)
+			else:
+			  print(sample + 'others ZIHANG')
+                          addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
+                          getSumHist(newHisto, sumHist)
+	  addStack(dihiggsHist, stackHist, (242, 56, 90), theLegend, 'HH')
+	  getSumHist(dihiggsHist, sumHist)
 
           # New loop to combine the single Higgs backgrounds                                                                     
           if not separateHiggsBackgrounds:
@@ -172,17 +180,20 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           if mcOnly: 
               stackHist.GetXaxis().SetTitle(histoDict[str(histo)]['x-axis title'])
               stackHist.GetYaxis().SetTitleOffset(2)
+	  y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
           stackHist.GetYaxis().SetTitle(y_title)
           stackHist.GetXaxis().SetNdivisions(306)
-          stackHist.SetMaximum(1.45*stackHist.GetMaximum())
+          stackHist.SetMaximum(1.5*stackHist.GetMaximum())
 
           if not mcOnly : 
                  stackHist.GetXaxis().SetLabelOffset(999)
                  stackHist.GetXaxis().SetLabelSize(0)
                  if 'm_yyjj' in histo:
-                    stackHist.SetMaximum(1.45*stackHist.GetMaximum()) #not sure why difference here
+                    stackHist.SetMaximum(1.5*stackHist.GetMaximum()) #not sure why difference here
+                 if 'm_jj' in histo:
+                    stackHist.SetMaximum(1.5*stackHist.GetMaximum()) #not sure why difference here
                  else:
-                    stackHist.SetMaximum(1.45*dataHist.GetMaximum())
+                    stackHist.SetMaximum(1.5*dataHist.GetMaximum())
 
           if rebin: 
             sumHist.SetAxisRange(low_edge,high_edge, 'X')
@@ -193,22 +204,33 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
               if XsubRange : 
                 dataGraph.GetXaxis().SetLimits(low_edge,high_edge)
               dataGraph.Draw("EP SAME") #JP
-          '''
+
           # Inject the non SM-HH/VBF signals
 
           for sample in signals:                
               if debug: 
                 print ("Signal = ",sample)
-              infile = r.TFile.Open(inDir  + sample + '_' + selection + '.root')
-              theHisto = infile.Get(path + histo+selection)
-              if (sample == signals[0]):
-                  y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
+	      if (selection == 'Validation_2bjet'):
+                infile = r.TFile.Open(inDir  + 'Resonance_' + sample + '_' + selection + '.root')
+                theHisto = infile.Get(path + histo+ sample + '_'  + selection)
+	      else:
+	        infile = r.TFile.Open(inDir  + 'Resonance_' + selection + '.root')
+		theHisto = infile.Get(path + histo+ selection)
+              #if (sample == signals[0]):
+              y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
+	      #print('ZIHANG' + inDir + 'Resonance_' + selection + '.root')
+	      #print('ZIHANG' + path + histo + selection)
+	      print('ZIHANG' + histo + selection)
               if rebin: theHisto.Rebin(histoDict[str(histo)]['rebin'])
               r.gROOT.cd()
               newHisto = theHisto.Clone()
-              addSignalStack(newHisto, sigHist, signalDict[str(sample)]['color'], theLegend, signalDict[str(sample)]['legend description'])
+	      if (selection == 'Validation_2bjet'):
+                addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +sample)]['color'], theLegend, signalDict[str('Resonance_' +sample)]['legend description'])
+	      else:
+		print('Resonance_' +selection)
+                addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +selection)]['color'], theLegend, signalDict[str('Resonance_' +selection)]['legend description'])
           sigHist.Draw("HIST nostack SAME")
-          '''
+          
           # Set up ATLAS label
           l = r.TLatex()
           l.SetNDC()
@@ -219,7 +241,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           r.ATLASLabel(l1,l2,"Internal")
           l.SetTextFont(42)
           l.SetTextSize(0.04)
-          l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139.0 fb^{-1}")
+          l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139 fb^{-1}")
           l.DrawLatex(l1, 0.80, selectionDict[str(selection)]['legend upper'])
           l.DrawLatex(l1, 0.76, selectionDict[str(selection)]['legend lower'])
           
@@ -308,6 +330,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
               #canv.Print(outDir + histo  + selection+ extra + ".eps", "eps")
               #canv.Print(outDir + histo + selection+ extra + ".root", "root")
           else:
+	      print('OKKKK' + outDir + histo+ selection + extra + ".pdf")
               canv.Print(outDir + histo+ selection + extra + ".pdf", "pdf")
 
           # del canv

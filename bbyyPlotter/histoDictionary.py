@@ -13,7 +13,7 @@ def PlottingDict():
     dict = {
         'sumHisto_m_yy_': { # Name of histogram as defined in input root file
             'x-axis title': '#it{m}_{#gamma#gamma} [GeV]',
-            'y-axis title': 'Events / GeV',
+            'y-axis title': 'Events / 2.2 GeV',
             'units' : 'GeV',
             'x-min' : 105,
             'x-max' : 160,
@@ -21,10 +21,10 @@ def PlottingDict():
         },
         'sumHisto_m_jj_': { 
             'x-axis title': '#it{m_{jj}} [GeV]',
-            'y-axis title': 'Events / 5 GeV',
+            'y-axis title': 'Events / 10 GeV',
             'units' : 'GeV',
-            'x-min' : 105,
-            'x-max' : 160,
+            'x-min' : 0,
+            'x-max' : 300,
             'rebin' : 1 
 
         },
@@ -48,11 +48,11 @@ def PlottingDict():
         },
         'sumHisto_m_yyjj_tilde_': { 
             'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} [GeV]',
-            'y-axis title': 'Events / 25 GeV',
+            'y-axis title': 'Events / 30 GeV',
             'units' : 'GeV',
             'x-min' : 200,
-            'x-max' : 500,
-            'rebin' : 5
+            'x-max' : 1400,
+            'rebin' : 1
 
         },
         'sumHisto_pT_yy_div_m_yyjj_tilde_': {
@@ -131,7 +131,7 @@ def PlottingDict():
             'y-axis title': 'Events',
             'units' : '',
             'x-min' : 0,
-            'x-max' : 15,
+            'x-max' : 8,
             'rebin' : 1
 
         },
@@ -140,7 +140,7 @@ def PlottingDict():
             'y-axis title': 'Events',
             'units' : '',
             'x-min' : 0,
-            'x-max' : 15,
+            'x-max' : 8,
             'rebin' : 1
 
         },
@@ -257,19 +257,19 @@ def SampleDict():
             'legend description': 'Hadronic #it{t#bar{t}#gamma#gamma}',
         },
 	'15_to_18_data_yj': {
-	    'color':  41,
+	    'color':  (253, 197, 54),
             'legend description': 'DataDriven #it{#gammaj}',
         },
 	'15_to_18_data_jj': {
-	    'color':  44,
+	    'color':  41,
             'legend description': 'DataDriven #it{jj}',
         },
 	'15_to_18_data_yj_reweighted': {
-	    'color':  41,
+	    'color':  (253, 197, 54),
             'legend description': 'DataDriven #it{#gammaj}',
         },
 	'15_to_18_data_jj_reweighted': {
-	    'color':  44,
+	    'color':  41,
             'legend description': 'DataDriven #it{jj}',
         },
 
@@ -280,20 +280,20 @@ def SampleDict():
 
         'yy': {
             'color':  (54, 177, 191), ## hh med turq
-            'legend description': 'SM #it{#gamma#gamma}',
+            'legend description': '#it{#gamma#gamma}+jets',
         },
 	'yy_reweighted': {
 	    'color':  (54, 177, 191), ## hh med turq
-		'legend description': 'SM #it{#gamma#gamma}',
+		'legend description': '#it{#gamma#gamma}+jets',
 	},
 
         'yycj': {
             'color': (84, 197, 170), #46,
             'legend description': '#it{#gamma#gammacj}',
         },
-        'yyjj': {
+        'yylj': {
             'color': (54, 177, 190), #5,
-            'legend description': '#it{#gamma#gammajj}',
+            'legend description': '#it{#gamma#gammalj}',
         },
         'yybj': {
             'color': (24, 107, 180),  #38,
@@ -303,9 +303,9 @@ def SampleDict():
             'color': (84, 197, 170), #46,
             'legend description': '#it{#gamma#gammacj}',
         },
-        'yyjj_reweighted': {
+        'yylj_reweighted': {
             'color': (54, 177, 190), #5,
-            'legend description': '#it{#gamma#gammajj}',
+            'legend description': '#it{#gamma#gammalj}',
         },
         'yybj_reweighted': {
             'color': (24, 107, 180),  #38,
@@ -427,79 +427,79 @@ def SignalDict():
             'legend description': '#it{HH} #kappa_{#lambda} = -2',
         },
 
-        'X251toHH': {
+        'Resonance_X251toHH_BDT_Selection_h026_optimized': {
             'color': 6,
             'legend description': '#it{X}(251)#it{HH} ',
             },
          
-        'X260toHH': {
+        'Resonance_X260toHH_BDT_Selection_h026_optimized': {
             'color': 12,
             'legend description': '#it{X}(260)#it{HH} ',
             },
 
-        'X280toHH': {
+        'Resonance_X280toHH_BDT_Selection_h026_optimized': {
             'color': 11,
             'legend description': '#it{X}(280)#it{HH} ',
             },
 
-        'X300toHH': {
+        'Resonance_X300toHH_BDT_Selection_h026_optimized': {
             'color': 1,
             'legend description': '#it{X}(300)#it{HH} ',
             },
 
-        'X325toHH': {
+        'Resonance_X325toHH_BDT_Selection_h026_optimized': {
             'color': 40,
             'legend description': '#it{X}(325)#it{HH} ',
             },
 
-        'X350toHH': {
+        'Resonance_X350toHH_BDT_Selection_h026_optimized': {
             'color': 36,
             'legend description': '#it{X}(350)#it{HH} ',
             },
 
-        'X400toHH': {
+        'Resonance_X400toHH_BDT_Selection_h026_optimized': {
             'color': 3,
             'legend description': '#it{X}(400)#it{HH} ',
         },
-        'X450toHH': {
+        'Resonance_X450toHH_BDT_Selection_h026_optimized': {
             'color': 30,
             'legend description': '#it{X}(450)#it{HH} ',
         },
-        'X500toHH': {
+        'Resonance_X500toHH_BDT_Selection_h026_optimized': {
             'color': 7,
             'legend description': '#it{X}(500)#it{HH} ',
         },
-        'X550toHH': {
+        'Resonance_X550toHH_BDT_Selection_h026_optimized': {
             'color': 28,
             'legend description': '#it{X}(550)#it{HH} ',
         },
-        'X600toHH': {
+        'Resonance_X600toHH_BDT_Selection_h026_optimized': {
             'color': 8,
             'legend description': '#it{X}(600)#it{HH} ',
         },
-        'X700toHH': {
+        'Resonance_X700toHH_BDT_Selection_h026_optimized': {
             'color': 2,
             'legend description': '#it{X}(700)#it{HH} ',
         },
-       'X800toHH': {
+       'Resonance_X800toHH_BDT_Selection_h026_optimized': {
             'color': 9,
             'legend description': '#it{X}(800)#it{HH} ',
         },
 
-       'X900toHH': {
+       'Resonance_X900toHH_BDT_Selection_h026_optimized': {
             'color': 16,
             'legend description': '#it{X}(900)#it{HH} ',
         },
 
-        'X1000toHH': {
+        'Resonance_X1000toHH_BDT_Selection_h026_optimized': {
             'color': 5,
             'legend description': '#it{X}(1000)#it{HH} ',
         },
-        'X2000toHH': {
+        'Resonance_X2000toHH_BDT_Selection_h026_optimized': {
             'color': 29,
             'legend description': '#it{X}(2000)#it{HH} ',
         },
-        'X3000toHH': {
+        'Resonance_X3000toHH_BDT_Selection_h026_optimized': {
             'color': 46,
             'legend description': '#it{X}(3000)#it{HH} ',
         }

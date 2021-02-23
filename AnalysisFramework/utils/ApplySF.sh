@@ -1,6 +1,6 @@
 var="m_yy"
-target="yy 15_to_18_data_jj 15_to_18_data_yj yybj yycj yyjj"
-#target="yybj yycj yyjj"
+target="yy 15_to_18_data_jj 15_to_18_data_yj yybj yycj yylj"
+#target="yybj yycj yylj"
 data="15_to_18_data_SB"
 ttyyall="ttyy_allhad_SB"
 ttyyno="ttyy_noallhad_SB"
