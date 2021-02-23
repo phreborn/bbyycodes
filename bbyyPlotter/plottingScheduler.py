@@ -156,7 +156,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                       addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                       getSumHist(newHisto, sumHist)
 
-          addStack(ttyyHist, stackHist, (242, 56, 250), theLegend, 'ttyy')
+          addStack(ttyyHist, stackHist,(102, 105, 112), theLegend, '#it{t#bar{t}#gamma#gamma}')
           getSumHist(ttyyHist, sumHist)
 
           # New loop to combine the single Higgs backgrounds                                                                     
@@ -171,7 +171,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                       getSumHist(newHisto, higgsHist)                        
 
               # Add the combined single Higgs backgrounds back in, unless specified otherwise
-              addStack(higgsHist, stackHist, (52, 56, 68), theLegend, 'Single Higgs')   
+              addStack(higgsHist, stackHist, (253, 197, 54), theLegend, 'Single Higgs')   
               getSumHist(higgsHist, sumHist)
 
           # Add HH last
