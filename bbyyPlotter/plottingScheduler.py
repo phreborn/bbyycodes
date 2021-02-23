@@ -335,7 +335,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
               #canv.Print(outDir + histo + selection + extra + ".C", "C")
               canv.Print(outDir + histo + selection + extra + ".png", "png")
               canv.Print(outDir + histo + selection+ extra + ".pdf", "pdf")
-              #canv.Print(outDir + histo  + selection+ extra + ".eps", "eps")
+              canv.Print(outDir + histo  + selection+ extra + ".eps", "eps")
+              canv.Print(outDir + histo  + selection+ extra + ".C", "C")
               #canv.Print(outDir + histo + selection+ extra + ".root", "root")
           else:
               print('OKKKK' + outDir + histo+ selection + extra + ".pdf")
