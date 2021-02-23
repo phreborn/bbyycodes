@@ -37,6 +37,19 @@ from scipy.optimize import brenth
 
 ALPHA = (1 - 0.6826894921370859) / 2.
 
+color1 = ROOT.gROOT.GetColor(2);
+color1.SetRGB(242/255., 56/255., 90/255.);
+color2 = ROOT.gROOT.GetColor(3);
+color2.SetRGB(52/255., 56/255., 68/255.);
+color3 = ROOT.gROOT.GetColor(4);
+color3.SetRGB(54/255., 177/255., 191/255.);
+color4 = ROOT.gROOT.GetColor(7);
+color4.SetRGB(74/255., 217/255., 217/255.);
+color5 = ROOT.gROOT.GetColor(6);
+color5.SetRGB(233/255., 241/255., 223/255.);
+color6 = ROOT.gROOT.GetColor(5);
+color6.SetRGB(253/255., 197/255., 54/255.);
+
 
 def scale_range(start, start1, start2, end1, end2):
     m = (end2 - end1) / float(start2 - start1)
@@ -358,7 +371,7 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
     pdfB = w1.obj('pdfW')
   else:
     pdfB = w1.obj('pdfB')
-  pdfB.plotOn(frame, RooFit.LineStyle(3), RooFit.LineColor(ROOT.kBlue), RooFit.Normalization(1, ROOT.RooAbsReal.RelativeExpected))
+  pdfB.plotOn(frame, RooFit.LineStyle(3), RooFit.LineColor(4), RooFit.Normalization(1, ROOT.RooAbsReal.RelativeExpected))
   residHist = frame.residHist()
   pullHist = frame.pullHist()
 
@@ -395,7 +408,7 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
   #get the total B now 
   print 'setting mu to ', fitted_mu
   w1.var('mu').setVal(fitted_mu) #fitted_mu should be 1
-  w1.obj('pdfW').plotOn(frame, RooFit.LineStyle(1), RooFit.LineColor(ROOT.kRed), RooFit.Normalization(1, ROOT.RooAbsReal.RelativeExpected))
+  w1.obj('pdfW').plotOn(frame, RooFit.LineStyle(1), RooFit.LineColor(2), RooFit.Normalization(1, ROOT.RooAbsReal.RelativeExpected))
   frame.SetMaximum((frame.GetMaximum() + 1.5 * math.sqrt(frame.GetMaximum()))*1.5)
   frame.SetMinimum(0.001)
 
@@ -477,8 +490,8 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
 
     frame2 = mgg.frame()
     #w1.obj('pdfW').plotOn(frame2, RooFit.LineStyle(7), RooFit.LineColor(ROOT.kGreen+2), RooFit.Normalization( NSg2,ROOT.RooAbsReal.NumEvent))
-    w1.obj('pdfW').plotOn(frame2, RooFit.LineStyle(1), RooFit.LineColor(ROOT.kRed), RooFit.Normalization( NSg,ROOT.RooAbsReal.NumEvent))
-    pdfB.plotOn(frame2, RooFit.LineStyle(3), RooFit.LineColor(ROOT.kBlue), RooFit.Normalization(0, ROOT.RooAbsReal.NumEvent))
+    w1.obj('pdfW').plotOn(frame2, RooFit.LineStyle(1), RooFit.LineColor(2), RooFit.Normalization( NSg,ROOT.RooAbsReal.NumEvent))
+    pdfB.plotOn(frame2, RooFit.LineStyle(3), RooFit.LineColor(4), RooFit.Normalization(0, ROOT.RooAbsReal.NumEvent))
     #if args.weighted == 1:
     frame2.SetMaximum(5.)
     #else: 
