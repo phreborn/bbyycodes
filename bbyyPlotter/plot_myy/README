@@ -16,3 +16,4 @@ source setup.sh #you might have to change a line here to load RooFitExtensions f
 python plot_yybb.py --weighted 0 --category SM_1 --subpanel 0 #some modification of category names needed if applying to resonant categories, but hopefully not too bad
 
 
+for some reason it always segfaults after saving the plots ... let me know if you can fix it
