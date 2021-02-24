@@ -45,7 +45,6 @@ signalDict = SignalDict()
 debug = False # Set to true to see added samples
 rebin = False # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
 
-
 def createUpperPad(mcOnly=True, logOn=False):
   if mcOnly: 
       r.gStyle.SetPadLeftMargin(0.20)
@@ -62,7 +61,7 @@ def createUpperPad(mcOnly=True, logOn=False):
 def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggsBackgrounds=False, inputPath="", outputPath="./Plots/"):
               
   XsubRange = False
-
+  print(UNBLIND)
   if UNBLIND:
       print('WARNING: You have unblinded the analysis! Are you sure you want to do this?')
 
@@ -124,7 +123,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                   dataHist = theHisto.Clone()  # Get the data, not sure why cloning
                   
                   # Blind the m_yy, m_jj and m_yy_jj
-                  dataHist = setBlindedValuestoZero(dataHist, histo, True) 
+                  dataHist = setBlindedValuestoZero(dataHist, histo, UNBLIND) 
 
                   # Transfer the histo information to a TGraph for upper pad plotting.
                   i = 0 # counter for datapoints on graph
@@ -171,13 +170,20 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                       getSumHist(newHisto, higgsHist)                        
 
               # Add the combined single Higgs backgrounds back in, unless specified otherwise
-              addStack(higgsHist, stackHist, (253, 197, 54), theLegend, 'Single Higgs')   
+              addStack(higgsHist, stackHist, (52, 56, 68), theLegend, 'Single Higgs')   
               getSumHist(higgsHist, sumHist)
 
           # Add HH last
           addStack(dihiggsHist, stackHist, (242, 56, 90), theLegend, 'HH')
           getSumHist(dihiggsHist, sumHist)
           
+          # Make legend backwards
+          # theLegend.AddEntry(dihiggsHist, "HH", "f")
+          # theLegend.AddEntry(higgsHist, "Single Higgs", "f")
+          # #for sample in samplesToStack:
+          # #   theLegend.AddEntry(sampleDict[str(sample)]['legend description']
+          # theLegend.AddEntry(ttyyHist, "ttyy", "f")
+
 
           # Plot the MC Stack (stackHist)
           stackHist.ls()
@@ -255,6 +261,13 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139 fb^{-1}")
           l.DrawLatex(l1, 0.80, selectionDict[str(selection)]['legend upper'])
           l.DrawLatex(l1, 0.76, selectionDict[str(selection)]['legend lower'])
+
+          # Fix the legend
+          #theNewLegend = initializeLegend(separateHiggsBackgrounds, len(signals))
+          #print(dir(theLegend))
+          #print(theLegend.GetEntry())
+          #for entry in theLegend.Entries():
+          #  print(entry)
           
           # Add the legend to a separate, pad on the side
           canv.cd()
@@ -268,6 +281,12 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           # Set up the lower pad for the ratio plot
           if not mcOnly:
             canv.cd()
+
+            # Trying blind
+            # if XsubRange : ratioGraph.GetXaxis().SetLimits(low_edge,high_edge)
+            
+            # Set up ratio plot
+
             padlow = r.TPad("padlow","padlow",0.,0.0,0.85,0.30)
             padlow.SetFillStyle(4000)
             padlow.SetGrid(0,0)
@@ -275,21 +294,17 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             padlow.SetBottomMargin(0.30)
             padlow.Draw()
             padlow.cd()
-            
-            # Trying blind
-            # if XsubRange : ratioGraph.GetXaxis().SetLimits(low_edge,high_edge)
-            
-            # Set up ratio plot 
-            ratioHist.Divide(sumHist) 
-            ratioHist = setBlindedValuestoZero(ratioHist, histo, True) 
 
+            ratioHist.Divide(sumHist) 
+            ratioHist = setBlindedValuestoZero(ratioHist, histo, UNBLIND) 
+  
             i = 0 # counter for datapoints on graph
             for xbin in range(0, ratioHist.GetNbinsX()+1):
                     if ratioHist.GetBinContent(xbin) > 0.0: # Don't plot markers for zero-valued data points
                       ratioGraph.SetPoint(i, ratioHist.GetXaxis().GetBinCenter(xbin), ratioHist.GetBinContent(xbin))
                       ratioGraph.SetPointError(i, 0.0, ratioHist.GetBinError(xbin))
                       i += 1 # next datapoint
-
+  
             ratioHist.GetYaxis().SetTitle("Data/Pred.")
             ratioHist.GetYaxis().CenterTitle()
             ratioHist.GetYaxis().SetNdivisions(306)
@@ -301,24 +316,24 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             ratioHist.GetXaxis().SetTitleSize(0.10)
             ratioHist.GetXaxis().SetLabelFont(43)
             ratioHist.GetXaxis().SetLabelSize(20)
-
-
+  
+  
             #ratioHist.SetMarkerColor(r.kBlack)
             #ratioHist.SetMarkerStyle(r.kFullDotLarge)
             #ratioHist.SetMarkerSize(0)
-
+  
             ratioGraph.SetMarkerColor(r.kBlack)
             ratioGraph.SetMarkerStyle(r.kFullDotLarge)
             ratioGraph.SetLineColor(r.kBlack)
             ratioGraph.SetLineWidth(2)
-
+  
             if rebin: 
               ratioHist.SetAxisRange(low_edge,high_edge, 'X')
               ratioGraph.SetAxisRange(low_edge,high_edge, 'X')
-
+  
             ratioHist.Draw("AXIS")
             ratioGraph.Draw("EP SAME")
-
+  
             # Add horizontal line at y=1 to the ratio plot
             rl = r.TLine()
             rl.SetLineColor(r.kBlack)

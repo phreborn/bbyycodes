@@ -257,15 +257,15 @@ def SampleDict():
             'legend description': 'Hadronic #it{t#bar{t}#gamma#gamma}',
         },
 	'15_to_18_data_yj': {
-	    'color':  (52, 56, 68),
+	    'color':   (253, 197, 54) ,
             'legend description': 'DataDriven #it{#gammaj}',
         },
 	'15_to_18_data_jj': {
-	    'color':  (233, 241, 223),    
+	    'color':  (233, 241, 223),
             'legend description': 'DataDriven #it{jj}',
         },
 	'15_to_18_data_yj_reweighted': {
-	    'color':   (52, 56, 68),
+	    'color':   (253, 197, 54) ,
             'legend description': 'DataDriven #it{#gammaj}',
         },
 	'15_to_18_data_jj_reweighted': {
