@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 	TH1F * dataHist_6 = (TH1F *) dataFile->Get(Form("sumHisto_%s_%s", varNames[5].Data(), regionName.Data()));
 	TH1F * dataHist_7 = (TH1F *) dataFile->Get(Form("sumHisto_%s_%s", varNames[6].Data(), regionName.Data()));
 
-	TFile * ttyyallFile = new TFile(dir+Form("%s_%s.root", ttyyallName.Data(), regionName.Data()), "read");
+/*	TFile * ttyyallFile = new TFile(dir+Form("%s_%s.root", ttyyallName.Data(), regionName.Data()), "read");
 	TH1F * ttyyallHist_1 = (TH1F *) ttyyallFile->Get(Form("sumHisto_%s_%s", varNames[0].Data(), regionName.Data()));
 	TH1F * ttyyallHist_2 = (TH1F *) ttyyallFile->Get(Form("sumHisto_%s_%s", varNames[1].Data(), regionName.Data()));
 	TH1F * ttyyallHist_3 = (TH1F *) ttyyallFile->Get(Form("sumHisto_%s_%s", varNames[2].Data(), regionName.Data()));
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 	TH1F * ttyynoHist_5 = (TH1F *) ttyynoFile->Get(Form("sumHisto_%s_%s", varNames[4].Data(), regionName.Data()));
 	TH1F * ttyynoHist_6 = (TH1F *) ttyynoFile->Get(Form("sumHisto_%s_%s", varNames[5].Data(), regionName.Data()));
 	TH1F * ttyynoHist_7 = (TH1F *) ttyynoFile->Get(Form("sumHisto_%s_%s", varNames[6].Data(), regionName.Data()));
-
+*/
 	TFile * outFile = new TFile(dir+Form("%s_reweighted_%s.root", targetName.Data(), regionName.Data()), "recreate");
 	TH1F * outHist_1 = (TH1F*)targetHist_1->Clone(Form("sumHisto_%s_%s", varNames[0].Data(), regionName.Data()));
 	TH1F * outHist_2 = (TH1F*)targetHist_2->Clone(Form("sumHisto_%s_%s", varNames[1].Data(), regionName.Data()));
@@ -86,32 +86,31 @@ int main(int argc, char** argv)
 	TH1F * outHist_6 = (TH1F*)targetHist_5->Clone(Form("sumHisto_%s_%s", varNames[5].Data(), regionName.Data()));
 	TH1F * outHist_7 = (TH1F*)targetHist_5->Clone(Form("sumHisto_%s_%s", varNames[6].Data(), regionName.Data()));
 
-	float purity, N_data, N_ttyy, N_target;	
+	float yy_purity, purity, N_data, N_ttyy, N_target;	
 	N_data = dataHist_1->Integral();
-	cout<<"ttyyallHist_1= "<<ttyyallHist_1->Integral()<<" ttyynoHist_1= "<<ttyynoHist_1->Integral()<<endl;
-	N_ttyy = ttyyallHist_1->Integral() + ttyynoHist_1->Integral();
+//	cout<<"ttyyallHist_1= "<<ttyyallHist_1->Integral()<<" ttyynoHist_1= "<<ttyynoHist_1->Integral()<<endl;
+//	N_ttyy = ttyyallHist_1->Integral() + ttyynoHist_1->Integral();
 	N_target = targetHist_1->Integral();
 
-	if (targetName.Contains("yy")|| targetName.Contains("yybj") || targetName.Contains("yycj") || targetName.Contains("yylj")) {
-		TH1F * purityHist = (TH1F*)ggHist->Clone("purity");
-		if (regionName.Contains("Validation_2bjet")) {
-			purity=purityHist->GetBinContent(5);
-		}
-		else if (regionName.Contains("XGBoost_btag77_withTop_BCal_tightScore_HMass")) {
-			purity=purityHist->GetBinContent(1);
-		}
-		else if (regionName.Contains("XGBoost_btag77_withTop_BCal_looseScore_HMass")) {
-			purity=purityHist->GetBinContent(2);
-		}
-		else if (regionName.Contains("XGBoost_btag77_withTop_BCal_tightScore_LMass") ){
-			purity=purityHist->GetBinContent(3);
-		}
-		else if (regionName.Contains("XGBoost_btag77_withTop_BCal_looseScore_LMass")) {
-			purity=purityHist->GetBinContent(4);
-		}
-
+	TH1F * yy_purityHist = (TH1F*)ggHist->Clone("purity");
+	if (regionName.Contains("Validation_2bjet")) {
+		yy_purity=yy_purityHist->GetBinContent(5);
 	}
-	else if (targetName.Contains("15_to_18_data_jj")) {
+	else if (regionName.Contains("XGBoost_btag77_withTop_BCal_tightScore_HMass")) {
+		yy_purity=yy_purityHist->GetBinContent(1);
+	}
+	else if (regionName.Contains("XGBoost_btag77_withTop_BCal_looseScore_HMass")) {
+		yy_purity=yy_purityHist->GetBinContent(2);
+	}
+	else if (regionName.Contains("XGBoost_btag77_withTop_BCal_tightScore_LMass") ){
+		yy_purity=yy_purityHist->GetBinContent(3);
+	}
+	else if (regionName.Contains("XGBoost_btag77_withTop_BCal_looseScore_LMass")) {
+		yy_purity=yy_purityHist->GetBinContent(4);
+	}
+
+	
+	if (targetName.Contains("15_to_18_data_jj")) {
 		TH1F * purityHist = (TH1F*)jjHist->Clone("purity");		
 		if (regionName.Contains("Validation_2bjet")) {
 			purity=purityHist->GetBinContent(5);
@@ -161,14 +160,11 @@ int main(int argc, char** argv)
 	TH1F * yyHist_7 = (TH1F *) yyFile->Get(Form("sumHisto_%s_%s", varNames[6].Data(), regionName.Data()));
 
 	float new_N_target = yyHist_1->Integral();
-	if (targetName.Contains("yybj") || targetName.Contains("yycj") || targetName.Contains("yylj")) {
-		N_target = new_N_target;
-	}
 
-	//float SF = purity * (N_data) / N_target;
-	float SF = purity * (N_data - N_ttyy) / N_target;
+	float SF = purity * (new_N_target/yy_purity) / N_target;
+	//float SF = purity * (N_data - N_ttyy) / N_target;
 	cout<<"purity = "<<purity<<endl;
-	cout<<N_data<<" - "<<N_ttyy<<" / "<<N_target<<endl;
+//	cout<<N_data<<" - "<<N_ttyy<<" / "<<N_target<<endl;
 	if (N_target==0) SF=1;
 
 	outHist_1->Scale(SF);
