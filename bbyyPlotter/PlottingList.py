@@ -43,12 +43,12 @@ samplesToStack = [
 		    #'ttyy_allhad_SB',     #calculate yield
 		    #'ttyy_noallhad_SB',   #calculate yield
 
-                   'yybj_reweighted',
-                   'yycj_reweighted',
-                   'yylj_reweighted',
-                    #'yybj',
-                    #'yycj',
-                    #'yylj',
+                   #'yybj_reweighted',
+                   #'yycj_reweighted',
+                   #'yylj_reweighted',
+                    'yybj',
+                    'yycj',
+                    'yylj',
                     
                     #'yy',   # Resonant case, SF applied in weight
                     #'yy',   #commented by ZIHANG

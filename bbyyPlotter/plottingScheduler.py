@@ -137,7 +137,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                   #dataGraph.Print()
 
                   ratioHist = dataHist.Clone()
-                  theLegend.AddEntry(dataGraph,"Data", "lep")
+                  theLegend.AddEntry(dataGraph,"Data", "EP")
 
               elif sample != '15_to_18_data': # Sample is MC
                 newHisto = theHisto.Clone()
@@ -200,6 +200,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                     stackHist.SetMaximum(1.5*stackHist.GetMaximum()) #not sure why difference here
                  if 'm_jj' in histo:
                     stackHist.SetMaximum(1.5*stackHist.GetMaximum()) #not sure why difference here
+                 if 'tightScore_HMass' in selection:   
+                    stackHist.SetMaximum(3.0*dataHist.GetMaximum())
                  else:
                     stackHist.SetMaximum(1.5*dataHist.GetMaximum())
 
@@ -211,7 +213,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           if not mcOnly: 
               if XsubRange : 
                 dataGraph.GetXaxis().SetLimits(low_edge,high_edge)
-              dataGraph.Draw("EP SAME") #JP
+              #dataGraph.Draw("EP SAME") #JP
+              dataGraph.Draw("EP")
 
           # Inject the non SM-HH/VBF signals
 
