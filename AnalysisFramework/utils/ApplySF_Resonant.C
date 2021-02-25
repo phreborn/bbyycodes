@@ -135,7 +135,7 @@ int main(int argc, char** argv)
 		}
 	}
 
-	else if (targetName.Contains("15_to_18_data_jj")) {
+	else if (targetName.Contains("jj")) {
 		TH1F * purityHist = (TH1F*)jjHist->Clone("purity");
 		if (mXName.Contains("X251") ) {
 			purity=purityHist->GetBinContent(1);
@@ -185,7 +185,7 @@ int main(int argc, char** argv)
 
 
 	}
-	else if (targetName.Contains("15_to_18_data_yj")) {
+	else if (targetName.Contains("yj")) {
 		TH1F * purityHist = (TH1F*)jgHist->Clone("purity");
 		if (mXName.Contains("X251") ) {
 			purity=purityHist->GetBinContent(1);
@@ -258,11 +258,12 @@ int main(int argc, char** argv)
 
 	float new_N_target = yy_m_yyjjHist_1->Integral(yy_m_yyjjHist_1->FindBin(lowcut), yy_m_yyjjHist_1->FindBin(highcut))- yy_m_yyjjHist_1->Integral(yy_m_yyjjHist_1->FindBin(x1), yy_m_yyjjHist_1->FindBin(x2));
 
-        float SF = purity * (N_data - N_ttyy ) / new_N_target;
-        //float SF = purity * (N_data - N_ttyy - SH_integral_SB) / new_N_target;
-        cout<<"purity = "<<purity<<endl;
-        cout<<N_data<<" - "<<N_ttyy<<" / "<<new_N_target<<endl;
-        //cout<<N_data<<" - "<<N_ttyy<<" - "<<SH_integral_SB<<" / "<<new_N_target<<endl;
+        float SF = (purity * N_data - N_ttyy  )/ new_N_target;
+	cout<<"( "<<purity<<" * "<<N_data<<" - "<<N_ttyy<<" ) / "<<new_N_target<<endl;
+        if (targetName.Contains("yj") || targetName.Contains("jj")) {
+                SF = ( purity * N_data ) / new_N_target;
+		cout<<"( "<<purity<<" * "<<N_data<<") / "<<new_N_target<<endl;
+        }
 
 	outHist_1->Scale(SF);
 	outHist_2->Scale(SF);

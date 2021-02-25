@@ -47,17 +47,15 @@ Purities are saved in Nonresonant_purity.root and Resonant_purity.root.
 
 **In Resonant case, the purities are obtianed before m_yyjj cut to avoid low statistics.**
 
-Now we are using MC yy sample as the basis, and scale it respectiely to the yj, jj, yy shapes. Therefore we do not rely on NTNI(N=not, T=tight identification, I=isolation) data with low statistics, avoiding statistical fluctuations.
+Now we are using MC yy shape as the basis, and scale it respectiely to be the new yj, jj, yy. Therefore we do not rely on NTNI(N=not, T=tight identification, I=isolation) data with low statistics, avoiding statistical fluctuations.
 
 Scale factors are estimated from SB:
 
-SF_yy = purity_yy * (Data SB - ttyy SB - SHiggs SB) / MC_yy SB
+SF_yy = ( purity_yy * Data SB - ttyy SB ) / MC_yy SB
 
-SF_yj = purity_jy * (Data SB - ttyy SB - SHiggs SB ) / MC_yy SB
+SF_yj = purity_jy * Data SB / MC_yy SB
 
-SF_jj = purity_jj * (Data SB - ttyy SB - SHiggs SB / MC_yy SB
-
-**In resonant case, SHiggs is not subtracted, since they are negligible.**
+SF_jj = purity_jj * Data SB / MC_yy SB
 
 
 `cd AnalysisFramework/utils`
