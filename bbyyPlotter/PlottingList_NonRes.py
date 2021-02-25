@@ -26,8 +26,8 @@ histosToPlot = [
                   ##'sumHisto_pT_yy_',
                   ##'sumHisto_pT_yy_div_m_yy_',
                   ##'sumHisto_pT_yy_div_m_yyjj_tilde_'
-                 #"sumHisto_nonRes_XGBoost_btag77_BCal_withTop_lowMass_Score_",
-                 #"sumHisto_nonRes_XGBoost_btag77_BCal_withTop_highMass_Score_"
+                 "sumHisto_nonRes_XGBoost_btag77_BCal_withTop_lowMass_Score_",
+                 "sumHisto_nonRes_XGBoost_btag77_BCal_withTop_highMass_Score_"
                   
                ]
 
@@ -37,8 +37,8 @@ samplesToStack = [
                     #'15_to_18_data_SB',
                     #'15_to_18_data_jj',   # Resonant case, SF applied in weight
                     #'15_to_18_data_yj',   # Resonant case, SF applied in weight
-                    '15_to_18_data_jj_reweighted',   #calculate yield Non-resonant case
-                    '15_to_18_data_yj_reweighted',   #calculate yield Non-resonant case
+                    'jj_reweighted',   #calculate yield Non-resonant case
+                    'yj_reweighted',   #calculate yield Non-resonant case
                     
 		    #'ttyy_allhad_SB',     #calculate yield
 		    #'ttyy_noallhad_SB',   #calculate yield
@@ -46,9 +46,9 @@ samplesToStack = [
                    'yybj_reweighted',
                    'yycj_reweighted',
                    'yylj_reweighted',
-                    #'yybj',
-                    #'yycj',
-                    #'yylj',
+                   #'yybj',
+                   #'yycj',
+                   #'yylj',
                     
                     #'yy',   # Resonant case, SF applied in weight
                     #'yy',   #commented by ZIHANG
@@ -149,21 +149,21 @@ signals = [#'ZH_x10'
 #            'HHlamMinus4',
  #           'HHlamPlus2',
  #           'HHlamMinus2',
-#            'X1000toHH',
-#            'X2000toHH',
-#            'X251toHH',
-#            'X260toHH',
-#            'X280toHH',
-#            'X3000toHH',
-#            'X300toHH',
-#            'X325toHH',
-#            'X350toHH',
-#            'X400toHH',
-#            'X450toHH',
-#            'X500toHH',
-#            'X550toHH',
-#            'X600toHH',
-#            'X700toHH',
-#            'X800toHH',
-#            'X900toHH',
+#            'X1000toHH_BDT_Selection_h026_optimized',
+#            'X2000toHH_BDT_Selection_h026_optimized',
+#            'X251toHH_BDT_Selection_h026_optimized',
+#            'X260toHH_BDT_Selection_h026_optimized',
+#            'X280toHH_BDT_Selection_h026_optimized',
+#            'X3000toHH_BDT_Selection_h026_optimized',
+#            'X300toHH_BDT_Selection_h026_optimized',
+#            'X325toHH_BDT_Selection_h026_optimized',
+#            'X350toHH_BDT_Selection_h026_optimized',
+#            'X400toHH_BDT_Selection_h026_optimized',
+#            'X450toHH_BDT_Selection_h026_optimized',
+#            'X500toHH_BDT_Selection_h026_optimized',
+#            'X550toHH_BDT_Selection_h026_optimized',
+#            'X600toHH_BDT_Selection_h026_optimized',
+#            'X700toHH_BDT_Selection_h026_optimized',
+#            'X800toHH_BDT_Selection_h026_optimized',
+#            'X900toHH_BDT_Selection_h026_optimized',
            ]

@@ -37,8 +37,8 @@ samplesToStack = [
                     #'15_to_18_data_SB',
                     #'15_to_18_data_jj',   # Resonant case, SF applied in weight
                     #'15_to_18_data_yj',   # Resonant case, SF applied in weight
-                    '15_to_18_data_jj_reweighted',   #calculate yield Non-resonant case
-                    '15_to_18_data_yj_reweighted',   #calculate yield Non-resonant case
+                    'jj_reweighted',   #calculate yield Non-resonant case
+                    'yj_reweighted',   #calculate yield Non-resonant case
                     
 		    #'ttyy_allhad_SB',     #calculate yield
 		    #'ttyy_noallhad_SB',   #calculate yield
@@ -46,9 +46,9 @@ samplesToStack = [
                    'yybj_reweighted',
                    'yycj_reweighted',
                    'yylj_reweighted',
-                    #'yybj',
-                    #'yycj',
-                    #'yylj',
+                   #'yybj',
+                   #'yycj',
+                   #'yylj',
                     
                     #'yy',   # Resonant case, SF applied in weight
                     #'yy',   #commented by ZIHANG

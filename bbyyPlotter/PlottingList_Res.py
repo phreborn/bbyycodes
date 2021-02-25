@@ -35,8 +35,8 @@ histosToPlot = [
 samplesToStack = [
                     '15_to_18_data',
                     #'15_to_18_data_SB',
-                    '15_to_18_data_jj',   # Resonant case, SF applied in weight
-                    '15_to_18_data_yj',   # Resonant case, SF applied in weight
+                    'jj_reweighted',   # Resonant case, SF applied in weight
+                    'yj_reweighted',   # Resonant case, SF applied in weight
                     #'15_to_18_data_jj_reweighted',   #calculate yield Non-resonant case
                     #'15_to_18_data_yj_reweighted',   #calculate yield Non-resonant case
                     
@@ -50,9 +50,8 @@ samplesToStack = [
                     #'yycj',
                     #'yylj',
                     
-                    'yy',   # Resonant case, SF applied in weight
+                    'yy_reweighted',   # Resonant case, Non-resonant no flavot decomp
                     #'yy',   #commented by ZIHANG
-                    #'yy_reweighted',   #commented by ZIHANG
 
                     # Then all of the single H backgrounds (these are combined, by default)     
                     #'ggH',
@@ -166,4 +165,5 @@ signals = [#'ZH_x10'
 #            'X700toHH_BDT_Selection_h026_optimized',
 #            'X800toHH_BDT_Selection_h026_optimized',
 #            'X900toHH_BDT_Selection_h026_optimized',
+	     'Resonance'
            ]

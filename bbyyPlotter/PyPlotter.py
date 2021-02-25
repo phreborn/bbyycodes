@@ -151,8 +151,7 @@ def MergeBackgrounds(MergeBkgList, Reg, Bkg, yields):
 def setBlindedValuestoZero(dataHist, histo, UNBLIND=False):
   if not UNBLIND and 'm_yyjj_' in histo: 
       for xbin in range(0, dataHist.GetNbinsX()+1):
-          if dataHist.GetXaxis().GetBinCenter(xbin) < 0.0: 
-          #if dataHist.GetXaxis().GetBinCenter(xbin) > 0.0: 
+          if dataHist.GetXaxis().GetBinCenter(xbin) > 0.0: 
               dataHist.SetBinContent(xbin,0.0) 
               dataHist.SetBinError(xbin,0.0) 
   if not UNBLIND and 'm_yy_' in histo: 
