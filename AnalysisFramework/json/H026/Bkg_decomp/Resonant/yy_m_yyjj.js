@@ -58,7 +58,7 @@
 
     "samples" : {
 	
-	 "yy":    {
+	 "yy_m_yyjj":    {
         "datafiles" : {
           "mc16a" : "mc16a.Sherpa2_diphoton_myy_90_175.root",
           "mc16d" : "mc16d.Sherpa2_diphoton_myy_90_175.root",

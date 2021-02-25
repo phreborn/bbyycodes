@@ -69,7 +69,7 @@
         "data2": "data17_fix.root",
         "data3": "data18_fix.root"
       },
-      "histoName": "15_to_18_data_SB"
+      "histoName": "15_to_18_data_m_yyjj"
     }
 
 

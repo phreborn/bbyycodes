@@ -58,7 +58,7 @@
 
     "samples" : {
 
-      "ttyy_allhad_SB_toHH":    {
+      "ttyy_allhad_m_yyjj":    {
         "datafiles" : {
           "mc16a" : "mc16a.MGPy8_ttgammagamma_allhad_AF2.root",
           "mc16d" : "mc16d.MGPy8_ttgammagamma_allhad_AF2.root",
@@ -67,7 +67,7 @@
         "histoName" : "CutFlow_MGPy8_ttgammagamma_allhad_AF2_noDalitz_weighted"
       },
 
-      "ttyy_noallhad_SB_toHH":    {
+      "ttyy_noallhad_m_yyjj":    {
         "datafiles" : {
           "mc16a" : "mc16a.MGPy8_ttgammagamma_noallhad_AF2.root",
           "mc16d" : "mc16d.MGPy8_ttgammagamma_noallhad_AF2.root",

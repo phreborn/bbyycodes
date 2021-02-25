@@ -42,18 +42,6 @@ int main(int argc, char** argv)
 
 	vector<TString> varNames={"m_yy", "m_jj", "m_yyjj_tilde", "N_j", "N_j_central"};
 
-	TFile * targetFile = new TFile(dir+Form("%s_%s_%s.root", targetName.Data(), mXName.Data(), regionName.Data()), "read");
-	TH1F * targetHist_1;
-	TH1F * targetHist_2;
-	TH1F * targetHist_3;
-	TH1F * targetHist_4;
-	TH1F * targetHist_5;
-	targetHist_1 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
-	targetHist_2 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(), regionName.Data()));
-	targetHist_3 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(), regionName.Data()));
-	targetHist_4 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
-	targetHist_5 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
-
 	TFile * dataFile = new TFile(dir+Form("%s_%s_%s.root", dataName.Data(), mXName.Data(), regionName.Data()), "read");
 	TH1F * dataHist_1 = (TH1F *) dataFile->Get(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
 	TH1F * dataHist_2 = (TH1F *) dataFile->Get(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(), regionName.Data()));
@@ -61,7 +49,7 @@ int main(int argc, char** argv)
 	TH1F * dataHist_4 = (TH1F *) dataFile->Get(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
 	TH1F * dataHist_5 = (TH1F *) dataFile->Get(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
 
-/*	TFile * ttyyallFile = new TFile(dir+Form("%s_%s_%s.root", ttyyallName.Data(), mXName.Data(), regionName.Data()), "read");
+	TFile * ttyyallFile = new TFile(dir+Form("%s_%s_%s.root", ttyyallName.Data(), mXName.Data(), regionName.Data()), "read");
 	TH1F * ttyyallHist_1 = (TH1F *) ttyyallFile->Get(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
 	TH1F * ttyyallHist_2 = (TH1F *) ttyyallFile->Get(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(), regionName.Data()));
 	TH1F * ttyyallHist_3 = (TH1F *) ttyyallFile->Get(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(), regionName.Data()));
@@ -74,167 +62,185 @@ int main(int argc, char** argv)
 	TH1F * ttyynoHist_3 = (TH1F *) ttyynoFile->Get(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(), regionName.Data()));
 	TH1F * ttyynoHist_4 = (TH1F *) ttyynoFile->Get(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
 	TH1F * ttyynoHist_5 = (TH1F *) ttyynoFile->Get(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
+
+	int x1 = 120.;
+	int x2 = 130.;
+	int lowcut = 105.;
+	int highcut = 160.;
+
+	float purity, N_data, N_ttyy, N_target;
+	N_data = dataHist_1->Integral(dataHist_1->FindBin(lowcut), dataHist_1->FindBin(highcut))- dataHist_1->Integral(dataHist_1->FindBin(x1), dataHist_1->FindBin(x2));
+	float integral_ttyyall = ttyyallHist_1->Integral(ttyyallHist_1->FindBin(lowcut), ttyyallHist_1->FindBin(highcut))- ttyyallHist_1->Integral(ttyyallHist_1->FindBin(x1), ttyyallHist_1->FindBin(x2));
+	float integral_ttyyno = ttyynoHist_1->Integral(ttyynoHist_1->FindBin(lowcut), ttyynoHist_1->FindBin(highcut))- ttyynoHist_1->Integral(ttyynoHist_1->FindBin(x1), ttyynoHist_1->FindBin(x2));
+	N_ttyy = integral_ttyyall + integral_ttyyno;
+	cout<<"ttyyHist_1= "<<N_ttyy<<endl;
+
+/*
+	vector<TString> SHmodes={"ggH_PowhegPy8","VBFH_PowhegPy8","WmH_PowhegPy8","WpH_PowhegPy8","ZH_PowhegPy8","ggZH_PowhegPy8","tHjb","tWH","ttH_PowhegPy8","bbH"};
+	float SH_integral_SB = 0.;
+	for(auto SH : SHmodes){
+		TFile * SHFile = new TFile(dir+Form(SH+"_%s_%s.root", mXName.Data(), regionName.Data()), "read");
+		TH1F * SHHist_1 = (TH1F *) SHFile->Get(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
+		SH_integral_SB += SHHist_1->Integral(SHHist_1->FindBin(lowcut), SHHist_1->FindBin(highcut))- SHHist_1->Integral(SHHist_1->FindBin(x1), SHHist_1->FindBin(x2));
+	}
+	cout<<"SHHist_1= "<<SH_integral_SB<<endl;
 */
-	TFile * outFile = new TFile(dir+Form("%s_reweighted_%s_%s.root", targetName.Data(), mXName.Data(), regionName.Data()), "recreate");
-	TH1F * outHist_1 = (TH1F*)targetHist_1->Clone(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
-	TH1F * outHist_2 = (TH1F*)targetHist_2->Clone(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(), regionName.Data()));
-	TH1F * outHist_3 = (TH1F*)targetHist_3->Clone(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(), regionName.Data()));
-	TH1F * outHist_4 = (TH1F*)targetHist_4->Clone(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
-	TH1F * outHist_5 = (TH1F*)targetHist_5->Clone(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
 
-	float yy_purity, purity, N_data, N_ttyy, N_target;	
-	N_data = dataHist_1->Integral();
-//	N_ttyy = ttyyallHist_1->Integral() + ttyynoHist_1->Integral();
-	N_target = targetHist_1->Integral();
-
-	TH1F * yy_purityHist = (TH1F*)ggHist->Clone("purity");
-	if (mXName.Contains("X251") ) {
-		yy_purity=yy_purityHist->GetBinContent(1);
-	}
-	else if (mXName.Contains("X260") ) {
-		yy_purity=yy_purityHist->GetBinContent(2);
-	}
-	else if (mXName.Contains("X280") ) {
-		yy_purity=yy_purityHist->GetBinContent(3);
-	}
-	else if (mXName.Contains("X300") ) {
-		yy_purity=yy_purityHist->GetBinContent(4);
-	}
-	else if (mXName.Contains("X325") ) {
-		yy_purity=yy_purityHist->GetBinContent(5);
-	}
-	else if (mXName.Contains("X350") ) {
-		yy_purity=yy_purityHist->GetBinContent(6);
-	}
-	else if (mXName.Contains("X400") ) {
-		yy_purity=yy_purityHist->GetBinContent(7);
-	}
-	else if (mXName.Contains("X450") ) {
-		yy_purity=yy_purityHist->GetBinContent(8);
-	}
-	else if (mXName.Contains("X500") ) {
-		yy_purity=yy_purityHist->GetBinContent(9);
-	}
-	else if (mXName.Contains("X550") ) {
-		yy_purity=yy_purityHist->GetBinContent(10);
-	}
-	else if (mXName.Contains("X600") ) {
-		yy_purity=yy_purityHist->GetBinContent(11);
-	}
-	else if (mXName.Contains("X700") ) {
-		yy_purity=yy_purityHist->GetBinContent(12);
-	}
-	else if (mXName.Contains("X800") ) {
-		yy_purity=yy_purityHist->GetBinContent(13);
-	}
-	else if (mXName.Contains("X900") ) {
-		yy_purity=yy_purityHist->GetBinContent(14);
-	}
-	else if (mXName.Contains("X1000") ) {
-		yy_purity=yy_purityHist->GetBinContent(15);
+	if (targetName.Contains("yy")) {
+		TH1F * purityHist = (TH1F*)ggHist->Clone("purity");
+		if (mXName.Contains("X251") ) {
+			purity=purityHist->GetBinContent(1);
+		}
+		else if (mXName.Contains("X260") ) {
+			purity=purityHist->GetBinContent(2);
+		}
+		else if (mXName.Contains("X280") ) {
+			purity=purityHist->GetBinContent(3);
+		}
+		else if (mXName.Contains("X300") ) {
+			purity=purityHist->GetBinContent(4);
+		}
+		else if (mXName.Contains("X325") ) {
+			purity=purityHist->GetBinContent(5);
+		}
+		else if (mXName.Contains("X350") ) {
+			purity=purityHist->GetBinContent(6);
+		}
+		else if (mXName.Contains("X400") ) {
+			purity=purityHist->GetBinContent(7);
+		}
+		else if (mXName.Contains("X450") ) {
+			purity=purityHist->GetBinContent(8);
+		}
+		else if (mXName.Contains("X500") ) {
+			purity=purityHist->GetBinContent(9);
+		}
+		else if (mXName.Contains("X550") ) {
+			purity=purityHist->GetBinContent(10);
+		}
+		else if (mXName.Contains("X600") ) {
+			purity=purityHist->GetBinContent(11);
+		}
+		else if (mXName.Contains("X700") ) {
+			purity=purityHist->GetBinContent(12);
+		}
+		else if (mXName.Contains("X800") ) {
+			purity=purityHist->GetBinContent(13);
+		}
+		else if (mXName.Contains("X900") ) {
+			purity=purityHist->GetBinContent(14);
+		}
+		else if (mXName.Contains("X1000") ) {
+			purity=purityHist->GetBinContent(15);
+		}
 	}
 
-	
-	if (targetName.Contains("15_to_18_data_jj")) {
+	else if (targetName.Contains("15_to_18_data_jj")) {
 		TH1F * purityHist = (TH1F*)jjHist->Clone("purity");
 		if (mXName.Contains("X251") ) {
-                        purity=purityHist->GetBinContent(1);
-                }
-                else if (mXName.Contains("X260") ) {
-                        purity=purityHist->GetBinContent(2);
-                }
-                else if (mXName.Contains("X280") ) {
-                        purity=purityHist->GetBinContent(3);
-                }
-                else if (mXName.Contains("X300") ) {
-                        purity=purityHist->GetBinContent(4);
-                }
-                else if (mXName.Contains("X325") ) {
-                        purity=purityHist->GetBinContent(5);
-                }
-                else if (mXName.Contains("X350") ) {
-                        purity=purityHist->GetBinContent(6);
-                }
-                else if (mXName.Contains("X400") ) {
-                        purity=purityHist->GetBinContent(7);
-                }
-                else if (mXName.Contains("X450") ) {
-                        purity=purityHist->GetBinContent(8);
-                }
-                else if (mXName.Contains("X500") ) {
-                        purity=purityHist->GetBinContent(9);
-                }
-                else if (mXName.Contains("X550") ) {
-                        purity=purityHist->GetBinContent(10);
-                }
-                else if (mXName.Contains("X600") ) {
-                        purity=purityHist->GetBinContent(11);
-                }
-                else if (mXName.Contains("X700") ) {
-                        purity=purityHist->GetBinContent(12);
-                }
-                else if (mXName.Contains("X800") ) {
-                        purity=purityHist->GetBinContent(13);
-                }
-                else if (mXName.Contains("X900") ) {
-                        purity=purityHist->GetBinContent(14);
-                }
-                else if (mXName.Contains("X1000") ) {
-                        purity=purityHist->GetBinContent(15);
-                }
+			purity=purityHist->GetBinContent(1);
+		}
+		else if (mXName.Contains("X260") ) {
+			purity=purityHist->GetBinContent(2);
+		}
+		else if (mXName.Contains("X280") ) {
+			purity=purityHist->GetBinContent(3);
+		}
+		else if (mXName.Contains("X300") ) {
+			purity=purityHist->GetBinContent(4);
+		}
+		else if (mXName.Contains("X325") ) {
+			purity=purityHist->GetBinContent(5);
+		}
+		else if (mXName.Contains("X350") ) {
+			purity=purityHist->GetBinContent(6);
+		}
+		else if (mXName.Contains("X400") ) {
+			purity=purityHist->GetBinContent(7);
+		}
+		else if (mXName.Contains("X450") ) {
+			purity=purityHist->GetBinContent(8);
+		}
+		else if (mXName.Contains("X500") ) {
+			purity=purityHist->GetBinContent(9);
+		}
+		else if (mXName.Contains("X550") ) {
+			purity=purityHist->GetBinContent(10);
+		}
+		else if (mXName.Contains("X600") ) {
+			purity=purityHist->GetBinContent(11);
+		}
+		else if (mXName.Contains("X700") ) {
+			purity=purityHist->GetBinContent(12);
+		}
+		else if (mXName.Contains("X800") ) {
+			purity=purityHist->GetBinContent(13);
+		}
+		else if (mXName.Contains("X900") ) {
+			purity=purityHist->GetBinContent(14);
+		}
+		else if (mXName.Contains("X1000") ) {
+			purity=purityHist->GetBinContent(15);
+		}
 
 
 	}
 	else if (targetName.Contains("15_to_18_data_yj")) {
 		TH1F * purityHist = (TH1F*)jgHist->Clone("purity");
 		if (mXName.Contains("X251") ) {
-                        purity=purityHist->GetBinContent(1);
-                }
-                else if (mXName.Contains("X260") ) {
-                        purity=purityHist->GetBinContent(2);
-                }
-                else if (mXName.Contains("X280") ) {
-                        purity=purityHist->GetBinContent(3);
-                }
-                else if (mXName.Contains("X300") ) {
-                        purity=purityHist->GetBinContent(4);
-                }
-                else if (mXName.Contains("X325") ) {
-                        purity=purityHist->GetBinContent(5);
-                }
-                else if (mXName.Contains("X350") ) {
-                        purity=purityHist->GetBinContent(6);
-                }
-                else if (mXName.Contains("X400") ) {
-                        purity=purityHist->GetBinContent(7);
-                }
-                else if (mXName.Contains("X450") ) {
-                        purity=purityHist->GetBinContent(8);
-                }
-                else if (mXName.Contains("X500") ) {
-                        purity=purityHist->GetBinContent(9);
-                }
-                else if (mXName.Contains("X550") ) {
-                        purity=purityHist->GetBinContent(10);
-                }
-                else if (mXName.Contains("X600") ) {
-                        purity=purityHist->GetBinContent(11);
-                }
-                else if (mXName.Contains("X700") ) {
-                        purity=purityHist->GetBinContent(12);
-                }
-                else if (mXName.Contains("X800") ) {
-                        purity=purityHist->GetBinContent(13);
-                }
-                else if (mXName.Contains("X900") ) {
-                        purity=purityHist->GetBinContent(14);
-                }
-                else if (mXName.Contains("X1000") ) {
-                        purity=purityHist->GetBinContent(15);
-                }	
+			purity=purityHist->GetBinContent(1);
+		}
+		else if (mXName.Contains("X260") ) {
+			purity=purityHist->GetBinContent(2);
+		}
+		else if (mXName.Contains("X280") ) {
+			purity=purityHist->GetBinContent(3);
+		}
+		else if (mXName.Contains("X300") ) {
+			purity=purityHist->GetBinContent(4);
+		}
+		else if (mXName.Contains("X325") ) {
+			purity=purityHist->GetBinContent(5);
+		}
+		else if (mXName.Contains("X350") ) {
+			purity=purityHist->GetBinContent(6);
+		}
+		else if (mXName.Contains("X400") ) {
+			purity=purityHist->GetBinContent(7);
+		}
+		else if (mXName.Contains("X450") ) {
+			purity=purityHist->GetBinContent(8);
+		}
+		else if (mXName.Contains("X500") ) {
+			purity=purityHist->GetBinContent(9);
+		}
+		else if (mXName.Contains("X550") ) {
+			purity=purityHist->GetBinContent(10);
+		}
+		else if (mXName.Contains("X600") ) {
+			purity=purityHist->GetBinContent(11);
+		}
+		else if (mXName.Contains("X700") ) {
+			purity=purityHist->GetBinContent(12);
+		}
+		else if (mXName.Contains("X800") ) {
+			purity=purityHist->GetBinContent(13);
+		}
+		else if (mXName.Contains("X900") ) {
+			purity=purityHist->GetBinContent(14);
+		}
+		else if (mXName.Contains("X1000") ) {
+			purity=purityHist->GetBinContent(15);
+		}	
 
 	}
 
+	TFile * yy_m_yyjjFile = new TFile(dir+Form("yy_m_yyjj_%s_%s.root", mXName.Data(), regionName.Data()), "read");
+	TH1F * yy_m_yyjjHist_1 = (TH1F *) yy_m_yyjjFile->Get(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
+	TH1F * yy_m_yyjjHist_2 = (TH1F *) yy_m_yyjjFile->Get(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(), regionName.Data()));
+	TH1F * yy_m_yyjjHist_3 = (TH1F *) yy_m_yyjjFile->Get(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(), regionName.Data()));
+	TH1F * yy_m_yyjjHist_4 = (TH1F *) yy_m_yyjjFile->Get(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
+	TH1F * yy_m_yyjjHist_5 = (TH1F *) yy_m_yyjjFile->Get(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
 
 	TFile * yyFile = new TFile(dir+Form("yy_%s_%s.root", mXName.Data(), regionName.Data()), "read");
 	TH1F * yyHist_1 = (TH1F *) yyFile->Get(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
@@ -243,13 +249,20 @@ int main(int argc, char** argv)
 	TH1F * yyHist_4 = (TH1F *) yyFile->Get(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
 	TH1F * yyHist_5 = (TH1F *) yyFile->Get(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
 
-	float new_N_target = yyHist_1->Integral();
-	//cout<<"purity= "<<purity<<endl;
-	//cout<<N_data<<" - "<<N_ttyy<<endl;
-	//cout<<"N_target= "<<N_target<<endl;
-	//float SF = purity * (N_data) / N_target;
-	float SF = purity * (new_N_target/yy_purity) / N_target;
-	if (N_target==0) SF=1;
+	TFile * outFile = new TFile(dir+Form("%s_reweighted_%s_%s.root", targetName.Data(), mXName.Data(), regionName.Data()), "recreate");
+        TH1F * outHist_1 = (TH1F*)yyHist_1->Clone(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
+        TH1F * outHist_2 = (TH1F*)yyHist_2->Clone(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(), regionName.Data()));
+        TH1F * outHist_3 = (TH1F*)yyHist_3->Clone(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(), regionName.Data()));
+        TH1F * outHist_4 = (TH1F*)yyHist_4->Clone(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
+        TH1F * outHist_5 = (TH1F*)yyHist_5->Clone(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
+
+	float new_N_target = yy_m_yyjjHist_1->Integral(yy_m_yyjjHist_1->FindBin(lowcut), yy_m_yyjjHist_1->FindBin(highcut))- yy_m_yyjjHist_1->Integral(yy_m_yyjjHist_1->FindBin(x1), yy_m_yyjjHist_1->FindBin(x2));
+
+        float SF = purity * (N_data - N_ttyy ) / new_N_target;
+        //float SF = purity * (N_data - N_ttyy - SH_integral_SB) / new_N_target;
+        cout<<"purity = "<<purity<<endl;
+        cout<<N_data<<" - "<<N_ttyy<<" / "<<new_N_target<<endl;
+        //cout<<N_data<<" - "<<N_ttyy<<" - "<<SH_integral_SB<<" / "<<new_N_target<<endl;
 
 	outHist_1->Scale(SF);
 	outHist_2->Scale(SF);
