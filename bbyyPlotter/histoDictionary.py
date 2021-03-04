@@ -51,7 +51,7 @@ def PlottingDict():
             'y-axis title': 'Events / 30 GeV',
             'units' : 'GeV',
             'x-min' : 200,
-            'x-max' : 1400,
+            'x-max' : 1000,  #1400
             'rebin' : 1
 
         },

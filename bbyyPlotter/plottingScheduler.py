@@ -43,6 +43,7 @@ selectionDict = SelectionDict()
 signalDict = SignalDict()
 
 debug = True # Set to true to see added samples
+#rebin = True # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
 rebin = False # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
 
 
@@ -61,7 +62,7 @@ def createUpperPad(mcOnly=True, logOn=False):
 
 def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggsBackgrounds=False, inputPath="", outputPath="./Plots/"):
               
-  XsubRange = False
+  XsubRange = False 
 
   if UNBLIND:
       print('WARNING: You have unblinded the analysis! Are you sure you want to do this?')
@@ -109,14 +110,16 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
               print(sample)
               print(path+histo+selection) 
               r.gROOT.cd() 
-              '''
+              
               if rebin: 
                   theHisto.Rebin(histoDict[str(histo)]['rebin'])                   
                   XsubRange = CheckXrange(theHisto, histoDict[histo]['x-min'], histoDict[histo]['x-max'])
                   if XsubRange:
-                          low_edge = theHisto.GetBinLowEdge(theHisto.GetXaxis().FindBin(histoDict[histo]['x-min']))
-                          high_edge = theHisto.GetBinLowEdge(theHisto.GetXaxis().FindBin(histoDict[histo]['x-max']))   
-              '''
+                      low_edge = theHisto.GetBinLowEdge(theHisto.GetXaxis().FindBin(histoDict[histo]['x-min']))
+                      high_edge = theHisto.GetBinLowEdge(theHisto.GetXaxis().FindBin(histoDict[histo]['x-max']))
+		      print('ZIHANG========')
+		      print(low_edge, high_edge)
+              
               if y_title == None:     
                   y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])                    
               
@@ -157,9 +160,9 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                       addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                       getSumHist(newHisto, sumHist)
 
+	  print('====================')
           addStack(ttyyHist, stackHist,(102, 105, 112), theLegend, '#it{t#bar{t}#gamma#gamma}')
           getSumHist(ttyyHist, sumHist)
-
           # New loop to combine the single Higgs backgrounds                                                                     
           if not separateHiggsBackgrounds:
               higgsHist = r.TH1F()
@@ -176,14 +179,15 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
               getSumHist(higgsHist, sumHist)
 
           # Add HH last
-          addStack(dihiggsHist, stackHist, (242, 56, 90), theLegend, 'HH')
+          addStack(dihiggsHist, stackHist, (242, 56, 90), theLegend, 'HH (SM)')
           getSumHist(dihiggsHist, sumHist)
           
 
           # Plot the MC Stack (stackHist)
           stackHist.ls()
+          stackHist.Draw("HIST")
           if XsubRange : 
-            stackHist.GetXaxis().SetLimits(low_edge,high_edge)
+              stackHist.GetXaxis().SetLimits(low_edge,high_edge)
           stackHist.Draw("HIST")
 
           if mcOnly: 
@@ -274,7 +278,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             padlow.cd()
             
             # Trying blind
-            # if XsubRange : ratioGraph.GetXaxis().SetLimits(low_edge,high_edge)
+            if XsubRange : ratioGraph.GetXaxis().SetLimits(low_edge,high_edge)
             
             # Set up ratio plot 
             ratioHist.Divide(sumHist) 
@@ -312,7 +316,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
 
             if rebin: 
               ratioHist.SetAxisRange(low_edge,high_edge, 'X')
-              ratioGraph.SetAxisRange(low_edge,high_edge, 'X')
+              ratioGraph.GetXaxis().SetRangeUser(low_edge,high_edge) ##ZIHANG 
 
             ratioHist.Draw("AXIS")
             ratioGraph.Draw("EP SAME")
@@ -322,6 +326,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             rl.SetLineColor(r.kBlack)
             rl.SetLineWidth(2)
             rl.SetLineStyle(7) # dashed
+            #rl.DrawLine(low_edge, 1., high_edge , 1.)
             rl.DrawLine(ratioHist.GetBinLowEdge(1), 1., ratioHist.GetBinLowEdge(ratioHist.GetNbinsX()+1), 1.)
               
           # Name plots 
