@@ -48,15 +48,14 @@ rebin = False # Set to false if you want to use the original binning and edges o
 include_ratio = False
 
 def createUpperPad(mcOnly=True, logOn=False):
-  #if mcOnly or include_ratio: 
+  if mcOnly or not include_ratio: 
   #    r.gStyle.SetPadLeftMargin(0.20)
-  #    padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
-  #    padhigh.SetBottomMargin(0.15)
-  #if not mcOnly and not include_ratio: 
-  #    padhigh = r.TPad("padhigh","padhigh",0.0,0.3,0.85,1.)
-  #    padhigh.SetBottomMargin(0.02)
-  padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
-  padhigh.SetBottomMargin(0.15)
+      padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
+      padhigh.SetBottomMargin(0.15)
+  if include_ratio: 
+      padhigh = r.TPad("padhigh","padhigh",0.0,0.3,0.85,1.)
+      padhigh.SetBottomMargin(0.02)
+
   if logOn: 
       padhigh.SetLogy()
   return padhigh
@@ -206,7 +205,10 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             stackHist.GetXaxis().SetLabelFont(43)
             stackHist.GetXaxis().SetLabelSize(20)
             stackHist.GetYaxis().SetLabelFont(43)
-            stackHist.GetYaxis().SetLabelSize(20)   
+            stackHist.GetYaxis().SetLabelSize(20) 
+          if include_ratio:  
+            stackHist.GetXaxis().SetTitleOffset(99)
+            stackHist.GetXaxis().SetLabelSize(0)
 
           if not mcOnly: 
                  #stackHist.GetXaxis().SetLabelOffset(999)
