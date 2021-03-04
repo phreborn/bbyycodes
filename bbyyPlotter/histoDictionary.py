@@ -47,7 +47,7 @@ def PlottingDict():
 
         },
         'sumHisto_m_yyjj_tilde_': { 
-            'x-axis title': '#it{m}_{#gamma#gamma#it{jj}} [GeV]',
+            'x-axis title': '#it{m}_{#it{b#bar{b}}#gamma#gamma}* [GeV]',
             'y-axis title': 'Events / 30 GeV',
             'units' : 'GeV',
             'x-min' : 200,
