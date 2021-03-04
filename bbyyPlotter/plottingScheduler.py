@@ -45,17 +45,18 @@ signalDict = SignalDict()
 debug = True # Set to true to see added samples
 #rebin = True # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
 rebin = False # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
-
+include_ratio = False
 
 def createUpperPad(mcOnly=True, logOn=False):
-  if mcOnly: 
-      r.gStyle.SetPadLeftMargin(0.20)
-      padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
-      padhigh.SetBottomMargin(0.15)
-  if not mcOnly: 
-      padhigh = r.TPad("padhigh","padhigh",0.0,0.3,0.85,1.)
-      padhigh.SetBottomMargin(0.02)
-  
+  #if mcOnly or include_ratio: 
+  #    r.gStyle.SetPadLeftMargin(0.20)
+  #    padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
+  #    padhigh.SetBottomMargin(0.15)
+  #if not mcOnly and not include_ratio: 
+  #    padhigh = r.TPad("padhigh","padhigh",0.0,0.3,0.85,1.)
+  #    padhigh.SetBottomMargin(0.02)
+  padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
+  padhigh.SetBottomMargin(0.15)
   if logOn: 
       padhigh.SetLogy()
   return padhigh
@@ -175,7 +176,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                       getSumHist(newHisto, higgsHist)                        
 
               # Add the combined single Higgs backgrounds back in, unless specified otherwise
-              addStack(higgsHist, stackHist, (253, 197, 54), theLegend, 'Single Higgs')   
+              addStack(higgsHist, stackHist, (52, 56, 68), theLegend, 'Single Higgs')   
               getSumHist(higgsHist, sumHist)
 
           # Add HH last
@@ -198,9 +199,18 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           stackHist.GetXaxis().SetNdivisions(306)
           stackHist.SetMaximum(1.5*stackHist.GetMaximum())
 
-          if not mcOnly : 
-                 stackHist.GetXaxis().SetLabelOffset(999)
-                 stackHist.GetXaxis().SetLabelSize(0)
+          if not include_ratio:
+            stackHist.GetXaxis().SetTitle(histoDict[str(histo)]['x-axis title'])
+            #stackHist.GetXaxis().SetTitleSize(100)
+            stackHist.GetXaxis().SetTitleOffset(1)
+            stackHist.GetXaxis().SetLabelFont(43)
+            stackHist.GetXaxis().SetLabelSize(20)
+            stackHist.GetYaxis().SetLabelFont(43)
+            stackHist.GetYaxis().SetLabelSize(20)   
+
+          if not mcOnly: 
+                 #stackHist.GetXaxis().SetLabelOffset(999)
+                 #stackHist.GetXaxis().SetLabelSize(0)
                  if ('m_yyjj' in histo) or ('m_jj' in histo):
                     stackHist.SetMaximum(1.5*stackHist.GetMaximum())
                  else:
@@ -248,14 +258,17 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           l.SetNDC()
           l.SetTextColor(r.kBlack)
           l1, l2 = 0.55, 0.88
-          if mcOnly: 
-            l1, l2 = 0.45, 0.88
-          r.ATLASLabel(l1,l2,"Internal")
           l.SetTextFont(42)
           l.SetTextSize(0.04)
+          if mcOnly or not include_ratio: 
+            l1, l2 = 0.5, 0.88
+
+          r.ATLASLabel(l1,l2,"Internal")
           l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139 fb^{-1}")
           l.DrawLatex(l1, 0.80, selectionDict[str(selection)]['legend upper'])
           l.DrawLatex(l1, 0.76, selectionDict[str(selection)]['legend lower'])
+
+
           
           # Add the legend to a separate, pad on the side
           canv.cd()
@@ -267,7 +280,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           theLegend.Draw("SAME")
 
           # Set up the lower pad for the ratio plot
-          if not mcOnly:
+          
+          if include_ratio:
             canv.cd()
             padlow = r.TPad("padlow","padlow",0.,0.0,0.85,0.30)
             padlow.SetFillStyle(4000)
@@ -328,7 +342,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             rl.SetLineStyle(7) # dashed
             #rl.DrawLine(low_edge, 1., high_edge , 1.)
             rl.DrawLine(ratioHist.GetBinLowEdge(1), 1., ratioHist.GetBinLowEdge(ratioHist.GetNbinsX()+1), 1.)
-              
+            
+
           # Name plots 
           extra = ''
           if mcOnly: 
