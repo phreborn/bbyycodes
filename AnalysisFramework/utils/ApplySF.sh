@@ -1,5 +1,6 @@
 var="m_yy"
-target="yy jj yj yybj yycj yylj"
+target="yybb yyrr"
+#target="yy jj yj yybb yyrr"
 data="15_to_18_data"
 ttyyall="ttyy_allhad"
 ttyyno="ttyy_noallhad"

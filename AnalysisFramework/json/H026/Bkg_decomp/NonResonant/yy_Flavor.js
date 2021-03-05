@@ -51,7 +51,7 @@
 
     "samples" : {
 
-    "yybj":    {
+    "yybb":    {
         "datafiles" : {
 	"mc16a": "mc16a.Sherpa2_diphoton_myy_90_175.root",
         "mc16d": "mc16d.Sherpa2_diphoton_myy_90_175.root",
@@ -61,16 +61,7 @@
       },
 
 
-    "yycj":    {
-        "datafiles" : {
-	"mc16a": "mc16a.Sherpa2_diphoton_myy_90_175.root",
-        "mc16d": "mc16d.Sherpa2_diphoton_myy_90_175.root",
-        "mc16e": "mc16e.Sherpa2_diphoton_myy_90_175.root"
-        },
-        "histoName" : "CutFlow_Sherpa2_myy_90_175_noDalitz_weighted"
-      },
-
-    "yylj":    {
+    "yyrr":    {
         "datafiles" : {
 	"mc16a": "mc16a.Sherpa2_diphoton_myy_90_175.root",
         "mc16d": "mc16d.Sherpa2_diphoton_myy_90_175.root",
@@ -78,6 +69,7 @@
         },
         "histoName" : "CutFlow_Sherpa2_myy_90_175_noDalitz_weighted"
       }
+
 
     }
 

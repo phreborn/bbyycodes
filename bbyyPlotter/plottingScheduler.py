@@ -175,7 +175,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                       getSumHist(newHisto, higgsHist)                        
 
               # Add the combined single Higgs backgrounds back in, unless specified otherwise
-              addStack(higgsHist, stackHist, (52, 56, 68), theLegend, 'Single Higgs')   
+              addStack(higgsHist, stackHist, (253, 197, 54), theLegend, 'Single Higgs')   
               getSumHist(higgsHist, sumHist)
 
           # Add HH last

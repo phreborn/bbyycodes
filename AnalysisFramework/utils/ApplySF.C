@@ -175,7 +175,7 @@ int main(int argc, char** argv)
 	outHist_6 = (TH1F*)yyHist_5->Clone(Form("sumHisto_%s_%s", varNames[5].Data(), regionName.Data()));
 	outHist_7 = (TH1F*)yyHist_5->Clone(Form("sumHisto_%s_%s", varNames[6].Data(), regionName.Data()));
 	
-	if (targetName.Contains("yybj") || targetName.Contains("yycj") || targetName.Contains("yylj")) {
+	if (targetName.Contains("yybb") || targetName.Contains("yyrr")) {
 	TFile * targetFile = new TFile(dir+Form("%s_%s.root", targetName.Data(), regionName.Data()), "read");
 	TH1F * targetHist_1 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s", varNames[0].Data(), regionName.Data()));
 	TH1F * targetHist_2 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s", varNames[1].Data(), regionName.Data()));

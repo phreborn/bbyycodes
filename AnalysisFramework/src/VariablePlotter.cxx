@@ -153,9 +153,11 @@ void VariablePlotter::execute()
 	  // Adding an additional truth-matching feature, which we only need when
 	  // running on the yy samples to get the yycj, yybj, yylj separation
 	  //std::string truthMatch = "";
-	  if (sampleName == "yybj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
-	  if (sampleName == "yycj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
-	  if (sampleName == "yylj") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
+	  if (sampleName == "yybb") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[1]==5";
+	  if (sampleName == "yyrr") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5 || HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[1]!=5)";
+	  //if (sampleName == "yybj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
+	  //if (sampleName == "yycj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
+	  //if (sampleName == "yylj") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
 
 	  // Have a specific XStimesBR if we are running on a resonant signal
 	  /*
@@ -246,6 +248,7 @@ void VariablePlotter::execute()
 	    }
 	    std::string vvar = var + " >> " + hName;
 	    //std::cout << "Drawing with selection: " << select.c_str() << " and weight: " << weight.c_str() << " and weighted selection " << weighted_selection.c_str() << std::endl;
+	    std::cout << "Drawing with selection: " << select.c_str() << std::endl;
 	    //if (MC_counter == 1) std::cout << "Drawing weighted selection " << weighted_selection.c_str() << std::endl;
 	    //tree->Draw(vvar.c_str(),select.c_str(),"HIST")	  
 	    tree->Draw(vvar.c_str(), weighted_selection.c_str(), "HIST");

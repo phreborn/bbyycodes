@@ -256,19 +256,19 @@ def SampleDict():
             'color':  (233, 241, 223), ## hh dark blue 
             'legend description': 'Hadronic #it{t#bar{t}#gamma#gamma}',
         },
-	'15_to_18_data_yj': {
-	    'color':   (253, 197, 54) ,
+	'yj': {
+	    'color':   (52, 56, 68) ,
             'legend description': 'DataDriven #it{#gammaj}',
         },
-	'15_to_18_data_jj': {
+	'jj': {
 	    'color':  (233, 241, 223),
             'legend description': 'DataDriven #it{jj}',
         },
-	'15_to_18_data_yj_reweighted': {
-	    'color':   (253, 197, 54) ,
+	'yj_reweighted': {
+	    'color':   (52, 56, 68) ,
             'legend description': 'DataDriven #it{#gammaj}',
         },
-	'15_to_18_data_jj_reweighted': {
+	'jj_reweighted': {
 	    'color':   (233, 241, 223),
             'legend description': 'DataDriven #it{jj}',
         },
@@ -291,25 +291,25 @@ def SampleDict():
             'color': (64, 210, 227), #46,
             'legend description': '#it{#gamma#gammacj}',
         },
-        'yylj': {
+        'yyrr': {
             'color': (54, 177, 190), #5,
-            'legend description': '#it{#gamma#gammalj}',
+            'legend description': '#it{#gamma#gamma+rest}',
         },
-        'yybj': {
+        'yybb': {
             'color': (74, 217, 217), #38,
-            'legend description': '#it{#gamma#gammabj}',
+            'legend description': '#it{#gamma#gammabb}',
         },
         'yycj_reweighted': {
             'color': (64, 210, 227), #46,
             'legend description': '#it{#gamma#gammacj}',
         },
-        'yylj_reweighted': {
+        'yyrr_reweighted': {
             'color': (54, 177, 190), #5,
-            'legend description': '#it{#gamma#gammalj}',
+            'legend description': '#it{#gamma#gamma+rest}',
         },
-        'yybj_reweighted': {
+        'yybb_reweighted': {
             'color': (74, 217, 217),  #38,
-            'legend description': '#it{#gamma#gammabj}',
+            'legend description': '#it{#gamma#gammabb}',
         },
 
         'HH': { 

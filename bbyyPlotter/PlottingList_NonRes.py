@@ -43,9 +43,11 @@ samplesToStack = [
 		    #'ttyy_allhad_SB',     #calculate yield
 		    #'ttyy_noallhad_SB',   #calculate yield
 
-                   'yybj_reweighted',
-                   'yycj_reweighted',
-                   'yylj_reweighted',
+                   'yybb_reweighted',
+                   'yyrr_reweighted',
+                   #'yybj_reweighted',
+                   #'yycj_reweighted',
+                   #'yylj_reweighted',
                    #'yybj',
                    #'yycj',
                    #'yylj',
