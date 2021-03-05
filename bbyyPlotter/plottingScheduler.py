@@ -116,7 +116,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                   XsubRange = CheckXrange(theHisto, histoDict[histo]['x-min'], histoDict[histo]['x-max'])
                   if XsubRange:
                       low_edge = theHisto.GetBinLowEdge(theHisto.GetXaxis().FindBin(histoDict[histo]['x-min']))
-                      high_edge = theHisto.GetBinLowEdge(theHisto.GetXaxis().FindBin(histoDict[histo]['x-max']))
+                      #high_edge = theHisto.GetBinLowEdge(theHisto.GetXaxis().FindBin(histoDict[histo]['x-max']))
+                      high_edge = 1000  #for m_bbyy with resonance 300 and 500 overlaid
 		      print('ZIHANG========')
 		      print(low_edge, high_edge)
               
