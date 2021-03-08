@@ -42,7 +42,8 @@ color1.SetRGB(242/255., 56/255., 90/255.);
 color2 = ROOT.gROOT.GetColor(3);
 color2.SetRGB(52/255., 56/255., 68/255.);
 color3 = ROOT.gROOT.GetColor(4);
-color3.SetRGB(54/255., 177/255., 191/255.);
+#color3.SetRGB(54/255., 177/255., 191/255.);
+color3.SetRGB(36/255., 118/255., 127/255.); #default too light
 color4 = ROOT.gROOT.GetColor(7);
 color4.SetRGB(74/255., 217/255., 217/255.);
 color5 = ROOT.gROOT.GetColor(6);
@@ -157,7 +158,7 @@ def test():
   )
   return dict(w=w, data=data, catVariable='cat', catInfo=catInfo, newObs='mgg', nBins=55) #20
 
-def getInfoCouplings(fName='WS-yybb-nonresonant_BDT_h026_v4_param.root', snapshot='ucmles_0', noWeights = False, nBins=55, subset=args.category):
+def getInfoCouplings(fName='WS-yybb-nonresonant_BDT_h026_v5_kl1p0.root', snapshot='ucmles_0', noWeights = False, nBins=55, subset=args.category):
   """return info for getWeightedWorkspace. <subset> can be ggH, VBF, VH or ttH"""
   f = ROOT.TFile(fName)
   w = f.combWS
@@ -313,7 +314,7 @@ def getNewWorkspace(w, data, catVariable, catInfo, name='w1', newObs='mgg', nBin
   print 'pdfW:', pdfW
   return w1
 
-def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitle='c', nBins = 55, subpanel = 1):
+def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitle='c', nBins = 55, subpanel = 1, ss_name = ''):
 
   c = ROOT.TCanvas(canvasName, canvasTitle)
   c.Divide(1,2)
@@ -367,6 +368,9 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
   #get best fit mu (should be 1) then set to 0 for the cont. bkg only component
   fitted_mu=w1.var('mu').getVal()
   w1.var('mu').setVal(0.0)
+
+  fitted_SS=w1.var(ss_name).getVal()
+  w1.var(ss_name).setVal(0)
   if not w1.allPdfs().find('pdfB'):
     pdfB = w1.obj('pdfW')
   else:
@@ -407,7 +411,9 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
 
   #get the total B now 
   print 'setting mu to ', fitted_mu
+  print 'setting', ss_name, 'to', fitted_SS
   w1.var('mu').setVal(fitted_mu) #fitted_mu should be 1
+  w1.var(ss_name).setVal(fitted_SS)
   w1.obj('pdfW').plotOn(frame, RooFit.LineStyle(1), RooFit.LineColor(2), RooFit.Normalization(1, ROOT.RooAbsReal.RelativeExpected))
   frame.SetMaximum((frame.GetMaximum() + 1.5 * math.sqrt(frame.GetMaximum()))*1.5)
   frame.SetMinimum(0.001)
@@ -529,29 +535,35 @@ if __name__ == '__main__':
 
   #get the plot for the ucmles fit (cont bkg only component)
   info['w'].obj('mu').setVal(0)
+  info['w'].obj('SPURIOUS_SM_1').setVal(0)
+  info['w'].obj('SPURIOUS_SM_2').setVal(0)
+  info['w'].obj('SPURIOUS_BSM_1').setVal(0)
+  info['w'].obj('SPURIOUS_BSM_2').setVal(0)
   getNewWorkspace(newWorkspace=w, addData=False, pdfName='pdfB', **info)
   if args.category:
     if args.category == 'SM_1': label = 'High mass BDT tight'
     elif args.category == 'SM_2': label = 'High mass BDT loose'
     elif args.category == 'BSM_1': label = 'Low mass BDT tight'
     elif args.category == 'BSM_2': label = 'Low mass BDT loose'
-    x = plot(w, noWeights=1-args.weighted, label=label, nBins = 22, subpanel = args.subpanel)       #<- and also change this
+    x = plot(w, noWeights=1-args.weighted, label=label, nBins = 22, subpanel = args.subpanel, ss_name = 'SPURIOUS_' + args.category)       #<- and also change this
   else: 
     x = plot(w, noWeights=1-args.weighted, label="All categories", nBins = 22, subpanel = args.subpanel)	#<- and also change this
   c = x[0]
 
+  tag = 'v2'
+
   if args.category:
-    c.SaveAs("plots/unweighted_yybb_%s%s.pdf" %(args.category, '_subpanel' if args.subpanel == 1 else ''))
-    c.SaveAs("plots/unweighted_yybb_%s%s.eps" %(args.category, '_subpanel' if args.subpanel == 1 else ''))
-    c.SaveAs("plots/unweighted_yybb_%s%s.C" %(args.category, '_subpanel' if args.subpanel == 1 else ''))
-    c.SaveAs("plots/unweighted_yybb_%s%s.png" %(args.category, '_subpanel' if args.subpanel == 1 else ''))
+    c.SaveAs("plots/unweighted_yybb_%s%s_%s.pdf" %(args.category, '_subpanel' if args.subpanel == 1 else '', tag))
+    c.SaveAs("plots/unweighted_yybb_%s%s_%s.eps" %(args.category, '_subpanel' if args.subpanel == 1 else '', tag))
+    c.SaveAs("plots/unweighted_yybb_%s%s_%s.C" %(args.category, '_subpanel' if args.subpanel == 1 else '', tag))
+    c.SaveAs("plots/unweighted_yybb_%s%s_%s.png" %(args.category, '_subpanel' if args.subpanel == 1 else '', tag))
   elif args.weighted == 1:
-    c.SaveAs("plots/weighted_yybb_all%s.pdf" %('_subpanel' if args.subpanel == 1 else ''))
-    c.SaveAs("plots/weighted_yybb_all%s.eps" %('_subpanel' if args.subpanel == 1 else ''))
-    c.SaveAs("plots/weighted_yybb_all%s.C" %('_subpanel' if args.subpanel == 1 else ''))
-    c.SaveAs("plots/weighted_yybb_all%s.png" %('_subpanel' if args.subpanel == 1 else ''))
+    c.SaveAs("plots/weighted_yybb_all%s_%s.pdf" %('_subpanel' if args.subpanel == 1 else '', tag))
+    c.SaveAs("plots/weighted_yybb_all%s_%s.eps" %('_subpanel' if args.subpanel == 1 else '', tag))
+    c.SaveAs("plots/weighted_yybb_all%s_%s.C" %('_subpanel' if args.subpanel == 1 else '', tag))
+    c.SaveAs("plots/weighted_yybb_all%s_%s.png" %('_subpanel' if args.subpanel == 1 else '', tag))
   else:
-    c.SaveAs("plots/unweighted_yybb_all%s.pdf" %('_subpanel' if args.subpanel == 1 else ''))
-    c.SaveAs("plots/unweighted_yybb_all%s.eps" %('_subpanel' if args.subpanel == 1 else ''))
-    c.SaveAs("plots/unweighted_yybb_all%s.C" %('_subpanel' if args.subpanel == 1 else ''))
-    c.SaveAs("plots/unweighted_yybb_all%s.png" %('_subpanel' if args.subpanel == 1 else ''))
+    c.SaveAs("plots/unweighted_yybb_all%s_%s.pdf" %('_subpanel' if args.subpanel == 1 else '', tag))
+    c.SaveAs("plots/unweighted_yybb_all%s_%s.eps" %('_subpanel' if args.subpanel == 1 else '', tag))
+    c.SaveAs("plots/unweighted_yybb_all%s_%s.C" %('_subpanel' if args.subpanel == 1 else '', tag))
+    c.SaveAs("plots/unweighted_yybb_all%s_%s.png" %('_subpanel' if args.subpanel == 1 else '', tag))
