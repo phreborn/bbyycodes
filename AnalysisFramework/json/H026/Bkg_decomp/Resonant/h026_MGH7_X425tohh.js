@@ -46,15 +46,6 @@
 
     "samples" : {
 
-	"Resonance":{
-        "datafiles" : { 
-          "mc16a" : "mc16a.MGH7_X425tohh_bbyy_AF2.root",
-          "mc16d" : "mc16d.MGH7_X425tohh_bbyy_AF2.root",
-          "mc16e" : "mc16e.MGH7_X425tohh_bbyy_AF2.root"
-        },
-        "histoName" : "CutFlow_MGH7_X425tohh_bbyy_AF2_noDalitz_weighted"
-      },
-        
         
     "HH":    {
         "datafiles" : {
