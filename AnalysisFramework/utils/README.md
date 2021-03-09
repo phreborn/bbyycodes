@@ -38,6 +38,8 @@ yy samples, remove m_yyjj cut = yy_m_yyjj.js
 
 ttyy samples, remove m_yyjj cut = ttyy_m_yyjj.js
 
+*newly added resonant mass points use yybb_btag77_cutFlow instead of yybb_btag77_BCal_cutFlow, so they use the files in new_mX/*
+
 
 ## Step 2
 
