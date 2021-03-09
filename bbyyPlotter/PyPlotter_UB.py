@@ -107,7 +107,7 @@ def GetYtitle(theHisto, rebin, units):
     xmin = theHisto.GetXaxis().GetXmin()
     xmax = theHisto.GetXaxis().GetXmax()
     res = (xmax-xmin)/bins*rebin
-    #if (res >= 1): res = int(res)
+    if (res >= 1): res = int(res)
     y_title = "Events / "
     y_title += str(res)+" "+units
 
