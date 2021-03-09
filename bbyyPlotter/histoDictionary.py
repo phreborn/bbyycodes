@@ -293,7 +293,7 @@ def SampleDict():
         },
         'yyrr': {
             'color': (54, 177, 190), #5,
-            'legend description': '#it{#gamma#gamma+rest}',
+            'legend description': '#it{#gamma#gamma+other jets}',
         },
         'yybb': {
             'color': (74, 217, 217), #38,
@@ -305,7 +305,7 @@ def SampleDict():
         },
         'yyrr_reweighted': {
             'color': (54, 177, 190), #5,
-            'legend description': '#it{#gamma#gamma+rest}',
+            'legend description': '#it{#gamma#gamma+other jets}',
         },
         'yybb_reweighted': {
             'color': (74, 217, 217),  #38,
@@ -438,9 +438,19 @@ def SignalDict():
             'legend description': '#it{X}(260)#it{HH} ',
             },
 
+        'Resonance_X270toHH_BDT_Selection_h026_optimized': {
+            'color': 2,
+            'legend description': '#it{X}(270)#it{HH} ',
+            },
+
         'Resonance_X280toHH_BDT_Selection_h026_optimized': {
             'color': 11,
             'legend description': '#it{X}(280)#it{HH} ',
+            },
+
+        'Resonance_X290toHH_BDT_Selection_h026_optimized': {
+            'color': 4,
+            'legend description': '#it{X}(290)#it{HH} ',
             },
 
         'Resonance_X300toHH_BDT_Selection_h026_optimized': {
@@ -448,9 +458,19 @@ def SignalDict():
             'legend description': '#it{X}(300)#it{HH} ',
             },
 
+        'Resonance_X3125toHH_BDT_Selection_h026_optimized': {
+            'color': 31,
+            'legend description': '#it{X}(312.5)#it{HH} ',
+            },
+
         'Resonance_X325toHH_BDT_Selection_h026_optimized': {
             'color': 40,
             'legend description': '#it{X}(325)#it{HH} ',
+            },
+
+        'Resonance_X3375toHH_BDT_Selection_h026_optimized': {
+            'color': 32,
+            'legend description': '#it{X}(337.5)#it{HH} ',
             },
 
         'Resonance_X350toHH_BDT_Selection_h026_optimized': {
@@ -458,14 +478,29 @@ def SignalDict():
             'legend description': '#it{X}(350)#it{HH} ',
             },
 
+        'Resonance_X375toHH_BDT_Selection_h026_optimized': {
+            'color': 38,
+            'legend description': '#it{X}(375)#it{HH} ',
+            },
+
         'Resonance_X400toHH_BDT_Selection_h026_optimized': {
             'color': 3,
             'legend description': '#it{X}(400)#it{HH} ',
         },
+        'Resonance_X425toHH_BDT_Selection_h026_optimized': {
+            'color': 41,
+            'legend description': '#it{X}(425)#it{HH} ',
+            },
+
         'Resonance_X450toHH_BDT_Selection_h026_optimized': {
             'color': 30,
             'legend description': '#it{X}(450)#it{HH} ',
         },
+        'Resonance_X475toHH_BDT_Selection_h026_optimized': {
+            'color': 42,
+            'legend description': '#it{X}(475)#it{HH} ',
+            },
+
         'Resonance_X500toHH_BDT_Selection_h026_optimized': {
             'color': 7,
             'legend description': '#it{X}(500)#it{HH} ',
@@ -614,40 +649,72 @@ def SelectionDict():
             'legend lower': '',
            },
 
+	'X251toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(251)#it{HH} ',
+            'legend lower': '',
+            },
 	
 	'X260toHH_BDT_Selection_h026_optimized': {
             'legend upper': '#it{X}(260)#it{HH} ',
             'legend lower': '',
             },
 
+	'X270toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(270)#it{HH} ',
+            'legend lower': '',
+            },
         'X280toHH_BDT_Selection_h026_optimized': {
             'legend upper': '#it{X}(280)#it{HH} ',
             'legend lower': '',
             },
 
+	'X290toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(290)#it{HH} ',
+            'legend lower': '',
+            },
         'X300toHH_BDT_Selection_h026_optimized': {
             'legend upper': '#it{X}(300)#it{HH} ',
             'legend lower': '',
             },
 
+	'X3125toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(312.5)#it{HH} ',
+            'legend lower': '',
+            },
         'X325toHH_BDT_Selection_h026_optimized': {
             'legend upper': '#it{X}(325)#it{HH} ',
             'legend lower': '',
             },
 
+	'X3375toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(337.5)#it{HH} ',
+            'legend lower': '',
+            },
         'X350toHH_BDT_Selection_h026_optimized': {
             'legend upper': '#it{X}(350)#it{HH} ',
             'legend lower': '',
             },
 
+	'X375toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(375)#it{HH} ',
+            'legend lower': '',
+            },
         'X400toHH_BDT_Selection_h026_optimized': {
             'legend upper': '#it{X}(400)#it{HH} ',
             'legend lower': '',
         },
+	'X425toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(425)#it{HH} ',
+            'legend lower': '',
+            },
         'X450toHH_BDT_Selection_h026_optimized': {
             'legend upper': '#it{X}(450)#it{HH} ',
             'legend lower': '',
         },
+	'X475toHH_BDT_Selection_h026_optimized': {
+            'legend upper': '#it{X}(475)#it{HH} ',
+            'legend lower': '',
+            },
         'X500toHH_BDT_Selection_h026_optimized': {
             'legend upper': '#it{X}(500)#it{HH} ',
             'legend lower': '',
