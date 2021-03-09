@@ -35,11 +35,11 @@ SCALE_VBF = 1.723/(4.581-4.245+1.359)
 
 def xs_ggF(kl):
     #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Latest_recommendations_for_gluon
-    return (70.3874-50.4111*kl+11.0595*kl**2) * SCALE_GGF / 1000 #XS in pb
+    return (70.3874-50.4111*kl+11.0595*kl**2) * SCALE_GGF #XS in fb
 
 def xs_VBF(kl):
     #https://indico.cern.ch/event/995807/contributions/4184798/attachments/2175756/3683303/VBFXSec.pdf
-    return (4.581-4.245*kl+1.359*kl**2) * SCALE_VBF / 1000 
+    return (4.581-4.245*kl+1.359*kl**2) * SCALE_VBF
 
 def xs_HH(kl):
     return xs_ggF(kl) + xs_VBF(kl)
@@ -48,7 +48,7 @@ def xs_HH(kl):
 def sigma_upper_ggF(kl):
     #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Latest_recommendations_for_gluon
     #add the std on ggF HH due to qcd scale, PDF, and mtop in quadrature
-    return xs_ggF(kl) * math.sqrt((max(72.0744-51.7362*kl+11.3712*kl**2, 70.9286-51.5708*kl+11.4497*kl**2) * SCALE_GGF / 1000 / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    return xs_ggF(kl) * math.sqrt((max(72.0744-51.7362*kl+11.3712*kl**2, 70.9286-51.5708*kl+11.4497*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
     
 def sigma_upper_VBF(kl):
     #from klambda = 1
@@ -63,7 +63,7 @@ def xs_upper_HH(kl):
 def sigma_lower_ggF(kl):
     #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Latest_recommendations_for_gluon
     #add the std on ggF HH due to qcd scale, PDF, and mtop in quadrature
-    return xs_ggF(kl) * math.sqrt((min(66.0621-46.7458*kl+10.1673*kl**2, 66.7581-47.721*kl+10.4535*kl**2) * SCALE_GGF / 1000 / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    return xs_ggF(kl) * math.sqrt((min(66.0621-46.7458*kl+10.1673*kl**2, 66.7581-47.721*kl+10.4535*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
 
 def sigma_lower_VBF(kl):
     return xs_VBF(kl) * math.sqrt(0.0004**2 + 0.021**2)
@@ -116,7 +116,7 @@ th_band = ax.fill_between(lambdas, [xs_lower_HH(kl) for kl in lambdas], [xs_uppe
 
 
 ylim = [.001,10]#for xsecbr
-ylim = [.01, 100]
+ylim = [10, 100000]
 
 #ax.plot([1]*2,ylim,'grey')
 ax.set_ylim(ylim)
@@ -151,7 +151,7 @@ print ('limits:', intersections)
 
 ax.xaxis.set_ticks(np.arange(min(lambdas), max(lambdas) + 1, 2))
 
-ampl.set_ylabel('$\sigma_{ggF+VBF}$ [pb]', fontsize=16)
+ampl.set_ylabel('$\sigma_{ggF+VBF}$ [fb]', fontsize=16)
 
 #reorder the legend
 handles,labels = ax.get_legend_handles_labels()
