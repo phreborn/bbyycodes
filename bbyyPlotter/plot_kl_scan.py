@@ -102,17 +102,17 @@ else:
         ax = fig.add_subplot(gs[:4,0])
 
 
-ax.semilogy(lambdas, n * np.array(limit_bands[3]),'k',label='Observed')
-ax.semilogy(lambdas, n * np.array(limit_bands[0]),'k--',label='Expected')
+ax.semilogy(lambdas, n * np.array(limit_bands[3]),'k',label='Observed limit (95\%)')
+ax.semilogy(lambdas, n * np.array(limit_bands[0]),'k--',label='Expected limit (95\%)')
 
-ax.fill_between(lambdas, n * np.array(limit_bands[-2]), n * np.array(limit_bands[2]),  facecolor = 'yellow', label='Expected $\pm 2\sigma$')
-ax.fill_between(lambdas, n * np.array(limit_bands[-1]), n * np.array(limit_bands[1]),  facecolor = 'lime', label='Expected $\pm 1\sigma$')
+ax.fill_between(lambdas, n * np.array(limit_bands[-2]), n * np.array(limit_bands[2]),  facecolor = '#FDC536', label='Expected limit $\pm 2\sigma$')
+ax.fill_between(lambdas, n * np.array(limit_bands[-1]), n * np.array(limit_bands[1]),  facecolor = '#4AD9D9', label='Expected limit $\pm 1\sigma$')
 
 # The extra bands that I wanted to add
 #ax.semilogy(lambdas, n * np.array(limit2_bands[0]),color='r',linestyle='--',label='Stat only')
 
 ax.plot(lambdas,n,'C4', color = 'darkred', label='Theory prediction')
-th_band = ax.fill_between(lambdas, [xs_lower_HH(kl) for kl in lambdas], [xs_upper_HH(kl) for kl in lambdas],  facecolor = 'r')
+th_band = ax.fill_between(lambdas, [xs_lower_HH(kl) for kl in lambdas], [xs_upper_HH(kl) for kl in lambdas],  facecolor = '#F2385A')
 
 
 ylim = [.001,10]#for xsecbr
@@ -151,7 +151,7 @@ print ('limits:', intersections)
 
 ax.xaxis.set_ticks(np.arange(min(lambdas), max(lambdas) + 1, 2))
 
-ampl.set_ylabel('$\sigma_{ggF+VBF}$ [fb]', fontsize=16)
+ampl.set_ylabel('$\sigma_{ggF+VBF}$ (HH) [fb]', fontsize=16)
 
 #reorder the legend
 handles,labels = ax.get_legend_handles_labels()
@@ -169,12 +169,12 @@ if (add_subplot):
 	ax2.set_ylabel('Limit ratio')
 	ax2.set_ylim(0.5,1.5)
 else:
-        ampl.set_xlabel('$\kappa_\lambda$ = $\lambda_{HHH}$ / $\lambda_{SM}$', fontsize=16)
+        ampl.set_xlabel('$\kappa_\lambda$', fontsize=16)
 
-ampl.draw_atlas_label(0.05, 0.95, ax, status = 'int', energy = '13 TeV', lumi = 139, desc = '')
+ampl.draw_atlas_label(0.05, 0.95, ax, status = 'int', energy = '13 TeV', lumi = 139, desc = r'$HH \rightarrow b\bar{b} \gamma \gamma$')
 
 plt.xlim([-10, 10])
 
-plt.savefig('kappa_lambda_scan_ratio_param_obs_v4.pdf')
+plt.savefig('kappa_lambda_scan_ratio_param_obs_v5.pdf')
 
 plt.show()
