@@ -214,7 +214,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           if not mcOnly: 
                  #stackHist.GetXaxis().SetLabelOffset(999)
                  #stackHist.GetXaxis().SetLabelSize(0)
-                 if ('m_yyjj' in histo) or ('m_jj' in histo):
+                 if ('m_yyjj' in histo) or ('m_jj' in histo) or ('N_j' in histo):
                     stackHist.SetMaximum(1.5*stackHist.GetMaximum())
                  else:
                     stackHist.SetMaximum(1.5*dataHist.GetMaximum())

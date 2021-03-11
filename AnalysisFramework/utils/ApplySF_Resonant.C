@@ -94,144 +94,207 @@ int main(int argc, char** argv)
 		else if (mXName.Contains("X260") ) {
 			purity=purityHist->GetBinContent(2);
 		}
-		else if (mXName.Contains("X280") ) {
+		else if (mXName.Contains("X270") ) {
 			purity=purityHist->GetBinContent(3);
 		}
-		else if (mXName.Contains("X300") ) {
+		else if (mXName.Contains("X280") ) {
 			purity=purityHist->GetBinContent(4);
 		}
-		else if (mXName.Contains("X325") ) {
+		else if (mXName.Contains("X290") ) {
 			purity=purityHist->GetBinContent(5);
 		}
-		else if (mXName.Contains("X350") ) {
+		else if (mXName.Contains("X300") ) {
 			purity=purityHist->GetBinContent(6);
 		}
-		else if (mXName.Contains("X400") ) {
+		else if (mXName.Contains("X3125") ) {
 			purity=purityHist->GetBinContent(7);
 		}
-		else if (mXName.Contains("X450") ) {
+		else if (mXName.Contains("X325") ) {
 			purity=purityHist->GetBinContent(8);
 		}
-		else if (mXName.Contains("X500") ) {
+		else if (mXName.Contains("X3375") ) {
 			purity=purityHist->GetBinContent(9);
 		}
-		else if (mXName.Contains("X550") ) {
+		else if (mXName.Contains("X350") ) {
 			purity=purityHist->GetBinContent(10);
 		}
-		else if (mXName.Contains("X600") ) {
+		else if (mXName.Contains("X375") ) {
 			purity=purityHist->GetBinContent(11);
 		}
-		else if (mXName.Contains("X700") ) {
+		else if (mXName.Contains("X400") ) {
 			purity=purityHist->GetBinContent(12);
 		}
-		else if (mXName.Contains("X800") ) {
+		else if (mXName.Contains("X425") ) {
 			purity=purityHist->GetBinContent(13);
 		}
-		else if (mXName.Contains("X900") ) {
+		else if (mXName.Contains("X450") ) {
 			purity=purityHist->GetBinContent(14);
 		}
-		else if (mXName.Contains("X1000") ) {
+		else if (mXName.Contains("X475") ) {
 			purity=purityHist->GetBinContent(15);
+		}
+		else if (mXName.Contains("X500") ) {
+			purity=purityHist->GetBinContent(16);
+		}
+		else if (mXName.Contains("X550") ) {
+			purity=purityHist->GetBinContent(17);
+		}
+		else if (mXName.Contains("X600") ) {
+			purity=purityHist->GetBinContent(18);
+		}
+		else if (mXName.Contains("X700") ) {
+			purity=purityHist->GetBinContent(19);
+		}
+		else if (mXName.Contains("X800") ) {
+			purity=purityHist->GetBinContent(20);
+		}
+		else if (mXName.Contains("X900") ) {
+			purity=purityHist->GetBinContent(21);
+		}
+		else if (mXName.Contains("X1000") ) {
+			purity=purityHist->GetBinContent(22);
 		}
 	}
 
 	else if (targetName.Contains("jj")) {
 		TH1F * purityHist = (TH1F*)jjHist->Clone("purity");
 		if (mXName.Contains("X251") ) {
-			purity=purityHist->GetBinContent(1);
-		}
-		else if (mXName.Contains("X260") ) {
-			purity=purityHist->GetBinContent(2);
-		}
-		else if (mXName.Contains("X280") ) {
-			purity=purityHist->GetBinContent(3);
-		}
-		else if (mXName.Contains("X300") ) {
-			purity=purityHist->GetBinContent(4);
-		}
-		else if (mXName.Contains("X325") ) {
-			purity=purityHist->GetBinContent(5);
-		}
-		else if (mXName.Contains("X350") ) {
-			purity=purityHist->GetBinContent(6);
-		}
-		else if (mXName.Contains("X400") ) {
-			purity=purityHist->GetBinContent(7);
-		}
-		else if (mXName.Contains("X450") ) {
-			purity=purityHist->GetBinContent(8);
-		}
-		else if (mXName.Contains("X500") ) {
-			purity=purityHist->GetBinContent(9);
-		}
-		else if (mXName.Contains("X550") ) {
-			purity=purityHist->GetBinContent(10);
-		}
-		else if (mXName.Contains("X600") ) {
-			purity=purityHist->GetBinContent(11);
-		}
-		else if (mXName.Contains("X700") ) {
-			purity=purityHist->GetBinContent(12);
-		}
-		else if (mXName.Contains("X800") ) {
-			purity=purityHist->GetBinContent(13);
-		}
-		else if (mXName.Contains("X900") ) {
-			purity=purityHist->GetBinContent(14);
-		}
-		else if (mXName.Contains("X1000") ) {
-			purity=purityHist->GetBinContent(15);
-		}
+                        purity=purityHist->GetBinContent(1);
+                }
+                else if (mXName.Contains("X260") ) {
+                        purity=purityHist->GetBinContent(2);
+                }
+                else if (mXName.Contains("X270") ) {
+                        purity=purityHist->GetBinContent(3);
+                }
+                else if (mXName.Contains("X280") ) {
+                        purity=purityHist->GetBinContent(4);
+                }
+                else if (mXName.Contains("X290") ) {
+                        purity=purityHist->GetBinContent(5);
+                }
+                else if (mXName.Contains("X300") ) {
+                        purity=purityHist->GetBinContent(6);
+                }
+                else if (mXName.Contains("X3125") ) {
+                        purity=purityHist->GetBinContent(7);
+                }
+                else if (mXName.Contains("X325") ) {
+                        purity=purityHist->GetBinContent(8);
+                }
+                else if (mXName.Contains("X3375") ) {
+                        purity=purityHist->GetBinContent(9);
+                }
+                else if (mXName.Contains("X350") ) {
+                        purity=purityHist->GetBinContent(10);
+                }
+                else if (mXName.Contains("X375") ) {
+                        purity=purityHist->GetBinContent(11);
+                }
+                else if (mXName.Contains("X400") ) {
+                        purity=purityHist->GetBinContent(12);
+                }
+                else if (mXName.Contains("X425") ) {
+                        purity=purityHist->GetBinContent(13);
+                }
+                else if (mXName.Contains("X450") ) {
+                        purity=purityHist->GetBinContent(14);
+                }
+                else if (mXName.Contains("X475") ) {
+                        purity=purityHist->GetBinContent(15);
+                }
+                else if (mXName.Contains("X500") ) {
+                        purity=purityHist->GetBinContent(16);
+                }
+                else if (mXName.Contains("X550") ) {
+                        purity=purityHist->GetBinContent(17);
+                }
+                else if (mXName.Contains("X600") ) {
+                        purity=purityHist->GetBinContent(18);
+                }
+                else if (mXName.Contains("X700") ) {
+                        purity=purityHist->GetBinContent(19);
+                }
+                else if (mXName.Contains("X800") ) {
+                        purity=purityHist->GetBinContent(20);
+                }
+                else if (mXName.Contains("X900") ) {
+                        purity=purityHist->GetBinContent(21);
+                }
+                else if (mXName.Contains("X1000") ) {
+                        purity=purityHist->GetBinContent(22);
+                }
 
 
 	}
 	else if (targetName.Contains("yj")) {
 		TH1F * purityHist = (TH1F*)jgHist->Clone("purity");
 		if (mXName.Contains("X251") ) {
-			purity=purityHist->GetBinContent(1);
-		}
-		else if (mXName.Contains("X260") ) {
-			purity=purityHist->GetBinContent(2);
-		}
-		else if (mXName.Contains("X280") ) {
-			purity=purityHist->GetBinContent(3);
-		}
-		else if (mXName.Contains("X300") ) {
-			purity=purityHist->GetBinContent(4);
-		}
-		else if (mXName.Contains("X325") ) {
-			purity=purityHist->GetBinContent(5);
-		}
-		else if (mXName.Contains("X350") ) {
-			purity=purityHist->GetBinContent(6);
-		}
-		else if (mXName.Contains("X400") ) {
-			purity=purityHist->GetBinContent(7);
-		}
-		else if (mXName.Contains("X450") ) {
-			purity=purityHist->GetBinContent(8);
-		}
-		else if (mXName.Contains("X500") ) {
-			purity=purityHist->GetBinContent(9);
-		}
-		else if (mXName.Contains("X550") ) {
-			purity=purityHist->GetBinContent(10);
-		}
-		else if (mXName.Contains("X600") ) {
-			purity=purityHist->GetBinContent(11);
-		}
-		else if (mXName.Contains("X700") ) {
-			purity=purityHist->GetBinContent(12);
-		}
-		else if (mXName.Contains("X800") ) {
-			purity=purityHist->GetBinContent(13);
-		}
-		else if (mXName.Contains("X900") ) {
-			purity=purityHist->GetBinContent(14);
-		}
-		else if (mXName.Contains("X1000") ) {
-			purity=purityHist->GetBinContent(15);
-		}	
+                        purity=purityHist->GetBinContent(1);
+                }
+                else if (mXName.Contains("X260") ) {
+                        purity=purityHist->GetBinContent(2);
+                }
+                else if (mXName.Contains("X270") ) {
+                        purity=purityHist->GetBinContent(3);
+                }
+                else if (mXName.Contains("X280") ) {
+                        purity=purityHist->GetBinContent(4);
+                }
+                else if (mXName.Contains("X290") ) {
+                        purity=purityHist->GetBinContent(5);
+                }
+                else if (mXName.Contains("X300") ) {
+                        purity=purityHist->GetBinContent(6);
+                }
+                else if (mXName.Contains("X3125") ) {
+                        purity=purityHist->GetBinContent(7);
+                }
+                else if (mXName.Contains("X325") ) {
+                        purity=purityHist->GetBinContent(8);
+                }
+                else if (mXName.Contains("X3375") ) {
+                        purity=purityHist->GetBinContent(9);
+                }
+                else if (mXName.Contains("X350") ) {
+                        purity=purityHist->GetBinContent(10);
+                }
+                else if (mXName.Contains("X375") ) {
+                        purity=purityHist->GetBinContent(11);
+                }
+                else if (mXName.Contains("X400") ) {
+                        purity=purityHist->GetBinContent(12);
+                }
+                else if (mXName.Contains("X425") ) {
+                        purity=purityHist->GetBinContent(13);
+                }
+                else if (mXName.Contains("X450") ) {
+                        purity=purityHist->GetBinContent(14);
+                }
+                else if (mXName.Contains("X475") ) {
+                        purity=purityHist->GetBinContent(15);
+                }
+                else if (mXName.Contains("X500") ) {
+                        purity=purityHist->GetBinContent(16);
+                }
+                else if (mXName.Contains("X550") ) {
+                        purity=purityHist->GetBinContent(17);
+                }
+                else if (mXName.Contains("X600") ) {
+                        purity=purityHist->GetBinContent(18);
+                }
+                else if (mXName.Contains("X700") ) {
+                        purity=purityHist->GetBinContent(19);
+                }
+                else if (mXName.Contains("X800") ) {
+                        purity=purityHist->GetBinContent(20);
+                }
+                else if (mXName.Contains("X900") ) {
+                        purity=purityHist->GetBinContent(21);
+                }
+                else if (mXName.Contains("X1000") ) {
+                        purity=purityHist->GetBinContent(22);
+                }
 
 	}
 
