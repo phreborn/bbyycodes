@@ -3,6 +3,57 @@
 #include "aux/AtlasStyle.C"
 #include "aux/AtlasLabels.C"
 
+TGraphAsymmErrors MakePoissonErrors(TH1F hist, double scale, int rebin) {
+  hist.Rebin(rebin);
+ int npoint=0;
+ for (int ibin = 0; ibin < hist.GetNbinsX() + 1; ibin++) {
+   if(hist.GetBinContent(ibin)>0) npoint += 1;
+ }
+
+  cout << npoint << endl;
+  TGraphAsymmErrors graph = TGraphAsymmErrors(npoint);
+  graph.SetLineWidth(hist.GetLineWidth());
+  graph.SetMarkerSize(hist.GetMarkerSize());
+  int ipoint=0;
+  for (int ibin = 0; ibin < hist.GetNbinsX() + 1; ibin++) {
+    int bincontent=int(hist.GetBinContent(ibin));
+    double EYlow=bincontent-0.5*TMath::ChisquareQuantile(0.1586555,2.*bincontent);
+    double EYhigh=0.5*TMath::ChisquareQuantile(1-0.1586555,2.*(bincontent+1))-bincontent;
+    //double EX=hist.GetBinWidth(ibin)/2.;
+    double EX = 0;
+    if(bincontent!=0){
+      graph.SetPoint(ipoint,hist.GetBinCenter(ibin),bincontent/scale);
+      graph.SetPointEXlow(ipoint,EX);
+      graph.SetPointEXhigh(ipoint,EX);
+      graph.SetPointEYlow(ipoint,EYlow/scale);
+      graph.SetPointEYhigh(ipoint,EYhigh/scale);
+      ipoint += 1;
+    }
+  }
+ return graph;
+}
+  /*
+ TGraphAsymmErrors graph = TGraphAsymmErrors(npoint)
+ graph.SetLineWidth(hist.GetLineWidth())
+ ipoint=0
+ for ibin in range(0,hist.GetNbinsX()+1):
+   bincontent=int(hist.GetBinContent(ibin))
+   EYlow=bincontent-0.5*ROOT.TMath.ChisquareQuantile(0.1586555,2.*bincontent)
+   EYhigh=0.5*ROOT.TMath.ChisquareQuantile(1-0.1586555,2.*(bincontent+1))-bincontent
+   EX=hist.GetBinWidth(ibin)/2.
+   if(bincontent!=0):
+     graph.SetPoint(ipoint,hist.GetBinCenter(ibin),bincontent)
+      
+     graph.SetPointEXlow(ipoint,EX)
+     graph.SetPointEXhigh(ipoint,EX)
+     graph.SetPointEYlow(ipoint,EYlow)
+     graph.SetPointEYhigh(ipoint,EYhigh)
+     ipoint += 1
+
+ return graph
+*/
+
+
 double find_max(TH1F * first, TH1F * second){
   double max_1 = first->GetMaximum();
   double max_2 = second->GetMaximum();
@@ -13,12 +64,13 @@ double find_max(TH1F * first, TH1F * second){
 void plotter_yybb(TString region = "SM", TString s_test="test", TString MVA ="BDT_cat"){
 
   SetAtlasStyle();
+  gStyle->SetErrorX(0);
   cout << region << endl;
   TString s_data, s_HH, s_HHBSM, s_yy, s_H;
 
   s_data = "/eos/atlas/unpledged/group-wisc/users/alwang/2021_02_07_h026_new_lumi/data.root";
-  s_HH = "/eos/atlas/unpledged/group-wisc/users/alwang/2021_02_07_h026_new_lumi/HHbbyy_cHHH01d0.root";
-  s_HHBSM = "/eos/atlas/unpledged/group-wisc/users/alwang/2021_02_07_h026_new_lumi/HHbbyy_cHHH10d0.root";
+  s_HH = "/eos/atlas/unpledged/group-wisc/users/alwang/2021_02_07_h026_new_lumi/PowhegH7/HHbbyy_cHHH01d0.root";
+  s_HHBSM = "/eos/atlas/unpledged/group-wisc/users/alwang/2021_02_07_h026_new_lumi/PowhegH7/HHbbyy_cHHH10d0.root";
   s_yy = "/eos/atlas/unpledged/group-wisc/users/alwang/2021_02_07_h026_new_lumi/yy.root";
   s_H = "/eos/atlas/unpledged/group-wisc/users/alwang/2021_02_07_h026_new_lumi/singleH.root";
 
@@ -60,14 +112,14 @@ void plotter_yybb(TString region = "SM", TString s_test="test", TString MVA ="BD
   t_yy->Draw("yybb_nonRes_XGBoost_btag77_BCal_withTop_lowMass_Score >> h_yy", "(eventNumber % 4 == 3 && isPassed && HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow==6 && N_bjet_fixed77 >= 2 && mass_yy > 105000 && mass_yy < 160000 && mass_yybb_bcal_mod < 350000) * weight * 4");
   t_H->Draw("yybb_nonRes_XGBoost_btag77_BCal_withTop_lowMass_Score >> h_H", "(eventNumber % 4 == 3 && isPassed && HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow==6 && N_bjet_fixed77 >= 2 && mass_yy > 105000 && mass_yy < 160000 && mass_yybb_bcal_mod < 350000) * weight * 4");
   }
-
   cout << h_TI->Integral() << endl;
   cout << h_HH->Integral() << endl;
   cout << h_HHBSM->Integral() << endl;
   cout << h_yy->Integral() << endl;
   cout << h_H->Integral() << endl;
-
-
+  TGraphAsymmErrors err_TI = MakePoissonErrors(*h_TI, h_TI->Integral(), 4);
+  TGraphAsymmErrors errCopy_TI = MakePoissonErrors(*h_TI, h_TI->Integral(0.8 * n_bins, n_bins), 1);
+  
   //normalize
   h_H->Scale(1/h_H->Integral() );
   h_TI->Scale(1/h_TI->Integral() );
@@ -94,16 +146,19 @@ color6->SetRGB(253/255., 197/255., 54/255.);
   h_TI->SetMarkerSize(1.5);
   h_TI->SetMarkerColor(1);
 
+  err_TI.SetLineWidth(3);
+  err_TI.SetMarkerSize(1.5);
+
   h_HH->SetLineColor(2);
   h_HH->SetLineWidth(3);
 
-  h_HHBSM->SetLineColor(5);
+  h_HHBSM->SetLineColor(4);
   h_HHBSM->SetLineWidth(3);
 
   h_yy->SetLineColor(3);
   h_yy->SetLineWidth(3);
 
-  h_H->SetLineColor(4);
+  h_H->SetLineColor(5);
   h_H->SetLineWidth(3);
 
   TCanvas *c_1 = hist_1d(h_TI,1200,900);
@@ -131,17 +186,22 @@ color6->SetRGB(253/255., 197/255., 54/255.);
   hCopy_yy->SetLineWidth(2);
   hCopy_H->SetLineWidth(2);
 
+  errCopy_TI.SetLineWidth(2);
+  errCopy_TI.SetMarkerSize(1);
+
   h_TI->Rebin(4);
   h_HH->Rebin(4);
   h_HHBSM->Rebin(4);
   h_yy->Rebin(4);
   h_H->Rebin(4);
 
-  h_TI->Draw("EPX0");
+  //h_TI->Draw("EPX0");
+  h_TI->Draw("histPX0");
   h_HH->Draw("histsame");
   h_HHBSM->Draw("histsame");
   h_yy->Draw("histsame");
   h_H->Draw("histsame");
+  err_TI.Draw("P0same");
 
   //category boundaries
   double boundary_1, boundary_2;
@@ -158,13 +218,18 @@ color6->SetRGB(253/255., 197/255., 54/255.);
   TPad cInsert("", "", 0.20, 0.38, 0.56, 0.73); 
   cInsert.Draw();
   cInsert.cd();
-  hCopy_TI->Draw("EPX0");
+  hCopy_TI->Draw("histPX0");
   hCopy_HH->Draw("histsame");
   hCopy_HHBSM->Draw("histsame");
   hCopy_yy->Draw("histsame");
   hCopy_H->Draw("histsame");
+  errCopy_TI.Draw("P0same");
   hCopy_TI->GetXaxis()->SetRangeUser(0.8, 1.0);
   hCopy_TI->GetYaxis()->SetRangeUser(0.001, find_max(hCopy_TI,hCopy_HH));
+  hCopy_TI->GetXaxis()->SetLabelSize(0.07);
+  hCopy_TI->GetYaxis()->SetLabelSize(0.07);
+  hCopy_TI->GetXaxis()->SetNdivisions(-(5 + 4*100)); //default 10 + 40 * 100
+  hCopy_TI->GetYaxis()->SetNdivisions(+(8 + 5*100));
 
   TLine *insertline = new TLine();
   insertline->SetLineStyle(2);
@@ -179,7 +244,7 @@ color6->SetRGB(253/255., 197/255., 54/255.);
 
   h_TI->GetYaxis()->SetRangeUser(0.001, find_max(h_TI,h_HH) );
   h_TI->GetYaxis()->SetTitleOffset(1.20);
-  h_TI->GetYaxis()->SetTitle("Fraction of Events");
+  h_TI->GetYaxis()->SetTitle("Fraction of events / 0.04");
   h_TI->GetXaxis()->SetTitle("BDT Score");
 
   TLine *line1 = new TLine(boundary_1,0,boundary_1,h_TI->GetMaximum() * 0.5);
@@ -221,11 +286,11 @@ color6->SetRGB(253/255., 197/255., 54/255.);
 */
 
   TLegend * leg_1 = leg(0.28, 0.45, 0.040, 1.50); //0.33 0.60 0.040
-  leg_1->AddEntry(h_TI,"Data","EP");
-  leg_1->AddEntry(h_yy,"#gamma#gamma+jets", "L");
   leg_1->AddEntry(h_HH, "HH ggF, #kappa_{#lambda}=1", "L");
   leg_1->AddEntry(h_HHBSM,"HH ggF, #kappa_{#lambda}=10", "L");
   leg_1->AddEntry(h_H,"Single H","L");
+  leg_1->AddEntry(h_yy,"#gamma#gamma+jets", "L");
+  leg_1->AddEntry(h_TI,"Data","EP");
   leg_1->SetBorderSize(0);
   leg_1->Draw();
 
