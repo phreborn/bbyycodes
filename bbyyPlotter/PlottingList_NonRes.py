@@ -5,15 +5,15 @@
 # List of keys from the histogramming dictionary                                                                                                               
 histosToPlot = [
                   'sumHisto_m_yy_',
-                  'sumHisto_m_jj_',
-                  'sumHisto_m_yyjj_tilde_',
+                  #'sumHisto_m_jj_',
+                  #'sumHisto_m_yyjj_tilde_',
                   #'sumHisto_m_yyjj_tilde_HM_',
                   #'sumHisto_deltaR_yy_',
                   #'sumHisto_deltaR_jj_',
                   #'sumHisto_deltaR_yyjj_',
                   #'sumHisto_dR_yy_',
-                  'sumHisto_N_j_',
-                  'sumHisto_N_j_central_',
+                  #'sumHisto_N_j_',
+                  #'sumHisto_N_j_central_',
                   ##'sumHisto_btag_score_',
                   ##'sumHisto_MET_',
                   #'sumHisto_m_yyjj_',
@@ -26,8 +26,8 @@ histosToPlot = [
                   ##'sumHisto_pT_yy_',
                   ##'sumHisto_pT_yy_div_m_yy_',
                   ##'sumHisto_pT_yy_div_m_yyjj_tilde_'
-                 "sumHisto_nonRes_XGBoost_btag77_BCal_withTop_lowMass_Score_",
-                 "sumHisto_nonRes_XGBoost_btag77_BCal_withTop_highMass_Score_"
+                 #"sumHisto_nonRes_XGBoost_btag77_BCal_withTop_lowMass_Score_",
+                 #"sumHisto_nonRes_XGBoost_btag77_BCal_withTop_highMass_Score_"
                   
                ]
 
@@ -43,8 +43,8 @@ samplesToStack = [
 		    #'ttyy_allhad_SB',     #calculate yield
 		    #'ttyy_noallhad_SB',   #calculate yield
 
-                   'yybb_reweighted',
-                   'yyrr_reweighted',
+                   #'yybb_reweighted',
+                   #'yyrr_reweighted',
                    #'yybj_reweighted',
                    #'yycj_reweighted',
                    #'yylj_reweighted',
@@ -54,7 +54,7 @@ samplesToStack = [
                     
                     #'yy',   # Resonant case, SF applied in weight
                     #'yy',   #commented by ZIHANG
-                    #'yy_reweighted',   #commented by ZIHANG
+                    'yy_reweighted',   #commented by ZIHANG
 
                     # Then all of the single H backgrounds (these are combined, by default)     
                     #'ggH',

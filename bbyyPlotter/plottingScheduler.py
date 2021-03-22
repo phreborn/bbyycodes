@@ -50,10 +50,12 @@ include_ratio = False
 def createUpperPad(mcOnly=True, logOn=False):
   if mcOnly or not include_ratio: 
   #    r.gStyle.SetPadLeftMargin(0.20)
-      padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
+      padhigh = r.TPad("padhigh","padhigh",0.0,0.0,1.,1.)
+      #padhigh = r.TPad("padhigh","padhigh",0.0,0.0,0.85,1.)
       padhigh.SetBottomMargin(0.15)
   if include_ratio: 
-      padhigh = r.TPad("padhigh","padhigh",0.0,0.3,0.85,1.)
+      padhigh = r.TPad("padhigh","padhigh",0.0,0.3,1.,1.)
+      #padhigh = r.TPad("padhigh","padhigh",0.0,0.3,0.85,1.)
       padhigh.SetBottomMargin(0.02)
 
   if logOn: 
@@ -73,7 +75,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           print("Plotting"+histo+selection)
 
           # Create the canvas 
-          canv =  r.TCanvas("canvas","canvas",600,600)
+          canv =  r.TCanvas("canvas","canvas",800,600)
+          #canv =  r.TCanvas("canvas","canvas",600,600)
           canv.cd()
           
           # Create the upper pad, leaving room for ratio plot if including data
@@ -88,9 +91,13 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           ratioHist = r.TH1F()
           dataHist = r.TH1F() # For the ratio
           sumHist = r.TH1F()
+          GGHist = r.TH1F()
+          GJHist = r.TH1F()
+          JJHist = r.TH1F()
           dihiggsHist = r.TH1F()
           ttyyHist = r.TH1F()
-          dataGraph = r.TGraphErrors()
+          dataGraph = r.TGraphAsymmErrors()
+          #dataGraph = r.TGraphErrors()
           dataGraph.SetMarkerColor(r.kBlack)
           dataGraph.SetMarkerStyle(r.kFullDotLarge)
           dataGraph.SetLineColor(r.kBlack)
@@ -99,6 +106,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
 
           # Set up legend
           theLegend = initializeLegend(separateHiggsBackgrounds, len(signals))
+          # Inversed order
+          theLegend_inverse = initializeLegend(separateHiggsBackgrounds, len(signals))
           
           y_title = None
           XsubRange = None
@@ -137,12 +146,18 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                       if dataHist.GetBinContent(xbin) > 0.0: #Plot markers unless data points are zero-valued 
                         print("bin:"+str(xbin)+ "content:"+str(dataHist.GetBinContent(xbin))) 
                         dataGraph.SetPoint(i, dataHist.GetXaxis().GetBinCenter(xbin), dataHist.GetBinContent(xbin))
-                        dataGraph.SetPointError(i, 0.0, dataHist.GetBinError(xbin))
+                        #dataGraph.SetPointError(i, 0.0, dataHist.GetBinError(xbin))
+                        bincontent=int(dataHist.GetBinContent(xbin))
+                        EYlow=bincontent-0.5*r.TMath.ChisquareQuantile(0.1586555,2.*bincontent)
+                        EYhigh=0.5*r.TMath.ChisquareQuantile(1-0.1586555,2.*(bincontent+1))-bincontent
+                        dataGraph.SetPointEYlow(i,EYlow)
+                        dataGraph.SetPointEYhigh(i,EYhigh)
                         i += 1 # next datapoint
                   #dataGraph.Print()
 
                   ratioHist = dataHist.Clone()
                   theLegend.AddEntry(dataGraph,"Data", "EP")
+                  theLegend_inverse.AddEntry(dataGraph,"Data", "EP")
 
               elif sample != '15_to_18_data': # Sample is MC
                 newHisto = theHisto.Clone()
@@ -157,6 +172,36 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                     elif ("ttyy" in sample): # Merge ttyy had and non-had
                       getSumHist(newHisto, ttyyHist)
                     else:
+                      if ("yj_reweighted" in sample):
+                          GJHist = newHisto.Clone()
+                          GJTitle = sampleDict[str(sample)]['legend description']
+                          GJColor = sampleDict[str(sample)]['color']                    
+                          if isinstance(GJColor, tuple): # JP, use RGB values
+                              color1 = gROOT.GetColor(1)
+                              GJHist.SetFillColor(color1.GetColor(*GJColor))
+                          else:
+                              GJHist.SetFillColor(GJColor)
+                      elif ("jj_reweighted" in sample):
+                          JJHist = newHisto.Clone()
+                          JJTitle = sampleDict[str(sample)]['legend description']
+                          JJColor = sampleDict[str(sample)]['color']                    
+                          if isinstance(JJColor, tuple): # JP, use RGB values
+                              color1 = gROOT.GetColor(1)
+                              JJHist.SetFillColor(color1.GetColor(*JJColor))
+                          else:
+                              JJHist.SetFillColor(JJColor)
+                      elif ("yy_reweighted" in sample):
+                          GGHist = newHisto.Clone()
+                          GGTitle = sampleDict[str(sample)]['legend description']
+                          #GGColor = sampleDict[str(sample)]['color']                    
+                          #if isinstance(GGColor, tuple): # JP, use RGB values
+                          #    color1 = gROOT.GetColor(1)
+                          #    GGHist.SetFillColor(color1.GetColor(*GGColor))
+                          #else:
+                          #    GGHist.SetFillColor(GGColor)
+                          GGHist.SetFillStyle(3003)
+                          GGHist.SetMarkerColor(17)
+                          GGHist.SetFillColor(17)
                       print(sample + 'others ZIHANG')
                       addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                       getSumHist(newHisto, sumHist)
@@ -182,6 +227,15 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           # Add HH last
           addStack(dihiggsHist, stackHist, (242, 56, 90), theLegend, 'HH (SM)')
           getSumHist(dihiggsHist, sumHist)
+          theLegend_inverse.AddEntry(dihiggsHist, 'HH (SM)', "f")
+          theLegend_inverse.AddEntry(higgsHist, 'Single Higgs', "f")
+          theLegend_inverse.AddEntry(ttyyHist, '#it{t#bar{t}#gamma#gamma}', "f")
+          GGHist.SetLineWidth(0)
+          GJHist.SetLineWidth(0)
+          JJHist.SetLineWidth(0)
+          theLegend_inverse.AddEntry(GGHist, GGTitle, "f")
+          theLegend_inverse.AddEntry(GJHist, GJTitle, "f")
+          theLegend_inverse.AddEntry(JJHist, JJTitle, "f")
           
 
           # Plot the MC Stack (stackHist)
@@ -215,13 +269,16 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                  #stackHist.GetXaxis().SetLabelOffset(999)
                  #stackHist.GetXaxis().SetLabelSize(0)
                  if ('m_yyjj' in histo) or ('m_jj' in histo) or ('N_j' in histo):
-                    stackHist.SetMaximum(1.5*stackHist.GetMaximum())
+                    stackHist.SetMaximum(2.*stackHist.GetMaximum())
+                    #stackHist.SetMaximum(1.5*stackHist.GetMaximum())
                  else:
-                    stackHist.SetMaximum(1.5*dataHist.GetMaximum())
+                    stackHist.SetMaximum(2.4*dataHist.GetMaximum())
+                    #stackHist.SetMaximum(1.5*dataHist.GetMaximum())
 
           if rebin: 
             sumHist.SetAxisRange(low_edge,high_edge, 'X')
 
+          GGHist.Draw("fe3same")
 
           # Draw the relevant data 
           if not mcOnly: 
@@ -251,9 +308,17 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                 newHisto = theHisto.Clone()
                 if (selection == 'Validation_2bjet'):
                       addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +sample)]['color'], theLegend, signalDict[str('Resonance_' +sample)]['legend description'])
+                      newHisto.SetLineWidth(2)
+                      newHisto.SetLineStyle(r.kDashed)
+                      newHisto.SetLineColor(signalDict[str('Resonance_' +sample)]['color'])
+                      theLegend_inverse.AddEntry(newHisto, signalDict[str('Resonance_' +sample)]['legend description'], 'l')
                 else:
                       print('Resonance_' +selection)
                       addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +selection)]['color'], theLegend, signalDict[str('Resonance_' +selection)]['legend description'])
+                      newHisto.SetLineWidth(2)
+                      newHisto.SetLineStyle(r.kDashed)
+                      newHisto.SetLineColor(signalDict[str('Resonance_' +selection)]['color'])
+                      theLegend_inverse.AddEntry(newHisto, signalDict[str('Resonance_' +selection)]['legend description'], 'l')
                 sigHist.Draw("HIST nostack SAME")
           
           # Set up ATLAS label
@@ -264,7 +329,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           l.SetTextFont(42)
           l.SetTextSize(0.04)
           if mcOnly or not include_ratio: 
-            l1, l2 = 0.5, 0.88
+            l1, l2 = 0.4, 0.88
+            #l1, l2 = 0.5, 0.88
 
           r.ATLASLabel(l1,l2,"Internal")
           l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139 fb^{-1}")
@@ -275,12 +341,13 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           
           # Add the legend to a separate, pad on the side
           canv.cd()
-          padside = r.TPad("padside","padside",0.75,0.0,0.98,1.)
+          padside = r.TPad("padside","padside",0.7,0.0,0.87,0.96)
           padside.SetFillStyle(4000)
           padside.SetGrid(0,0)
           padside.Draw()
           padside.cd()
-          theLegend.Draw("SAME")
+          theLegend_inverse.Draw("SAME")
+          #theLegend.Draw("SAME")
 
           # Set up the lower pad for the ratio plot
           

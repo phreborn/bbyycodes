@@ -109,7 +109,11 @@ def GetYtitle(theHisto, rebin, units):
     res = (xmax-xmin)/bins*rebin
     #if (res >= 1): res = int(res)
     y_title = "Events / "
-    y_title += str(res)+" "+units
+    if (res==30):
+        y_title += "30 "+units
+    else:
+        y_title += str(res)+" "+units
+    #y_title += str(res)+" "+units
 
     return y_title
 
