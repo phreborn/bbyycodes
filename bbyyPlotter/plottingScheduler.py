@@ -250,7 +250,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           #    i += 1 # next point
           r.gROOT.cd()
 	  summingHist_MCerrorBand = sumHist.Clone()
-          summingHist_MCerrorBand.Print("all")
+          #summingHist_MCerrorBand.Print("all")
 	  summingHist_MCerrorBand.SetLineWidth(0)
           summingHist_MCerrorBand.SetFillStyle(3002)
           summingHist_MCerrorBand.SetMarkerColor(1)
@@ -350,13 +350,14 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           r.ATLASLabel(l1,l2,"Internal")
           l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139 fb^{-1}")
           l.DrawLatex(l1, 0.80, selectionDict[str(selection)]['legend upper'])
-          l.DrawLatex(l1, 0.76, selectionDict[str(selection)]['legend lower'])
+          l.DrawLatex(l1, 0.75, selectionDict[str(selection)]['legend lower'])
 
 
           
           # Add the legend to a separate, pad on the side
           canv.cd()
-          padside = r.TPad("padside","padside",0.7,0.0,0.86,0.96)
+          padside = r.TPad("padside","padside",0.67,0.0,0.86,0.96)
+          #padside = r.TPad("padside","padside",0.7,0.0,0.86,0.96)
           padside.SetFillStyle(4000)
           padside.SetGrid(0,0)
           padside.Draw()
