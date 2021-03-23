@@ -43,6 +43,7 @@ selectionDict = SelectionDict()
 signalDict = SignalDict()
 
 debug = True # Set to true to see added samples
+#debug = False # Set to true to see added samples
 #rebin = True # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
 rebin = False # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
 include_ratio = False
@@ -239,7 +240,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
 
           # Plot the MC Stack (stackHist)
           stackHist.ls()
-          stackHist.Draw("HIST")
+          #stackHist.Draw("HIST")
 
 	  #i = 0 # counter for points on graph
           #for xbin in range(0, sumHist.GetNbinsX()+1):
@@ -247,7 +248,9 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           #    summingHist_MCerrorBand.SetPointError(i, 0.0, 0.0, sumHist.GetBinError(xbin), sumHist.GetBinError(xbin))
           #    #summingHist_MCerrorBand.SetPointError(i, 0.0, sumHist.GetBinError(xbin))
           #    i += 1 # next point
+          r.gROOT.cd()
 	  summingHist_MCerrorBand = sumHist.Clone()
+          summingHist_MCerrorBand.Print("all")
 	  summingHist_MCerrorBand.SetLineWidth(0)
           summingHist_MCerrorBand.SetFillStyle(3002)
           summingHist_MCerrorBand.SetMarkerColor(1)
@@ -293,7 +296,6 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             sumHist.SetAxisRange(low_edge,high_edge, 'X')
 	    
 	  summingHist_MCerrorBand.Draw("e2 same")
-          ##GGHist.Draw("fe3same")
 
           # Draw the relevant data 
           if not mcOnly: 
@@ -302,40 +304,38 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
               #dataGraph.Draw("EP SAME") #JP
               dataGraph.Draw("EP")
 
-          # Inject the non SM-HH/VBF signals
+          # Inject the Resonant signals
 
           for sample in signals:                
               if debug: 
-                print ("Signal = ",sample)
-                if (selection == 'Validation_2bjet'):
-                        infile = r.TFile.Open(inDir  + 'Resonance_' + sample + '_' + selection + '.root')
-                        theHisto = infile.Get(path + histo+ sample + '_'  + selection)
-                else:
-                  infile = r.TFile.Open(inDir  + 'Resonance_' + selection + '.root')
-                  theHisto = infile.Get(path + histo+ selection)
-                #if (sample == signals[0]):
-                y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
-                #print('ZIHANG' + inDir + 'Resonance_' + selection + '.root')
-                #print('ZIHANG' + path + histo + selection)
-                print('ZIHANG' + histo + selection)
-                if rebin: theHisto.Rebin(histoDict[str(histo)]['rebin'])
-                r.gROOT.cd()
-                newHisto = theHisto.Clone()
-                if (selection == 'Validation_2bjet'):
+                  print ("Signal = ",sample)
+                  if (selection == 'Validation_2bjet'):
+                      infile = r.TFile.Open(inDir  + 'Resonance_' + sample + '_' + selection + '.root')
+                      theHisto = infile.Get(path + histo+ sample + '_'  + selection)
+                  else:
+                      infile = r.TFile.Open(inDir  + 'Resonance_' + selection + '.root')
+                      theHisto = infile.Get(path + histo+ selection)
+                  y_title = GetYtitle(theHisto, histoDict[str(histo)]['rebin'], histoDict[histo]['units'])
+                  if rebin: theHisto.Rebin(histoDict[str(histo)]['rebin'])
+                  r.gROOT.cd()
+                  newHisto = theHisto.Clone()
+		  newHisto.SetLineWidth(2)
+                  newHisto.SetLineStyle(r.kDashed)
+                  if (selection == 'Validation_2bjet'):
+                      infile = r.TFile.Open(inDir  + 'Resonance_' + sample + '_' + selection + '.root')
+                      theHisto = infile.Get(path + histo+ sample + '_'  + selection)
                       addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +sample)]['color'], theLegend, signalDict[str('Resonance_' +sample)]['legend description'])
-                      newHisto.SetLineWidth(2)
-                      newHisto.SetLineStyle(r.kDashed)
                       newHisto.SetLineColor(signalDict[str('Resonance_' +sample)]['color'])
                       theLegend_inverse.AddEntry(newHisto, signalDict[str('Resonance_' +sample)]['legend description'], 'l')
-                else:
+                  else:
+                      infile = r.TFile.Open(inDir  + 'Resonance_' + selection + '.root')
+                      theHisto = infile.Get(path + histo+ selection)
                       print('Resonance_' +selection)
                       addSignalStack(newHisto, sigHist, signalDict[str('Resonance_' +selection)]['color'], theLegend, signalDict[str('Resonance_' +selection)]['legend description'])
-                      newHisto.SetLineWidth(2)
-                      newHisto.SetLineStyle(r.kDashed)
                       newHisto.SetLineColor(signalDict[str('Resonance_' +selection)]['color'])
                       theLegend_inverse.AddEntry(newHisto, signalDict[str('Resonance_' +selection)]['legend description'], 'l')
-                sigHist.Draw("HIST nostack SAME")
-          
+                  sigHist.Draw("HIST nostack SAME")
+
           # Set up ATLAS label
           l = r.TLatex()
           l.SetNDC()
@@ -356,7 +356,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           
           # Add the legend to a separate, pad on the side
           canv.cd()
-          padside = r.TPad("padside","padside",0.7,0.0,0.87,0.96)
+          padside = r.TPad("padside","padside",0.7,0.0,0.86,0.96)
           padside.SetFillStyle(4000)
           padside.SetGrid(0,0)
           padside.Draw()
