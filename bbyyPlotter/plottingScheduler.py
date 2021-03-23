@@ -85,6 +85,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           padhigh.SetGrid(0,0)
           padhigh.cd()
 
+	  #summingHist_MCerrorBand = r.TGraphAsymmErrors()
+          summingHist_MCerrorBand = r.TH1F()
           theHisto = r.TH1F()
           stackHist = r.THStack()
           sigHist = r.THStack()
@@ -193,15 +195,12 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                       elif ("yy_reweighted" in sample):
                           GGHist = newHisto.Clone()
                           GGTitle = sampleDict[str(sample)]['legend description']
-                          #GGColor = sampleDict[str(sample)]['color']                    
-                          #if isinstance(GGColor, tuple): # JP, use RGB values
-                          #    color1 = gROOT.GetColor(1)
-                          #    GGHist.SetFillColor(color1.GetColor(*GGColor))
-                          #else:
-                          #    GGHist.SetFillColor(GGColor)
-                          GGHist.SetFillStyle(3003)
-                          GGHist.SetMarkerColor(17)
-                          GGHist.SetFillColor(17)
+                          GGColor = sampleDict[str(sample)]['color']                    
+                          if isinstance(GGColor, tuple): # JP, use RGB values
+                              color1 = gROOT.GetColor(1)
+                              GGHist.SetFillColor(color1.GetColor(*GGColor))
+                          else:
+                              GGHist.SetFillColor(GGColor)
                       print(sample + 'others ZIHANG')
                       addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                       getSumHist(newHisto, sumHist)
@@ -241,6 +240,21 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           # Plot the MC Stack (stackHist)
           stackHist.ls()
           stackHist.Draw("HIST")
+
+	  #i = 0 # counter for points on graph
+          #for xbin in range(0, sumHist.GetNbinsX()+1):
+          #    summingHist_MCerrorBand.SetPoint(i, sumHist.GetXaxis().GetBinCenter(xbin), sumHist.GetBinContent(xbin))
+          #    summingHist_MCerrorBand.SetPointError(i, 0.0, 0.0, sumHist.GetBinError(xbin), sumHist.GetBinError(xbin))
+          #    #summingHist_MCerrorBand.SetPointError(i, 0.0, sumHist.GetBinError(xbin))
+          #    i += 1 # next point
+	  summingHist_MCerrorBand = sumHist.Clone()
+	  summingHist_MCerrorBand.SetLineWidth(0)
+          summingHist_MCerrorBand.SetFillStyle(3002)
+          summingHist_MCerrorBand.SetMarkerColor(1)
+          summingHist_MCerrorBand.SetMarkerSize(0)
+          summingHist_MCerrorBand.SetFillColor(1)
+	  theLegend_inverse.AddEntry(summingHist_MCerrorBand, "stat. uncert", "f")
+
           if XsubRange : 
               stackHist.GetXaxis().SetLimits(low_edge,high_edge)
           stackHist.Draw("HIST")
@@ -277,8 +291,9 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
 
           if rebin: 
             sumHist.SetAxisRange(low_edge,high_edge, 'X')
-
-          GGHist.Draw("fe3same")
+	    
+	  summingHist_MCerrorBand.Draw("e2 same")
+          ##GGHist.Draw("fe3same")
 
           # Draw the relevant data 
           if not mcOnly: 
