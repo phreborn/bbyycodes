@@ -272,6 +272,14 @@ def SampleDict():
 	    'color':   (233, 241, 223),
             'legend description': 'DataDriven #it{jj}',
         },
+	'15_to_18_data_yj': {
+	    'color':   (52, 56, 68) ,
+            'legend description': 'DataDriven #it{#gammaj}',
+        },
+	'15_to_18_data_jj': {
+	    'color':   (233, 241, 223),
+            'legend description': 'DataDriven #it{jj}',
+        },
 
         'Resonance': {
             'color':  5, ## Resonance
@@ -307,11 +315,47 @@ def SampleDict():
             'color': (54, 177, 190), #5,
             'legend description': '#it{#gamma#gamma+other jets}',
         },
-        'yybb_reweighted': {
-            'color': (74, 217, 217),  #38,
-            'legend description': '#it{#gamma#gammabb}',
-        },
+       'yybb_reweighted': {   # ORIGINAL
+           'color': (74, 217, 217),  #38,
+           'legend description': '#it{#gamma#gammabb}',
+       },
 
+      #'yybb_reweighted': {   # uncomment please
+      #    'color': (50, 150, 217),  #38,
+      #    'legend description': '#it{#gamma#gammabb}',
+      #},
+        'yybc_reweighted': {
+            'color': (50, 217, 217),  #38,
+            'legend description': '#it{#gamma#gammabc}',
+        },
+        'yybl_reweighted': {
+            'color': (50, 300, 217),  #38,
+            'legend description': '#it{#gamma#gammabl}',
+        },
+        'yycb_reweighted': {
+            'color': (100, 50, 150),  #38,
+            'legend description': '#it{#gamma#gammacb}',
+        },
+        'yycc_reweighted': {
+            'color': (100, 50, 217),  #38,
+            'legend description': '#it{#gamma#gammacc}',
+        },
+        'yycl_reweighted': {
+            'color': (100, 50, 300),  #38,
+            'legend description': '#it{#gamma#gammacl}',
+        },
+        'yylb_reweighted': {
+            'color': (74, 150, 50),  #38,
+            'legend description': '#it{#gamma#gammalb}',
+        },
+        'yylc_reweighted': {
+            'color': (74, 217, 50),  #38,
+            'legend description': '#it{#gamma#gammalc}',
+        },
+        'yyll_reweighted': {
+            'color': (74, 300, 50),  #38,
+            'legend description': '#it{#gamma#gammall}',
+        },
         'HH': { 
             'color': (253, 197, 54), # HH dark yellow 
             'legend description': '#it{HH}',

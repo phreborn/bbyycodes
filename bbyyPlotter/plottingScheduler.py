@@ -158,7 +158,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                         i += 1 # next datapoint
                   #dataGraph.Print()
 
-                  ratioHist = dataHist.Clone()
+                  ratioHist = dataHist.Clone()     # ORIGINAL
                   theLegend.AddEntry(dataGraph,"Data", "EP")
                   theLegend_inverse.AddEntry(dataGraph,"Data", "EP")
 
@@ -175,7 +175,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                     elif ("ttyy" in sample): # Merge ttyy had and non-had
                       getSumHist(newHisto, ttyyHist)
                     else:
-                      if ("yj_reweighted" in sample):
+                      if ("yj_reweighted" in sample) or ('15_to_18_data_yj' in sample):
                           GJHist = newHisto.Clone()
                           GJTitle = sampleDict[str(sample)]['legend description']
                           GJColor = sampleDict[str(sample)]['color']                    
@@ -184,7 +184,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                               GJHist.SetFillColor(color1.GetColor(*GJColor))
                           else:
                               GJHist.SetFillColor(GJColor)
-                      elif ("jj_reweighted" in sample):
+                      elif ("jj_reweighted" in sample) or ('15_to_18_data_jj' in sample):
                           JJHist = newHisto.Clone()
                           JJTitle = sampleDict[str(sample)]['legend description']
                           JJColor = sampleDict[str(sample)]['color']                    
@@ -202,9 +202,27 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                               GGHist.SetFillColor(color1.GetColor(*GGColor))
                           else:
                               GGHist.SetFillColor(GGColor)
+                      elif ("yybb_reweighted" in sample):
+                          getSumHist(newHisto, GGHist)
+                          GGTitle = sampleDict[str(sample)]['legend description']
+                          GGColor = sampleDict[str(sample)]['color']                    
+                          if isinstance(GGColor, tuple): # JP, use RGB values
+                              color1 = gROOT.GetColor(1)
+                              GGHist.SetFillColor(color1.GetColor(*GGColor))
+                          else:
+                              GGHist.SetFillColor(GGColor)
+                      elif ("yyrr_reweighted" in sample):
+                          getSumHist(newHisto, GGHist)
+                          GGTitle = sampleDict[str(sample)]['legend description']
+                          GGColor = sampleDict[str(sample)]['color']                    
+                          if isinstance(GGColor, tuple): # JP, use RGB values
+                              color1 = gROOT.GetColor(1)
+                              GGHist.SetFillColor(color1.GetColor(*GGColor))
+                          else:
+                              GGHist.SetFillColor(GGColor)
                       print(sample + 'others ZIHANG')
                       addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
-                      getSumHist(newHisto, sumHist)
+                      #getSumHist(newHisto, sumHist) # NO adding yj jj yy into sumHist here
 
 	  print('====================')
           addStack(ttyyHist, stackHist,(102, 105, 112), theLegend, '#it{t#bar{t}#gamma#gamma}')
@@ -236,7 +254,6 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           theLegend_inverse.AddEntry(GGHist, GGTitle, "f")
           theLegend_inverse.AddEntry(GJHist, GJTitle, "f")
           theLegend_inverse.AddEntry(JJHist, JJTitle, "f")
-          
 
           # Plot the MC Stack (stackHist)
           stackHist.ls()
@@ -249,8 +266,50 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           #    #summingHist_MCerrorBand.SetPointError(i, 0.0, sumHist.GetBinError(xbin))
           #    i += 1 # next point
           r.gROOT.cd()
-	  summingHist_MCerrorBand = sumHist.Clone()
+	  #print("sumHist= ", summingHist_MCerrorBand.GetBinError(1), summingHist_MCerrorBand.GetEntries(), summingHist_MCerrorBand.GetBinContent(1), summingHist_MCerrorBand.Integral())
+	  print("HH= ", dihiggsHist.GetBinContent(1), dihiggsHist.GetBinError(1), dihiggsHist.GetBinContent(22), dihiggsHist.GetBinError(22))
+	  print("H= ", higgsHist.GetBinContent(1), higgsHist.GetBinError(1), higgsHist.GetBinContent(22), higgsHist.GetBinError(22))
+	  print("ttyy= ", ttyyHist.GetBinContent(1), ttyyHist.GetBinError(1), ttyyHist.GetBinContent(22), ttyyHist.GetBinError(22))
+	  print("old_sumHist= ", summingHist_MCerrorBand.GetBinContent(1), summingHist_MCerrorBand.GetBinError(1), summingHist_MCerrorBand.GetBinContent(22), summingHist_MCerrorBand.GetBinError(22))
           #summingHist_MCerrorBand.Print("all")
+
+	# Correct Stat uncert.
+	  new_GJHist = r.TH1F()
+	  new_GJHist = GJHist.Clone()
+	  new_JJHist = r.TH1F()
+	  new_JJHist = JJHist.Clone()
+	  new_GGHist = r.TH1F()
+	  new_GGHist = GGHist.Clone()
+	  for xbin in range(1, GGHist.GetNbinsX()+1):
+	      print("#######", xbin)
+	      if (GGHist.GetBinContent(xbin) != 0):
+                  new_GGHist.SetBinError(xbin, (GGHist.GetBinContent(xbin) +  GJHist.GetBinContent(xbin) + JJHist.GetBinContent(xbin) ) * GGHist.GetBinError(xbin) / GGHist.GetBinContent(xbin))
+	      else: new_GGHist.SetBinError(xbin, 0)
+	      new_GJHist.SetBinError(xbin, 0)
+ 	      new_JJHist.SetBinError(xbin, 0)
+	  getSumHist(new_GGHist, sumHist)
+	  getSumHist(new_GJHist, sumHist)
+	  getSumHist(new_JJHist, sumHist)
+	  summingHist_MCerrorBand = sumHist.Clone()
+	
+	# Adding uncert. from 2x2D SideBand method
+	 #for xbin in range(1, sumHist.GetNbinsX()+1):
+	 #    if ('Validation_2bjet' in selection):
+	 #        summingHist_MCerrorBand.SetBinError(xbin, sqrt(0.029*0.029 + 0.028*0.028 + 0.008*0.008 + summingHist_MCerrorBand.GetBinError(xbin) * summingHist_MCerrorBand.GetBinError(xbin)))
+	 #    elif ('tightScore_HMass' in selection):
+	 #        summingHist_MCerrorBand.SetBinError(xbin, sqrt(0.086*0.086 + 0.086*0.086 + 0.004*0.004 + summingHist_MCerrorBand.GetBinError(xbin) * summingHist_MCerrorBand.GetBinError(xbin)))
+	 #    elif ('looseScore_HMass' in selection):
+	 #        summingHist_MCerrorBand.SetBinError(xbin, sqrt(0.095*0.095 + 0.090*0.090 + 0.032*0.032 + summingHist_MCerrorBand.GetBinError(xbin) * summingHist_MCerrorBand.GetBinError(xbin)))
+	 #    elif ('tightScore_LMass' in selection):
+	 #        summingHist_MCerrorBand.SetBinError(xbin, sqrt(0.196*0.196 + 0.165*0.165 + 0.074*0.074 + summingHist_MCerrorBand.GetBinError(xbin) * summingHist_MCerrorBand.GetBinError(xbin)))
+	 #    elif ('looseScore_LMass' in selection):
+	 #        summingHist_MCerrorBand.SetBinError(xbin, sqrt(0.045*0.045 + 0.045*0.045 + 0.004*0.004 + summingHist_MCerrorBand.GetBinError(xbin) * summingHist_MCerrorBand.GetBinError(xbin)))
+
+	  print("yy= ", GGHist.GetBinContent(1), GGHist.GetBinError(1), GGHist.GetBinContent(22), GGHist.GetBinError(22))
+	  print("yj= ", GJHist.GetBinContent(1), GJHist.GetBinError(1), GJHist.GetBinContent(22), GJHist.GetBinError(22))
+	  print("jj= ", JJHist.GetBinContent(1), JJHist.GetBinError(1), JJHist.GetBinContent(22), JJHist.GetBinError(22))
+	  print("new_yy= ", new_GGHist.GetBinContent(1), new_GGHist.GetBinError(1), new_GGHist.GetBinContent(22), new_GGHist.GetBinError(22))
+	  print("sumHist= ", summingHist_MCerrorBand.GetBinContent(1), summingHist_MCerrorBand.GetBinError(1), summingHist_MCerrorBand.GetBinContent(22), summingHist_MCerrorBand.GetBinError(22))
 	  summingHist_MCerrorBand.SetLineWidth(0)
           summingHist_MCerrorBand.SetFillStyle(3002)
           summingHist_MCerrorBand.SetMarkerColor(1)
@@ -381,7 +440,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             if XsubRange : ratioGraph.GetXaxis().SetLimits(low_edge,high_edge)
             
             # Set up ratio plot 
-            ratioHist.Divide(sumHist) 
+            ratioHist.Divide(sumHist)   # ORIGINAL
             #ratioHist = setBlindedValuestoZero(ratioHist, histo, True) 
             ratioHist = setBlindedValuestoZero(ratioHist, histo, UNBLIND) 
 
