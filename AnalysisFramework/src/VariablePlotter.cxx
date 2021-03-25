@@ -153,11 +153,16 @@ void VariablePlotter::execute()
 	  // Adding an additional truth-matching feature, which we only need when
 	  // running on the yy samples to get the yycj, yybj, yylj separation
 	  //std::string truthMatch = "";
-	  if (sampleName == "yybb") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[1]==5";
-	  if (sampleName == "yyrr") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5 || HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[1]!=5)";
-	  //if (sampleName == "yybj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
-	  //if (sampleName == "yycj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
-	  //if (sampleName == "yylj") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
+	  if (sampleName == "yybb") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==5";
+	  if (sampleName == "yyrr") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]!=5 || HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]!=5)";
+	  if (sampleName == "yybc") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==4";
+	  if (sampleName == "yybl") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==0";
+	  if (sampleName == "yycb") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==5";
+	  if (sampleName == "yycc") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==4";
+	  if (sampleName == "yycl") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==0";
+	  if (sampleName == "yylb") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==0 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==5)";
+	  if (sampleName == "yylc") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==0 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==4)";
+	  if (sampleName == "yyll") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==0 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==0)";
 
 	  // Have a specific XStimesBR if we are running on a resonant signal
 	  /*
