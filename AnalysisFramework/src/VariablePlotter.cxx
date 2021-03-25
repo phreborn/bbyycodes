@@ -181,9 +181,10 @@ void VariablePlotter::execute()
 	  // Pick up the selections for each of the different categories
 	  std::string select = document.selections.selMap[iCut];
 	  //std::cout<<"ZIHANG select= "<<select<<std::endl;
-	  if (select.find("HGamEventInfoAuxDyn.isPassed") != std::string::npos) {
-	  select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed" + truthMatch);
-	  }
+	  //if (select.find("HGamEventInfoAuxDyn.isPassed") != std::string::npos) {
+	  //select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed" + truthMatch);
+	  //}
+	  select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6"), std::string("HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6").length(), "HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6" + truthMatch);
 	  if (sampleName == "data") select = document.selections.dataSel;
 	  // Below removed to now
 	  //if (document.selections.weight.empty()) select+="*"+document.selections.weight;

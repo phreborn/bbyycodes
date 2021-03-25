@@ -35,33 +35,25 @@ histosToPlot = [
 samplesToStack = [
                     '15_to_18_data',
                     #'15_to_18_data_SB',
-                    #'15_to_18_data_jj',   # Resonant case, SF applied in weight
-                    #'15_to_18_data_yj',   # Resonant case, SF applied in weight
-                    'jj_reweighted',   #calculate yield Non-resonant case
-                    'yj_reweighted',   #calculate yield Non-resonant case
+                    'jj_reweighted',   # Resonant case, SF applied in weight
+                    'yj_reweighted',   # Resonant case, SF applied in weight
+                    #'15_to_18_data_jj_reweighted',   #calculate yield Non-resonant case
+                    #'15_to_18_data_yj_reweighted',   #calculate yield Non-resonant case
                     
 		    #'ttyy_allhad_SB',     #calculate yield
 		    #'ttyy_noallhad_SB',   #calculate yield
 
-                   'yybb_reweighted',
-                   'yyrr_reweighted',
-                   
-		 #'yybb_reweighted',
-		 #'yybc_reweighted',
-		 #'yybl_reweighted',
-                 #'yycb_reweighted',
-                 #'yycc_reweighted',
-                 #'yycl_reweighted',
-                 #'yylb_reweighted',
-                 #'yylc_reweighted',
-                 #'yyll_reweighted',
-                   #'yybj',
-                   #'yycj',
-                   #'yylj',
+                   #'yybj_reweighted',
+                   #'yycj_reweighted',
+                   #'yylj_reweighted',
+                    #'yybj',
+                    #'yycj',
+                    #'yylj',
                     
-                    #'yy',   # Resonant case, SF applied in weight
+                    #'yy_reweighted',  
+                    'yybb_reweighted',  
+                    'yyrr_reweighted',  
                     #'yy',   #commented by ZIHANG
-                    #'yy_reweighted',   #commented by ZIHANG
 
                     # Then all of the single H backgrounds (these are combined, by default)     
                     #'ggH',
@@ -128,19 +120,27 @@ selections = [
 #                'HM_B', # Category 4  
 #
 #=========== Non-resonant ==============
-"Validation_2bjet",
-"XGBoost_btag77_withTop_BCal_tightScore_HMass",
-"XGBoost_btag77_withTop_BCal_tightScore_LMass",
-"XGBoost_btag77_withTop_BCal_looseScore_HMass",
-"XGBoost_btag77_withTop_BCal_looseScore_LMass",
+#"Validation_2bjet",
+#"XGBoost_btag77_withTop_BCal_tightScore_HMass",
+#"XGBoost_btag77_withTop_BCal_tightScore_LMass",
+#"XGBoost_btag77_withTop_BCal_looseScore_HMass",
+#"XGBoost_btag77_withTop_BCal_looseScore_LMass",
+#"X251toHH_BDT_Selection_h026_optimized",
 #"X260toHH_BDT_Selection_h026_optimized",
+#"X270toHH_BDT_Selection_h026_optimized",
 #"X280toHH_BDT_Selection_h026_optimized",
-#"X300toHH_BDT_Selection_h026_optimized",
+#"X290toHH_BDT_Selection_h026_optimized",
+"X300toHH_BDT_Selection_h026_optimized",
+#"X3125toHH_BDT_Selection_h026_optimized",
 #"X325toHH_BDT_Selection_h026_optimized",
+#"X3375toHH_BDT_Selection_h026_optimized",
 #"X350toHH_BDT_Selection_h026_optimized",
+#"X375toHH_BDT_Selection_h026_optimized",
 #"X400toHH_BDT_Selection_h026_optimized",
+#"X425toHH_BDT_Selection_h026_optimized",
 #"X450toHH_BDT_Selection_h026_optimized",
-#"X500toHH_BDT_Selection_h026_optimized",
+#"X475toHH_BDT_Selection_h026_optimized",
+"X500toHH_BDT_Selection_h026_optimized",
 #"X550toHH_BDT_Selection_h026_optimized",
 #"X600toHH_BDT_Selection_h026_optimized",
 #"X700toHH_BDT_Selection_h026_optimized",
@@ -175,4 +175,5 @@ signals = [#'ZH_x10'
 #            'X700toHH_BDT_Selection_h026_optimized',
 #            'X800toHH_BDT_Selection_h026_optimized',
 #            'X900toHH_BDT_Selection_h026_optimized',
+	     'Resonance'
            ]

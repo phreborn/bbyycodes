@@ -252,14 +252,12 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           theLegend_inverse.AddEntry(dihiggsHist, 'HH (SM)', "f")
           theLegend_inverse.AddEntry(higgsHist, 'Single Higgs', "f")
           theLegend_inverse.AddEntry(ttyyHist, '#it{t#bar{t}#gamma#gamma}', "f")
-	  if ("toHH" in selection):
-              GGHist.SetLineWidth(0)
-              theLegend_inverse.AddEntry(GGHist, GGTitle, "f")
-	  else:
-	      GGbb_Hist.SetLineWidth(0)
-	      GGrr_Hist.SetLineWidth(0)
-              theLegend_inverse.AddEntry(GGbb_Hist, GGbb_Title, "f")
-              theLegend_inverse.AddEntry(GGrr_Hist, GGrr_Title, "f")
+         #GGHist.SetLineWidth(0)
+         #theLegend_inverse.AddEntry(GGHist, GGTitle, "f")
+	  GGbb_Hist.SetLineWidth(0)
+	  GGrr_Hist.SetLineWidth(0)
+          theLegend_inverse.AddEntry(GGbb_Hist, GGbb_Title, "f")
+          theLegend_inverse.AddEntry(GGrr_Hist, GGrr_Title, "f")
           GJHist.SetLineWidth(0)
           JJHist.SetLineWidth(0)
           theLegend_inverse.AddEntry(GJHist, GJTitle, "f")
@@ -267,7 +265,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
 
           # Plot the MC Stack (stackHist)
           stackHist.ls()
-          #stackHist.Draw("HIST")
+          stackHist.Draw("HIST")
 
 	  #i = 0 # counter for points on graph
           #for xbin in range(0, sumHist.GetNbinsX()+1):

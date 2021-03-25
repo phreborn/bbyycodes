@@ -50,7 +50,9 @@ samplesToStack = [
                     #'yycj',
                     #'yylj',
                     
-                    'yy_reweighted',   # Resonant case, Non-resonant no flavot decomp
+                    #'yy_reweighted',  
+                    'yybb_reweighted',  
+                    'yyrr_reweighted',  
                     #'yy',   #commented by ZIHANG
 
                     # Then all of the single H backgrounds (these are combined, by default)     
