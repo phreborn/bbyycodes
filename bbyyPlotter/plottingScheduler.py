@@ -87,7 +87,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           padhigh.cd()
 
 	  #summingHist_MCerrorBand = r.TGraphAsymmErrors()
-          summingHist_MCerrorBand = r.TH1F()
+          #summingHist_MCerrorBand = r.TH1F()
           theHisto = r.TH1F()
           stackHist = r.THStack()
           sigHist = r.THStack()
@@ -95,6 +95,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           dataHist = r.TH1F() # For the ratio
           sumHist = r.TH1F()
           GGHist = r.TH1F()
+          GGbb_Hist = r.TH1F()
+          GGrr_Hist = r.TH1F()
           GJHist = r.TH1F()
           JJHist = r.TH1F()
           dihiggsHist = r.TH1F()
@@ -203,23 +205,25 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                           else:
                               GGHist.SetFillColor(GGColor)
                       elif ("yybb_reweighted" in sample):
-                          getSumHist(newHisto, GGHist)
-                          GGTitle = sampleDict[str(sample)]['legend description']
-                          GGColor = sampleDict[str(sample)]['color']                    
-                          if isinstance(GGColor, tuple): # JP, use RGB values
+                          #getSumHist(newHisto, GGHist)
+			  GGbb_Hist = newHisto.Clone()
+                          GGbb_Title = sampleDict[str(sample)]['legend description']
+                          GGbb_Color = sampleDict[str(sample)]['color']                    
+                          if isinstance(GGbb_Color, tuple): # JP, use RGB values
                               color1 = gROOT.GetColor(1)
-                              GGHist.SetFillColor(color1.GetColor(*GGColor))
+                              GGbb_Hist.SetFillColor(color1.GetColor(*GGbb_Color))
                           else:
-                              GGHist.SetFillColor(GGColor)
+                              GGbb_Hist.SetFillColor(GGbb_Color)
                       elif ("yyrr_reweighted" in sample):
-                          getSumHist(newHisto, GGHist)
-                          GGTitle = sampleDict[str(sample)]['legend description']
-                          GGColor = sampleDict[str(sample)]['color']                    
-                          if isinstance(GGColor, tuple): # JP, use RGB values
+                          #getSumHist(newHisto, GGHist)
+			  GGrr_Hist = newHisto.Clone()
+                          GGrr_Title = sampleDict[str(sample)]['legend description']
+                          GGrr_Color = sampleDict[str(sample)]['color']                    
+                          if isinstance(GGrr_Color, tuple): # JP, use RGB values
                               color1 = gROOT.GetColor(1)
-                              GGHist.SetFillColor(color1.GetColor(*GGColor))
+                              GGrr_Hist.SetFillColor(color1.GetColor(*GGrr_Color))
                           else:
-                              GGHist.SetFillColor(GGColor)
+                              GGrr_Hist.SetFillColor(GGrr_Color)
                       print(sample + 'others ZIHANG')
                       addStack(newHisto, stackHist, sampleDict[str(sample)]['color'], theLegend, sampleDict[str(sample)]['legend description'])  
                       #getSumHist(newHisto, sumHist) # NO adding yj jj yy into sumHist here
@@ -248,10 +252,16 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           theLegend_inverse.AddEntry(dihiggsHist, 'HH (SM)', "f")
           theLegend_inverse.AddEntry(higgsHist, 'Single Higgs', "f")
           theLegend_inverse.AddEntry(ttyyHist, '#it{t#bar{t}#gamma#gamma}', "f")
-          GGHist.SetLineWidth(0)
+	  if ("toHH" in selection):
+              GGHist.SetLineWidth(0)
+              theLegend_inverse.AddEntry(GGHist, GGTitle, "f")
+	  else:
+	      GGbb_Hist.SetLineWidth(0)
+	      GGrr_Hist.SetLineWidth(0)
+              theLegend_inverse.AddEntry(GGbb_Hist, GGbb_Title, "f")
+              theLegend_inverse.AddEntry(GGrr_Hist, GGrr_Title, "f")
           GJHist.SetLineWidth(0)
           JJHist.SetLineWidth(0)
-          theLegend_inverse.AddEntry(GGHist, GGTitle, "f")
           theLegend_inverse.AddEntry(GJHist, GJTitle, "f")
           theLegend_inverse.AddEntry(JJHist, JJTitle, "f")
 
@@ -267,30 +277,31 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           #    i += 1 # next point
           r.gROOT.cd()
 	  #print("sumHist= ", summingHist_MCerrorBand.GetBinError(1), summingHist_MCerrorBand.GetEntries(), summingHist_MCerrorBand.GetBinContent(1), summingHist_MCerrorBand.Integral())
-	  print("HH= ", dihiggsHist.GetBinContent(1), dihiggsHist.GetBinError(1), dihiggsHist.GetBinContent(22), dihiggsHist.GetBinError(22))
-	  print("H= ", higgsHist.GetBinContent(1), higgsHist.GetBinError(1), higgsHist.GetBinContent(22), higgsHist.GetBinError(22))
-	  print("ttyy= ", ttyyHist.GetBinContent(1), ttyyHist.GetBinError(1), ttyyHist.GetBinContent(22), ttyyHist.GetBinError(22))
-	  print("old_sumHist= ", summingHist_MCerrorBand.GetBinContent(1), summingHist_MCerrorBand.GetBinError(1), summingHist_MCerrorBand.GetBinContent(22), summingHist_MCerrorBand.GetBinError(22))
+	  #print("HH= ", dihiggsHist.GetBinContent(1), dihiggsHist.GetBinError(1), dihiggsHist.GetBinContent(22), dihiggsHist.GetBinError(22))
+	  #print("H= ", higgsHist.GetBinContent(1), higgsHist.GetBinError(1), higgsHist.GetBinContent(22), higgsHist.GetBinError(22))
+	  #print("ttyy= ", ttyyHist.GetBinContent(1), ttyyHist.GetBinError(1), ttyyHist.GetBinContent(22), ttyyHist.GetBinError(22))
+	  #print("old_sumHist= ", summingHist_MCerrorBand.GetBinContent(1), summingHist_MCerrorBand.GetBinError(1), summingHist_MCerrorBand.GetBinContent(22), summingHist_MCerrorBand.GetBinError(22))
           #summingHist_MCerrorBand.Print("all")
 
 	# Correct Stat uncert.
-	  new_GJHist = r.TH1F()
-	  new_GJHist = GJHist.Clone()
-	  new_JJHist = r.TH1F()
-	  new_JJHist = JJHist.Clone()
-	  new_GGHist = r.TH1F()
-	  new_GGHist = GGHist.Clone()
-	  for xbin in range(1, GGHist.GetNbinsX()+1):
-	      print("#######", xbin)
-	      if (GGHist.GetBinContent(xbin) != 0):
-                  new_GGHist.SetBinError(xbin, (GGHist.GetBinContent(xbin) +  GJHist.GetBinContent(xbin) + JJHist.GetBinContent(xbin) ) * GGHist.GetBinError(xbin) / GGHist.GetBinContent(xbin))
-	      else: new_GGHist.SetBinError(xbin, 0)
-	      new_GJHist.SetBinError(xbin, 0)
- 	      new_JJHist.SetBinError(xbin, 0)
-	  getSumHist(new_GGHist, sumHist)
-	  getSumHist(new_GJHist, sumHist)
-	  getSumHist(new_JJHist, sumHist)
-	  summingHist_MCerrorBand = sumHist.Clone()
+	 #new_GJHist = r.TH1F()
+	 #new_GJHist = GJHist.Clone()
+	 #new_JJHist = r.TH1F()
+	 #new_JJHist = JJHist.Clone()
+	 #new_GGHist = r.TH1F()
+	 #new_GGHist = GGHist.Clone()
+	 #for xbin in range(1, GGHist.GetNbinsX()+1):
+	 #    print("#######", xbin)
+	 #    if (GGHist.GetBinContent(xbin) != 0):
+         #        new_GGHist.SetBinError(xbin, (GGHist.GetBinContent(xbin) +  GJHist.GetBinContent(xbin) + JJHist.GetBinContent(xbin) ) * GGHist.GetBinError(xbin) / GGHist.GetBinContent(xbin))
+	 #    else: new_GGHist.SetBinError(xbin, 0)
+	 #    new_GJHist.SetBinError(xbin, 0)
+ 	 #    new_JJHist.SetBinError(xbin, 0)
+	 #getSumHist(new_GGHist, sumHist)
+	 #getSumHist(new_GJHist, sumHist)
+	 #getSumHist(new_JJHist, sumHist)
+
+	  #summingHist_MCerrorBand = sumHist.Clone()
 	
 	# Adding uncert. from 2x2D SideBand method
 	 #for xbin in range(1, sumHist.GetNbinsX()+1):
@@ -305,17 +316,17 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
 	 #    elif ('looseScore_LMass' in selection):
 	 #        summingHist_MCerrorBand.SetBinError(xbin, sqrt(0.045*0.045 + 0.045*0.045 + 0.004*0.004 + summingHist_MCerrorBand.GetBinError(xbin) * summingHist_MCerrorBand.GetBinError(xbin)))
 
-	  print("yy= ", GGHist.GetBinContent(1), GGHist.GetBinError(1), GGHist.GetBinContent(22), GGHist.GetBinError(22))
-	  print("yj= ", GJHist.GetBinContent(1), GJHist.GetBinError(1), GJHist.GetBinContent(22), GJHist.GetBinError(22))
-	  print("jj= ", JJHist.GetBinContent(1), JJHist.GetBinError(1), JJHist.GetBinContent(22), JJHist.GetBinError(22))
-	  print("new_yy= ", new_GGHist.GetBinContent(1), new_GGHist.GetBinError(1), new_GGHist.GetBinContent(22), new_GGHist.GetBinError(22))
-	  print("sumHist= ", summingHist_MCerrorBand.GetBinContent(1), summingHist_MCerrorBand.GetBinError(1), summingHist_MCerrorBand.GetBinContent(22), summingHist_MCerrorBand.GetBinError(22))
-	  summingHist_MCerrorBand.SetLineWidth(0)
-          summingHist_MCerrorBand.SetFillStyle(3002)
-          summingHist_MCerrorBand.SetMarkerColor(1)
-          summingHist_MCerrorBand.SetMarkerSize(0)
-          summingHist_MCerrorBand.SetFillColor(1)
-	  theLegend_inverse.AddEntry(summingHist_MCerrorBand, "stat. uncert", "f")
+	  #print("yy= ", GGHist.GetBinContent(1), GGHist.GetBinError(1), GGHist.GetBinContent(22), GGHist.GetBinError(22))
+	  #print("yj= ", GJHist.GetBinContent(1), GJHist.GetBinError(1), GJHist.GetBinContent(22), GJHist.GetBinError(22))
+	  #print("jj= ", JJHist.GetBinContent(1), JJHist.GetBinError(1), JJHist.GetBinContent(22), JJHist.GetBinError(22))
+	  #print("new_yy= ", new_GGHist.GetBinContent(1), new_GGHist.GetBinError(1), new_GGHist.GetBinContent(22), new_GGHist.GetBinError(22))
+	  #print("sumHist= ", summingHist_MCerrorBand.GetBinContent(1), summingHist_MCerrorBand.GetBinError(1), summingHist_MCerrorBand.GetBinContent(22), summingHist_MCerrorBand.GetBinError(22))
+	  #summingHist_MCerrorBand.SetLineWidth(0)
+          #summingHist_MCerrorBand.SetFillStyle(3002)
+          #summingHist_MCerrorBand.SetMarkerColor(1)
+          #summingHist_MCerrorBand.SetMarkerSize(0)
+          #summingHist_MCerrorBand.SetFillColor(1)
+	  #theLegend_inverse.AddEntry(summingHist_MCerrorBand, "stat. uncert", "f")
 
           if XsubRange : 
               stackHist.GetXaxis().SetLimits(low_edge,high_edge)
@@ -354,7 +365,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           if rebin: 
             sumHist.SetAxisRange(low_edge,high_edge, 'X')
 	    
-	  summingHist_MCerrorBand.Draw("e2 same")
+	  #summingHist_MCerrorBand.Draw("e2 same")
 
           # Draw the relevant data 
           if not mcOnly: 

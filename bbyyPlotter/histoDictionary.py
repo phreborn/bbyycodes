@@ -682,7 +682,7 @@ def SelectionDict():
            },
 
         'Validation_2bjet': {
-            'legend upper': 'Pre-Selection + 2 b-jet',
+            'legend upper': 'Common Selection',
             'legend lower': '',
            },
 
