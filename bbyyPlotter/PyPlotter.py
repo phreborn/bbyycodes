@@ -26,7 +26,8 @@ def initializeLegend(separateHiggsBackgrounds,len_signals, x1=0.0, y1=0.55, x2=0
     aLegend.SetLineColor(r.kWhite);
     aLegend.SetFillColor(r.kWhite);
     aLegend.SetNColumns(1);
-    aLegend.SetTextSize(0.115);
+    aLegend.SetTextSize(0.125);
+    #aLegend.SetTextSize(0.115);
     #aLegend.SetTextSize(0.12);
     aLegend.SetBorderSize(0);
     aLegend.SetTextFont(42) # Remove bold text

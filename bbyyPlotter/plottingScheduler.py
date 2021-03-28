@@ -229,7 +229,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                       #getSumHist(newHisto, sumHist) # NO adding yj jj yy into sumHist here
 
 	  print('====================')
-          addStack(ttyyHist, stackHist,(102, 105, 112), theLegend, '#it{t#bar{t}#gamma#gamma}')
+          addStack(ttyyHist, stackHist, (52, 56, 68) , theLegend, '#it{t#bar{t}#gamma#gamma}')
+          #addStack(ttyyHist, stackHist, (102, 105, 112) , theLegend, '#it{t#bar{t}#gamma#gamma}')
           getSumHist(ttyyHist, sumHist)
           # New loop to combine the single Higgs backgrounds                                                                     
           if not separateHiggsBackgrounds:
@@ -343,9 +344,11 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
             #stackHist.GetXaxis().SetTitleSize(100)
             stackHist.GetXaxis().SetTitleOffset(1)
             stackHist.GetXaxis().SetLabelFont(43)
-            stackHist.GetXaxis().SetLabelSize(20)
+            stackHist.GetXaxis().SetLabelSize(25)
+            #stackHist.GetXaxis().SetLabelSize(20)
             stackHist.GetYaxis().SetLabelFont(43)
-            stackHist.GetYaxis().SetLabelSize(20) 
+            stackHist.GetYaxis().SetLabelSize(25) 
+            #stackHist.GetYaxis().SetLabelSize(20) 
           if include_ratio:  
             stackHist.GetXaxis().SetTitleOffset(99)
             stackHist.GetXaxis().SetLabelSize(0)
@@ -354,10 +357,20 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                  #stackHist.GetXaxis().SetLabelOffset(999)
                  #stackHist.GetXaxis().SetLabelSize(0)
                  if ('m_yyjj' in histo) or ('m_jj' in histo) or ('N_j' in histo):
-                    stackHist.SetMaximum(2.*stackHist.GetMaximum())
+                    stackHist.SetMaximum(2.7*stackHist.GetMaximum())
                     #stackHist.SetMaximum(1.5*stackHist.GetMaximum())
+		 elif ('Validation' in selection):
+		    stackHist.SetMaximum(1.35*dataHist.GetMaximum())
+		 elif ('looseScore_LMass' in selection) :
+		    stackHist.SetMaximum(1.9*dataHist.GetMaximum())
+		 elif ('tightScore_LMass' in selection):
+		    stackHist.SetMaximum(2.5*dataHist.GetMaximum())
+		 elif ('looseScore_HMass' in selection):
+		    stackHist.SetMaximum(2*dataHist.GetMaximum())
+		 elif ('X300toHH' in selection):
+		    stackHist.SetMaximum(2.3*dataHist.GetMaximum())
                  else:
-                    stackHist.SetMaximum(2.4*dataHist.GetMaximum())
+                    stackHist.SetMaximum(3.5*dataHist.GetMaximum())
                     #stackHist.SetMaximum(1.5*dataHist.GetMaximum())
 
           if rebin: 
@@ -388,7 +401,8 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
                   r.gROOT.cd()
                   newHisto = theHisto.Clone()
 		  newHisto.SetLineWidth(2)
-                  newHisto.SetLineStyle(r.kDashed)
+                  newHisto.SetLineStyle(9)
+                  #newHisto.SetLineStyle(r.kDashed)
                   if (selection == 'Validation_2bjet'):
                       infile = r.TFile.Open(inDir  + 'Resonance_' + sample + '_' + selection + '.root')
                       theHisto = infile.Get(path + histo+ sample + '_'  + selection)
@@ -412,13 +426,20 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           l.SetTextFont(42)
           l.SetTextSize(0.04)
           if mcOnly or not include_ratio: 
-            l1, l2 = 0.4, 0.88
+            #l1, l2 = 0.22, 0.88
+	    if rebin:
+                l1, l2 = 0.36, 0.88
+	    else:
+		l1, l2 = 0.22, 0.88
+            #l1, l2 = 0.4, 0.88   # Internal
             #l1, l2 = 0.5, 0.88
 
-          r.ATLASLabel(l1,l2,"Internal")
+          r.ATLASLabel(l1,l2,"Preliminary")
+          #r.ATLASLabel(l1,l2,"Internal")
           l.DrawLatex(l1, 0.84, "#sqrt{#it{s}} = 13 TeV, 139 fb^{-1}")
-          l.DrawLatex(l1, 0.80, selectionDict[str(selection)]['legend upper'])
-          l.DrawLatex(l1, 0.75, selectionDict[str(selection)]['legend lower'])
+          l.DrawLatex(l1, 0.80, "HH#rightarrowb#bar{b}#gamma#gamma")
+          l.DrawLatex(l1, 0.75, selectionDict[str(selection)]['legend upper'])
+          l.DrawLatex(l1, 0.70, selectionDict[str(selection)]['legend lower'])
 
 
           
@@ -432,6 +453,7 @@ def main(plotDump=False, UNBLIND=False, mcOnly=False, logOn=False, separateHiggs
           padside.cd()
           theLegend_inverse.Draw("SAME")
           #theLegend.Draw("SAME")
+	  padhigh.RedrawAxis()
 
           # Set up the lower pad for the ratio plot
           

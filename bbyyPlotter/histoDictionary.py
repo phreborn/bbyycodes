@@ -265,7 +265,8 @@ def SampleDict():
             'legend description': 'DataDriven #it{jj}',
         },
 	'yj_reweighted': {
-	    'color':   (52, 56, 68) ,
+	    'color':   (102, 105, 112),
+	    #'color':   (52, 56, 68),
             'legend description': 'DataDriven #it{#gammaj}',
         },
 	'jj_reweighted': {
@@ -498,7 +499,7 @@ def SignalDict():
             },
 
         'Resonance_X300toHH_BDT_Selection_h026_optimized': {
-            'color': 1,
+            'color': 6,
             'legend description': 'm_{X} = 300 GeV ',
             },
 
@@ -546,7 +547,8 @@ def SignalDict():
             },
 
         'Resonance_X500toHH_BDT_Selection_h026_optimized': {
-            'color': 7,
+            'color': 4,
+            #'color': 7,
             'legend description': 'm_{X} = 500 GeV ',
         },
         'Resonance_X550toHH_BDT_Selection_h026_optimized': {
@@ -682,7 +684,7 @@ def SelectionDict():
            },
 
         'Validation_2bjet': {
-            'legend upper': 'Common Selection',
+            'legend upper': 'Common Preselection',
             'legend lower': '',
            },
 
