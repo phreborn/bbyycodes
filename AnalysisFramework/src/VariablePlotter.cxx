@@ -153,11 +153,16 @@ void VariablePlotter::execute()
 	  // Adding an additional truth-matching feature, which we only need when
 	  // running on the yy samples to get the yycj, yybj, yylj separation
 	  //std::string truthMatch = "";
-	  if (sampleName == "yybb") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[1]==5";
-	  if (sampleName == "yyrr") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5 || HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[1]!=5)";
-	  //if (sampleName == "yybj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
-	  //if (sampleName == "yycj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
-	  //if (sampleName == "yylj") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
+	  if (sampleName == "yybb") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==5";
+	  if (sampleName == "yyrr") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]!=5 || HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]!=5)";
+	  if (sampleName == "yybc") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==4";
+	  if (sampleName == "yybl") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==0";
+	  if (sampleName == "yycb") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==5";
+	  if (sampleName == "yycc") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==4";
+	  if (sampleName == "yycl") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==0";
+	  if (sampleName == "yylb") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==0 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==5)";
+	  if (sampleName == "yylc") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==0 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==4)";
+	  if (sampleName == "yyll") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==0 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==0)";
 
 	  // Have a specific XStimesBR if we are running on a resonant signal
 	  /*
@@ -176,9 +181,10 @@ void VariablePlotter::execute()
 	  // Pick up the selections for each of the different categories
 	  std::string select = document.selections.selMap[iCut];
 	  //std::cout<<"ZIHANG select= "<<select<<std::endl;
-	  if (select.find("HGamEventInfoAuxDyn.isPassed") != std::string::npos) {
-	  select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed" + truthMatch);
-	  }
+	  //if (select.find("HGamEventInfoAuxDyn.isPassed") != std::string::npos) {
+	  //select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed" + truthMatch);
+	  //}
+	  select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6"), std::string("HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6").length(), "HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6" + truthMatch);
 	  if (sampleName == "data") select = document.selections.dataSel;
 	  // Below removed to now
 	  //if (document.selections.weight.empty()) select+="*"+document.selections.weight;
