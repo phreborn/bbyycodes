@@ -14,7 +14,8 @@ from array import array
 import collections
 from math import sqrt
 
-def initializeLegend(separateHiggsBackgrounds,len_signals, x1=0.1, y1=0.55, x2=0.90, y2=0.95):
+def initializeLegend(separateHiggsBackgrounds,len_signals, x1=0.0, y1=0.55, x2=0.90, y2=0.95):
+#def initializeLegend(separateHiggsBackgrounds,len_signals, x1=0.1, y1=0.55, x2=0.90, y2=0.95):
 
     if separateHiggsBackgrounds or len_signals>6: 
         y1 = 0.35
@@ -25,7 +26,9 @@ def initializeLegend(separateHiggsBackgrounds,len_signals, x1=0.1, y1=0.55, x2=0
     aLegend.SetLineColor(r.kWhite);
     aLegend.SetFillColor(r.kWhite);
     aLegend.SetNColumns(1);
-    aLegend.SetTextSize(0.12);
+    aLegend.SetTextSize(0.125);
+    #aLegend.SetTextSize(0.115);
+    #aLegend.SetTextSize(0.12);
     aLegend.SetBorderSize(0);
     aLegend.SetTextFont(42) # Remove bold text
     
@@ -109,7 +112,11 @@ def GetYtitle(theHisto, rebin, units):
     res = (xmax-xmin)/bins*rebin
     #if (res >= 1): res = int(res)
     y_title = "Events / "
-    y_title += str(res)+" "+units
+    if (res==30):
+        y_title += "30 "+units
+    else:
+        y_title += str(res)+" "+units
+    #y_title += str(res)+" "+units
 
     return y_title
 

@@ -265,10 +265,19 @@ def SampleDict():
             'legend description': 'DataDriven #it{jj}',
         },
 	'yj_reweighted': {
-	    'color':   (52, 56, 68) ,
+	    'color':   (102, 105, 112),
+	    #'color':   (52, 56, 68),
             'legend description': 'DataDriven #it{#gammaj}',
         },
 	'jj_reweighted': {
+	    'color':   (233, 241, 223),
+            'legend description': 'DataDriven #it{jj}',
+        },
+	'15_to_18_data_yj': {
+	    'color':   (52, 56, 68) ,
+            'legend description': 'DataDriven #it{#gammaj}',
+        },
+	'15_to_18_data_jj': {
 	    'color':   (233, 241, 223),
             'legend description': 'DataDriven #it{jj}',
         },
@@ -307,11 +316,47 @@ def SampleDict():
             'color': (54, 177, 190), #5,
             'legend description': '#it{#gamma#gamma+other jets}',
         },
-        'yybb_reweighted': {
-            'color': (74, 217, 217),  #38,
-            'legend description': '#it{#gamma#gammabb}',
-        },
+       'yybb_reweighted': {   # ORIGINAL
+           'color': (74, 217, 217),  #38,
+           'legend description': '#it{#gamma#gammabb}',
+       },
 
+      #'yybb_reweighted': {   # uncomment please
+      #    'color': (50, 150, 217),  #38,
+      #    'legend description': '#it{#gamma#gammabb}',
+      #},
+        'yybc_reweighted': {
+            'color': (50, 217, 217),  #38,
+            'legend description': '#it{#gamma#gammabc}',
+        },
+        'yybl_reweighted': {
+            'color': (50, 300, 217),  #38,
+            'legend description': '#it{#gamma#gammabl}',
+        },
+        'yycb_reweighted': {
+            'color': (100, 50, 150),  #38,
+            'legend description': '#it{#gamma#gammacb}',
+        },
+        'yycc_reweighted': {
+            'color': (100, 50, 217),  #38,
+            'legend description': '#it{#gamma#gammacc}',
+        },
+        'yycl_reweighted': {
+            'color': (100, 50, 300),  #38,
+            'legend description': '#it{#gamma#gammacl}',
+        },
+        'yylb_reweighted': {
+            'color': (74, 150, 50),  #38,
+            'legend description': '#it{#gamma#gammalb}',
+        },
+        'yylc_reweighted': {
+            'color': (74, 217, 50),  #38,
+            'legend description': '#it{#gamma#gammalc}',
+        },
+        'yyll_reweighted': {
+            'color': (74, 300, 50),  #38,
+            'legend description': '#it{#gamma#gammall}',
+        },
         'HH': { 
             'color': (253, 197, 54), # HH dark yellow 
             'legend description': '#it{HH}',
@@ -430,114 +475,115 @@ def SignalDict():
 
         'Resonance_X251toHH_BDT_Selection_h026_optimized': {
             'color': 6,
-            'legend description': '#it{X}(251)#it{HH} ',
+            'legend description': 'm_{X} = 251 GeV ',
             },
          
         'Resonance_X260toHH_BDT_Selection_h026_optimized': {
             'color': 12,
-            'legend description': '#it{X}(260)#it{HH} ',
+            'legend description': 'm_{X} = 260 GeV ',
             },
 
         'Resonance_X270toHH_BDT_Selection_h026_optimized': {
             'color': 2,
-            'legend description': '#it{X}(270)#it{HH} ',
+            'legend description': 'm_{X} = 270 GeV ',
             },
 
         'Resonance_X280toHH_BDT_Selection_h026_optimized': {
             'color': 11,
-            'legend description': '#it{X}(280)#it{HH} ',
+            'legend description': 'm_{X} = 280 GeV ',
             },
 
         'Resonance_X290toHH_BDT_Selection_h026_optimized': {
             'color': 4,
-            'legend description': '#it{X}(290)#it{HH} ',
+            'legend description': 'm_{X} = 290 GeV ',
             },
 
         'Resonance_X300toHH_BDT_Selection_h026_optimized': {
-            'color': 1,
-            'legend description': '#it{X}(300)#it{HH} ',
+            'color': 6,
+            'legend description': 'm_{X} = 300 GeV ',
             },
 
         'Resonance_X3125toHH_BDT_Selection_h026_optimized': {
             'color': 31,
-            'legend description': '#it{X}(312.5)#it{HH} ',
+            'legend description': 'm_{X} = 312.5 GeV ',
             },
 
         'Resonance_X325toHH_BDT_Selection_h026_optimized': {
             'color': 40,
-            'legend description': '#it{X}(325)#it{HH} ',
+            'legend description': 'm_{X} = 325 GeV ',
             },
 
         'Resonance_X3375toHH_BDT_Selection_h026_optimized': {
             'color': 32,
-            'legend description': '#it{X}(337.5)#it{HH} ',
+            'legend description': 'm_{X} = 337.5 GeV ',
             },
 
         'Resonance_X350toHH_BDT_Selection_h026_optimized': {
             'color': 36,
-            'legend description': '#it{X}(350)#it{HH} ',
+            'legend description': 'm_{X} = 350 GeV ',
             },
 
         'Resonance_X375toHH_BDT_Selection_h026_optimized': {
             'color': 38,
-            'legend description': '#it{X}(375)#it{HH} ',
+            'legend description': 'm_{X} = 375 GeV ',
             },
 
         'Resonance_X400toHH_BDT_Selection_h026_optimized': {
             'color': 3,
-            'legend description': '#it{X}(400)#it{HH} ',
+            'legend description': 'm_{X} = 400 GeV ',
         },
         'Resonance_X425toHH_BDT_Selection_h026_optimized': {
             'color': 41,
-            'legend description': '#it{X}(425)#it{HH} ',
+            'legend description': 'm_{X} = 425 GeV ',
             },
 
         'Resonance_X450toHH_BDT_Selection_h026_optimized': {
             'color': 30,
-            'legend description': '#it{X}(450)#it{HH} ',
+            'legend description': 'm_{X} = 450 GeV ',
         },
         'Resonance_X475toHH_BDT_Selection_h026_optimized': {
             'color': 42,
-            'legend description': '#it{X}(475)#it{HH} ',
+            'legend description': 'm_{X} = 475 GeV ',
             },
 
         'Resonance_X500toHH_BDT_Selection_h026_optimized': {
-            'color': 7,
-            'legend description': '#it{X}(500)#it{HH} ',
+            'color': 4,
+            #'color': 7,
+            'legend description': 'm_{X} = 500 GeV ',
         },
         'Resonance_X550toHH_BDT_Selection_h026_optimized': {
             'color': 28,
-            'legend description': '#it{X}(550)#it{HH} ',
+            'legend description': 'm_{X} = 550 GeV ',
         },
         'Resonance_X600toHH_BDT_Selection_h026_optimized': {
             'color': 8,
-            'legend description': '#it{X}(600)#it{HH} ',
+            'legend description': 'm_{X} = 600 GeV ',
         },
         'Resonance_X700toHH_BDT_Selection_h026_optimized': {
             'color': 2,
-            'legend description': '#it{X}(700)#it{HH} ',
+            'legend description': 'm_{X} = 700 GeV ',
         },
        'Resonance_X800toHH_BDT_Selection_h026_optimized': {
             'color': 9,
-            'legend description': '#it{X}(800)#it{HH} ',
+            'legend description': 'm_{X} = 800 GeV ',
         },
 
        'Resonance_X900toHH_BDT_Selection_h026_optimized': {
             'color': 16,
-            'legend description': '#it{X}(900)#it{HH} ',
+            'legend description': 'm_{X} = 900 GeV ',
         },
 
         'Resonance_X1000toHH_BDT_Selection_h026_optimized': {
             'color': 5,
-            'legend description': '#it{X}(1000)#it{HH} ',
+            'legend description': 'm_{X} = 1000 GeV ',
         },
         'Resonance_X2000toHH_BDT_Selection_h026_optimized': {
             'color': 29,
-            'legend description': '#it{X}(2000)#it{HH} ',
+            'legend description': 'm_{X} = 2000 GeV ',
         },
         'Resonance_X3000toHH_BDT_Selection_h026_optimized': {
             'color': 46,
-            'legend description': '#it{X}(3000)#it{HH} ',
+            'legend description': 'm_{X} = 3000 GeV ',
         }
     }
     return dict 
@@ -638,7 +684,7 @@ def SelectionDict():
            },
 
         'Validation_2bjet': {
-            'legend upper': 'Pre-Selection + 2 b-jet',
+            'legend upper': 'Common Preselection',
             'legend lower': '',
            },
 
@@ -650,99 +696,99 @@ def SelectionDict():
            },
 
 	'X251toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(251)#it{HH} ',
+            'legend upper': 'm_{X} = 251 GeV ',
             'legend lower': '',
             },
 	
 	'X260toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(260)#it{HH} ',
+            'legend upper': 'm_{X} = 260 GeV ',
             'legend lower': '',
             },
 
 	'X270toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(270)#it{HH} ',
+            'legend upper': 'm_{X} = 270 GeV ',
             'legend lower': '',
             },
         'X280toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(280)#it{HH} ',
+            'legend upper': 'm_{X} = 280 GeV ',
             'legend lower': '',
             },
 
 	'X290toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(290)#it{HH} ',
+            'legend upper': 'm_{X} = 290 GeV ',
             'legend lower': '',
             },
         'X300toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(300)#it{HH} ',
+            'legend upper': 'm_{X} = 300 GeV ',
             'legend lower': '',
             },
 
 	'X3125toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(312.5)#it{HH} ',
+            'legend upper': 'm_{X} = 312.5 GeV ',
             'legend lower': '',
             },
         'X325toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(325)#it{HH} ',
+            'legend upper': 'm_{X} = 325 GeV ',
             'legend lower': '',
             },
 
 	'X3375toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(337.5)#it{HH} ',
+            'legend upper': 'm_{X} = 337.5 GeV ',
             'legend lower': '',
             },
         'X350toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(350)#it{HH} ',
+            'legend upper': 'm_{X} = 350 GeV ',
             'legend lower': '',
             },
 
 	'X375toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(375)#it{HH} ',
+            'legend upper': 'm_{X} = 375 GeV ',
             'legend lower': '',
             },
         'X400toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(400)#it{HH} ',
+            'legend upper': 'm_{X} = 400 GeV ',
             'legend lower': '',
         },
 	'X425toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(425)#it{HH} ',
+            'legend upper': 'm_{X} = 425 GeV ',
             'legend lower': '',
             },
         'X450toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(450)#it{HH} ',
+            'legend upper': 'm_{X} = 450 GeV ',
             'legend lower': '',
         },
 	'X475toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(475)#it{HH} ',
+            'legend upper': 'm_{X} = 475 GeV ',
             'legend lower': '',
             },
         'X500toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(500)#it{HH} ',
+            'legend upper': 'm_{X} = 500 GeV ',
             'legend lower': '',
         },
         'X550toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(550)#it{HH} ',
+            'legend upper': 'm_{X} = 550 GeV ',
             'legend lower': '',
         },
         'X600toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(600)#it{HH} ',
+            'legend upper': 'm_{X} = 600 GeV ',
             'legend lower': '',
         },
         'X700toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(700)#it{HH} ',
+            'legend upper': 'm_{X} = 700 GeV ',
             'legend lower': '',
         },
        'X800toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(800)#it{HH} ',
+            'legend upper': 'm_{X} = 800 GeV ',
             'legend lower': '',
         },
 
        'X900toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(900)#it{HH} ',
+            'legend upper': 'm_{X} = 900 GeV ',
             'legend lower': '',
         },
 
         'X1000toHH_BDT_Selection_h026_optimized': {
-            'legend upper': '#it{X}(1000)#it{HH} ',
+            'legend upper': 'm_{X} = 1000 GeV ',
             'legend lower': '',
         },
 

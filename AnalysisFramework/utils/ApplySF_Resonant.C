@@ -313,20 +313,42 @@ int main(int argc, char** argv)
 	TH1F * yyHist_5 = (TH1F *) yyFile->Get(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
 
 	TFile * outFile = new TFile(dir+Form("%s_reweighted_%s_%s.root", targetName.Data(), mXName.Data(), regionName.Data()), "recreate");
-        TH1F * outHist_1 = (TH1F*)yyHist_1->Clone(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
-        TH1F * outHist_2 = (TH1F*)yyHist_2->Clone(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(), regionName.Data()));
-        TH1F * outHist_3 = (TH1F*)yyHist_3->Clone(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(), regionName.Data()));
-        TH1F * outHist_4 = (TH1F*)yyHist_4->Clone(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
-        TH1F * outHist_5 = (TH1F*)yyHist_5->Clone(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
+	TH1F * outHist_1;
+	TH1F * outHist_2;
+	TH1F * outHist_3;
+	TH1F * outHist_4;
+	TH1F * outHist_5;
+
+	outHist_1 = (TH1F*)yyHist_1->Clone(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
+	outHist_2 = (TH1F*)yyHist_2->Clone(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(), regionName.Data()));
+	outHist_3 = (TH1F*)yyHist_3->Clone(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(), regionName.Data()));
+	outHist_4 = (TH1F*)yyHist_4->Clone(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
+	outHist_5 = (TH1F*)yyHist_5->Clone(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
+
+	if (targetName.Contains("yybb") || targetName.Contains("yyrr") || targetName.Contains("yybc") || targetName.Contains("yybl")  || targetName.Contains("yycb") || targetName.Contains("yycc") || targetName.Contains("yycl") || targetName.Contains("yylb") || targetName.Contains("yylc") || targetName.Contains("yyll") ) {
+	cout<<"here "<<targetName<<endl;
+        TFile * targetFile = new TFile(dir+Form("%s_%s_%s.root", targetName.Data(),  mXName.Data(), regionName.Data()), "read");
+	TH1F * targetHist_1 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(),  regionName.Data()));
+        TH1F * targetHist_2 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(),  regionName.Data()));
+        TH1F * targetHist_3 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(),  regionName.Data()));
+        TH1F * targetHist_4 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(),  regionName.Data()));
+        TH1F * targetHist_5 = (TH1F *) targetFile->Get(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(),  regionName.Data()));
+        outHist_1 = (TH1F*)targetHist_1->Clone(Form("sumHisto_%s_%s_%s", varNames[0].Data(), mXName.Data(), regionName.Data()));
+        outHist_2 = (TH1F*)targetHist_2->Clone(Form("sumHisto_%s_%s_%s", varNames[1].Data(), mXName.Data(), regionName.Data()));
+        outHist_3 = (TH1F*)targetHist_3->Clone(Form("sumHisto_%s_%s_%s", varNames[2].Data(), mXName.Data(), regionName.Data()));
+        outHist_4 = (TH1F*)targetHist_4->Clone(Form("sumHisto_%s_%s_%s", varNames[3].Data(), mXName.Data(), regionName.Data()));
+        outHist_5 = (TH1F*)targetHist_5->Clone(Form("sumHisto_%s_%s_%s", varNames[4].Data(), mXName.Data(), regionName.Data()));
+
+        }
 
 	float new_N_target = yy_m_yyjjHist_1->Integral(yy_m_yyjjHist_1->FindBin(lowcut), yy_m_yyjjHist_1->FindBin(highcut))- yy_m_yyjjHist_1->Integral(yy_m_yyjjHist_1->FindBin(x1), yy_m_yyjjHist_1->FindBin(x2));
 
-        float SF = (purity * N_data - N_ttyy  )/ new_N_target;
+	float SF = (purity * N_data - N_ttyy  )/ new_N_target;
 	cout<<"( "<<purity<<" * "<<N_data<<" - "<<N_ttyy<<" ) / "<<new_N_target<<endl;
-        if (targetName.Contains("yj") || targetName.Contains("jj")) {
-                SF = ( purity * N_data ) / new_N_target;
+	if (targetName.Contains("yj") || targetName.Contains("jj")) {
+		SF = ( purity * N_data ) / new_N_target;
 		cout<<"( "<<purity<<" * "<<N_data<<") / "<<new_N_target<<endl;
-        }
+	}
 
 	outHist_1->Scale(SF);
 	outHist_2->Scale(SF);
