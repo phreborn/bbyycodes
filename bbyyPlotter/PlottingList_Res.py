@@ -51,8 +51,9 @@ samplesToStack = [
                     #'yylj',
                     
                     #'yy_reweighted',  
-                    'yybb_reweighted',  
+                    #'yybb_reweighted',  
                     'yyrr_reweighted',  
+                    'yybb_reweighted',  
                     #'yy',   #commented by ZIHANG
 
                     # Then all of the single H backgrounds (these are combined, by default)     

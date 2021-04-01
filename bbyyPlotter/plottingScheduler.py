@@ -44,8 +44,8 @@ signalDict = SignalDict()
 
 debug = True # Set to true to see added samples
 #debug = False # Set to true to see added samples
-#rebin = True # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
-rebin = False # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
+rebin = True # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
+#rebin = False # Set to false if you want to use the original binning and edges of the TH1F used as input. Else set to true if you want to use histoDictionary to set the plot edges and the rebin value.
 include_ratio = False
 
 def createUpperPad(mcOnly=True, logOn=False):
