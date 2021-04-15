@@ -1,0 +1,562 @@
+//for HH resonant samples, we should indeed call this routines
+
+//45 minutes for 40x3 samples of kappa lambda reweighting
+
+//TO PUT A IF WITH PHOTON FOR SOME SINGLE HIGGS SAMPLES
+
+//---------------------------------------------------------------------------------------------------
+string string_sample="kappa_lambda_samples";
+
+//candidates
+//ttH
+//"Resonant_samples"
+//"PowhegH7_HHbbyy_cHHH01d0" : shit
+//"PowhegH7_HHbbyy_cHHH10d0" : shit
+//"PowhegPy8_HHbbyy_cHHH01d0"
+//"PowhegPy8_HHbbyy_cHHH10d0"
+//"kappa_lambda_samples"
+//---------------------------------------------------------------------------------------------------
+//in case one wishes not to renormalise (for example in order to get the yield systematic instead of efficiency systematic, one just copy the subjobs merged files (separately for mc16a, mc16d, mc16e, separated per process : the point is just to merge the same subparts produced of a same couple (mc16i,process) to the Theory directory
+
+//this uses hist_init in order to reweight
+
+//this renormalize weights in a given campaign sample
+
+//eff_variated=SumWeights^var_cut / SumWeights^var_nocut
+//eff_nominal=SumWeights^nom_cut / SumWeights^nom_nocut
+
+//Marc : comparing 
+//(SumWeights^var_cut) corrected by (multiplied by) (SumWeights_nom_nocut/SumWeight_var_nocut)
+//to
+//SumWeights_nom_cut
+
+//The SumOfWeights taken into account in the luminosity reweighting is the one of the nominal.
+//Thus the events passing the selection for the variation is, by default, still considering the cross-section of the nominal.
+//So we should rescale the events of variation in order to take into account the cross-section of the variation
+//for that, we have stored the sum of weight initial for each variation, for each sample
+//we should reweight the nb of events in variation to take into account this sum of weights
+//this directly takes as input the files in trees_and_hist/subjobs/to_correct_weights/Theory and put the patch in trees_and_hist/Theory
+//2) launch this program
+
+//root -b
+//.x Renormalize_Weights.C
+
+//switch on/off the categories to deal with (ideally, all)
+
+string string_path="/sps/atlas/e/escalier/ATLAS_HGam/";
+
+string string_rel_path_source="Outputs_syst_yield_shape/trees_and_hist/subjobs/to_correct_weights/Theory/";
+string string_rel_path_destination="Outputs_syst_yield_shape/trees_and_hist/Theory/";
+
+//to put a path to original ones
+//and a path to destination
+
+string string_prefix_tree="tree_sel_";
+
+vector<string> vec_string_category;
+
+vector<string> vec_files={
+  
+  /*
+
+  */
+  //-----------------------------
+  //dedicated kappa lambda reweighted sample
+  
+  //call the make list for that
+  //  "h026_mc16a_PowhegH7_HHbbyy_reweight_mHH_1p0_to_4p0_nominal.root"
+
+  /*
+  //---------------------------------------------------------  
+  //ggH
+
+  //---------------------------------------------------------  
+  "h026_mc16a_PowhegPy8_NNLOPS_ggH125_PhotonSys.root",
+  "h026_mc16d_PowhegPy8_NNLOPS_ggH125_PhotonSys.root",
+  "h026_mc16e_PowhegPy8_NNLOPS_ggH125_PhotonSys.root"
+  //,
+  */
+  /*
+  //---------------------------------------------------------
+  //ZH
+  
+  "h026_mc16a_PowhegPy8_ZH125J_PhotonSys.root",
+  "h026_mc16d_PowhegPy8_ZH125J_PhotonSys.root",
+  "h026_mc16e_PowhegPy8_ZH125J_PhotonSys.root",
+  "h026_mc16a_PowhegPy8_ggZH125_PhotonSys.root",
+  "h026_mc16d_PowhegPy8_ggZH125_PhotonSys.root",
+  "h026_mc16e_PowhegPy8_ggZH125_PhotonSys.root"
+  //,
+  */
+  //---------------------------------------------------------
+  //ttH
+
+  //"h026_mc16a_PowhegPy8_ttH125_fixweight_PhotonSys.root",
+  //"h026_mc16d_PowhegPy8_ttH125_fixweight_PhotonSys.root",
+  //"h026_mc16e_PowhegPy8_ttH125_fixweight_PhotonSys.root"
+  //,
+  //---------------------------------------------------------
+  //==============================
+};
+
+//for potential categories
+vector<int> vec_mX_th_systematics={260,280,300,325,350,400,450,500,550,600,700,800,900,1000};
+
+//prototypes
+vector<string> CreateList_HH_non_resonant_kappa_lambda();
+string Return_string_target_kappa(double numerical_target_kappa);
+
+vector<string> CreateListCategories(string string_file);
+
+#include "tool_CreateList_Categories.C"
+
+//###################################################################################################
+int _2_Renormalize_Weights_for_EfficiencyEffect()
+{
+  if (string_sample=="kappa_lambda_samples") {
+    //==============================================================
+    //special case of reweighted kappa lambda
+    
+    vector<string> vec_string_kappa_lambda_destination=CreateList_HH_non_resonant_kappa_lambda();
+    
+    cout << "vec_string_kappa_lambda_destination[0]=" << vec_string_kappa_lambda_destination[0] << endl;
+    
+    for (int index_kappa_lambda=0;index_kappa_lambda<vec_string_kappa_lambda_destination.size();index_kappa_lambda++) {
+      vec_files.push_back("h026_mc16a_PowhegPy8_HHbbyy_reweight_mHH_1p0_to_"+vec_string_kappa_lambda_destination[index_kappa_lambda]+"_nominal.root");
+      vec_files.push_back("h026_mc16d_PowhegPy8_HHbbyy_reweight_mHH_1p0_to_"+vec_string_kappa_lambda_destination[index_kappa_lambda]+"_nominal.root");
+      vec_files.push_back("h026_mc16e_PowhegPy8_HHbbyy_reweight_mHH_1p0_to_"+vec_string_kappa_lambda_destination[index_kappa_lambda]+"_nominal.root");
+
+      /*
+      vec_files.push_back("h026_mc16a_PowhegH7_HHbbyy_reweight_mHH_1p0_to_"+vec_string_kappa_lambda_destination[index_kappa_lambda]+"_nominal.root");
+      vec_files.push_back("h026_mc16d_PowhegH7_HHbbyy_reweight_mHH_1p0_to_"+vec_string_kappa_lambda_destination[index_kappa_lambda]+"_nominal.root");
+      vec_files.push_back("h026_mc16e_PowhegH7_HHbbyy_reweight_mHH_1p0_to_"+vec_string_kappa_lambda_destination[index_kappa_lambda]+"_nominal.root");
+      */
+    }
+    //==============================================================
+  }
+  else if (string_sample=="ttH") {
+    vec_files.push_back("h026_mc16a_PowhegPy8_ttH125_fixweight_PhotonSys.root");
+    vec_files.push_back("h026_mc16d_PowhegPy8_ttH125_fixweight_PhotonSys.root");
+    vec_files.push_back("h026_mc16e_PowhegPy8_ttH125_fixweight_PhotonSys.root");
+  } 
+  else if (string_sample=="Resonant_samples") {
+    vec_files.push_back("h026_mc16a_MGH7_X260tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X260tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X260tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X280tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X280tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X280tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X300tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X300tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X300tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X325tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X325tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X325tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X350tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X350tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X350tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X400tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X400tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X400tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X450tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X450tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X450tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X500tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X500tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X500tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X550tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X550tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X550tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X600tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X600tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X600tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X700tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X700tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X700tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X800tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X800tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X800tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X900tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X900tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X900tohh_bbyy_AF2_nominal.root");
+
+    vec_files.push_back("h026_mc16a_MGH7_X1000tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16d_MGH7_X1000tohh_bbyy_AF2_nominal.root");
+    vec_files.push_back("h026_mc16e_MGH7_X1000tohh_bbyy_AF2_nominal.root");
+  }
+  else {
+    vec_files.push_back((string("h026_mc16a_")+string_sample+"_nominal.root").c_str());
+    vec_files.push_back((string("h026_mc16d_")+string_sample+"_nominal.root").c_str());
+    vec_files.push_back((string("h026_mc16e_")+string_sample+"_nominal.root").c_str());
+  }
+  //==============================================================
+  for (int index_file=0;index_file<vec_files.size();index_file++) {
+    cout << "index_file=" << index_file << ", name=" << vec_files[index_file] << endl;
+  }
+  //==============================================================
+  for (int index_file=0;index_file<vec_files.size();index_file++) {
+    cout << "==================================================================" << endl;
+    
+    string string_file=vec_files[index_file];
+    
+    //----------------------------------------------------------------------------------------------
+    //creation of categories
+
+    vec_string_category.clear();
+    
+    cout << "string_file=" << string_file << endl;
+
+    vec_string_category=CreateListCategories(string_file);
+
+    cout << endl;
+    cout << endl;
+    cout << endl;
+
+    for (int index_category=0;index_category<vec_string_category.size();index_category++)
+      cout << "index_category=" << index_category << ", " << vec_string_category[index_category] << endl;
+
+    //----------------------------------------------------------------------------------------------
+    cout << "index_file=" << index_file << " / " << vec_files.size() << endl;
+
+    TFile *f_source=TFile::Open((string_path+string_rel_path_source+vec_files[index_file]).c_str());
+    
+    f_source->cd();
+
+    TFile *f_destination=TFile::Open((string_path+string_rel_path_destination+vec_files[index_file]).c_str(),"recreate");
+    
+    f_destination->ls();
+
+    //TH1D *hist_init_nominal=(TH1D *)f_source->Get("hist_nominal");
+    TH1D *hist_init_nominal=(TH1D *)f_source->Get("hist_init_nominal");
+    double SumOfWeight_init_nominal=hist_init_nominal->GetSumOfWeights();
+    cout << "nominal SumOfWeight_init_nominal=" << SumOfWeight_init_nominal << endl;
+    
+    TList *list=f_source->GetListOfKeys();
+
+    int nb_keys=list->GetEntries();
+    
+    for (int index_key=0;index_key<nb_keys;index_key++) {
+      cout << "index_key=" << index_key << endl;
+      
+      TKey *key=(TKey *)list->At(index_key);
+      
+      //      cout << "key=" << key << ", key->GetClassName()=" << key->GetClassName() << endl;
+      if (strcmp(key->GetClassName(),"TTree"))
+	continue;
+      
+      //this is a TTree at this place
+      
+      char *name_tree=(char *)key->GetName();
+      
+      //      cout << "name_tree=" << name_tree << endl;
+
+      string string_tree=name_tree;
+
+      if (string_tree.find("tree_init")!=string::npos)
+	continue;
+      
+      
+      //identify the variation : remove word Inclusive or other word of category
+      
+      int size_string_prefix_tree=string_prefix_tree.size();
+      
+      size_t position_string_category=0;
+      
+      int index_category=0;
+
+      for (;index_category<vec_string_category.size();index_category++) {
+	
+	position_string_category=string_tree.find(vec_string_category[index_category]);
+	
+	if (position_string_category!=string::npos)
+	  break;
+      }
+
+      if (index_category>=vec_string_category.size()) {
+	cout << "not found category for " << string_tree << endl;
+	continue;
+      }
+      
+      position_string_category--; //take into account the "_" before the category
+
+      //      cout << "string_tree=" << string_tree << endl;
+
+      //       cout << "position_string_category=" << position_string_category << endl;
+      //       cout << "size_string_prefix_tree=" << size_string_prefix_tree << endl;
+
+      string string_variation=string_tree.substr(size_string_prefix_tree,position_string_category-size_string_prefix_tree);
+      
+      cout << "dealing with string_variation=" << string_variation << ", tree=" << name_tree << endl;
+
+      TH1D *hist_init_variation=0;
+      double SumOfWeight_init_variation;
+
+      if (string_variation!="nominal") {
+	//hist_init_variation=(TH1D *)f_source->Get((string("hist_")+string_variation).c_str());
+	hist_init_variation=(TH1D *)f_source->Get((string("hist_init_")+string_variation).c_str());
+	SumOfWeight_init_variation=hist_init_variation->GetSumOfWeights();
+	
+	cout << "SumOfWeight_init_variation=" << SumOfWeight_init_variation << endl;
+
+	if (!hist_init_variation) {
+	  cout << "problem, histogram not found, halt program" << endl;
+	  exit(1);
+	}
+      }
+
+      TTree *tree_original=(TTree *)f_source->Get(name_tree);
+
+      //      cout << "tree_original=" << tree_original << endl;
+      
+      //      cout << "tree_original->GetName()=" << tree_original->GetName() << endl;
+      
+
+      //      tree_original->Print();
+
+      //      cout << "tree_original->GetEntries()=" << tree_original->GetEntries() << endl;
+      
+      //works
+      double weight_event=0;
+      double weight_lumi=0;
+      double weight_total=0;
+      
+      tree_original->SetBranchAddress("weight_event",&weight_event);
+      tree_original->SetBranchAddress("weight_lumi",&weight_lumi);
+      tree_original->SetBranchAddress("weight_total",&weight_total);
+
+      /*generaliszation, does not work, for unknown reason
+      TObjArray *list_branches=tree_original->GetListOfBranches();
+      
+      //identify the branch that are weights
+      int nb_branches=list_branches->GetEntries();
+      
+      //identify list of branches for weights
+      vector<string> vec_string_branch_weights;
+      vector<double> vec_value_branch_weights;
+      
+      //if to be use, to clear
+
+      int index_branch_weight=0;
+      
+      for (int index_branch=0;index_branch<nb_branches;index_branch++) {
+	TBranch *branch=(TBranch *)list_branches->At(index_branch);
+	//	cout << "branch->GetName()=" << branch->GetName() << endl;
+	
+	if (string(branch->GetName()).find("weight")!=string::npos) {
+	  vec_string_branch_weights.push_back(branch->GetName());
+	  
+	  vec_value_branch_weights.push_back(0); //put dumb value in order to reserve the variable
+	  
+	  tree_original->SetBranchAddress(branch->GetName(),&(vec_value_branch_weights[index_branch_weight]));
+	  
+	  index_branch_weight++;
+	}
+      } //end search for branch weights
+      */      
+
+      tree_original->SetBranchStatus("*",1);
+ 
+      //      int nb_branches_weight=vec_string_branch_weights.size();
+
+      TTree *newtree=tree_original->CloneTree(0);
+      
+      int nb_entries=tree_original->GetEntries();
+      
+      for (int index_entry=0;index_entry<nb_entries;index_entry++) {
+	//for (int index_entry=0;index_entry<5;index_entry++) {
+
+	//cout << "index_entry=" << index_entry << endl;
+	
+	tree_original->GetEntry(index_entry);
+	
+	if (string_variation!="nominal") { // change weights only if not nominal
+	  //	  cout << "string_variation=" << string_variation << endl;
+	  //	  cout << "(SumOfWeight_init_nominal/SumOfWeight_init_variation)=" << (SumOfWeight_init_nominal/SumOfWeight_init_variation) << "=" << SumOfWeight_init_nominal << " / " << SumOfWeight_init_variation << endl;
+	  
+	  weight_event*=(SumOfWeight_init_nominal/SumOfWeight_init_variation);
+	  weight_lumi*=(SumOfWeight_init_nominal/SumOfWeight_init_variation);
+	  weight_total*=(SumOfWeight_init_nominal/SumOfWeight_init_variation);
+	}
+
+	/*
+	  for (index_branch_weight=0;index_branch_weight<nb_branches_weight;index_branch_weight++) {
+		
+  cout << "index_branch_weight=" << index_branch_weight << ", vec_string_branch_weights[index_branch_weight]=" << vec_string_branch_weights[index_branch_weight] << ", so far, vec_value_branch_weights[" << index_branch_weight << "]=" << vec_value_branch_weights[index_branch_weight] << endl;
+	  
+	  cout << "multiplication by 10" << endl;
+	  vec_value_branch_weights[index_branch_weight]*=10;
+
+	  
+	} //end list of branch of weights
+	  */
+	
+	newtree->Fill();
+
+      } //end loop on entries
+      
+      //      cout << "finished reading tree" << endl;
+      f_destination->cd();
+      
+      //      cout << "writing tree" << endl;
+      newtree->Write();
+      
+      //      vec_string_branch_weights.clear();
+      
+      //      return 0;
+    } //end list of keys
+   
+    cout << "closing f_destination" << endl;
+    f_destination->Close();
+    
+  } //end list of files
+
+    return 0;
+}
+//###################################################################################################
+vector<string> CreateList_HH_non_resonant_kappa_lambda()
+{
+  vector<string> vector_string_kappa_lambda;
+
+  double epsilon=1e-5;
+  //avoid 1
+
+  //better to use double to prevent some clumsy changes of digits
+
+  double step_kappa_lambda=0.2; //this is what there is in the official kappa lambda reweighting
+  
+  double kappa_lambda=-10;
+  
+  for (;kappa_lambda<=10;kappa_lambda+=step_kappa_lambda) {
+    
+    printf("exploring kappa_lambda=%20.20f\n",kappa_lambda);
+    
+    //    if (kappa_lambda-!=1) {
+    if (fabs(kappa_lambda-1.)>epsilon) {
+      cout << "add the string" << endl;
+      vector_string_kappa_lambda.push_back(Return_string_target_kappa(kappa_lambda));
+    }
+  }
+  /*
+  //---------------
+  //for tests
+  vector_string_kappa_lambda.push_back(Return_string_target_kappa(4));
+  */
+
+  return vector_string_kappa_lambda;
+}
+//###################################################################################################
+string Return_string_target_kappa(double numerical_target_kappa)
+{
+  bool DEBUG=0;
+
+  if (DEBUG) {
+    cout << "====================================" << endl;
+    printf("Decode kappa lambda=%20.20f\n",numerical_target_kappa);
+  }
+  
+  double epsilon=1e-5; //to avoid rounding due to representation in power of 2
+
+  string string_target_kappa;
+  
+  char buffer[1];
+  
+  if (numerical_target_kappa<0) {
+    string_target_kappa+='n';
+
+    numerical_target_kappa=fabs(numerical_target_kappa);
+    //change sign to prevent having the sign everywhere
+  }
+  
+  //at this stage, we have absolute number
+
+  if (DEBUG) {
+    cout << endl;
+    cout << "phase 1" << endl;
+    printf("numerical_target_kappa=%20.20f\n",numerical_target_kappa);
+
+    cout << "test >=10" << endl;
+  }
+  
+  if (numerical_target_kappa/10.+epsilon>=1) {
+    sprintf(buffer,"%d",(int)(numerical_target_kappa/10.+epsilon));
+    
+    if (DEBUG) {
+      cout << "yes" << endl;
+      cout << "buffer=" << buffer << endl;
+    }
+    string_target_kappa+=buffer;
+    numerical_target_kappa-=(int)((numerical_target_kappa/10.+epsilon))*10;
+    numerical_target_kappa=fabs(numerical_target_kappa);
+  }
+  
+  if (DEBUG) {
+    cout << endl;
+    
+    printf("numerical_target_kappa=%20.20f\n",numerical_target_kappa);
+    cout << "test >=1" << endl;
+  }
+  
+  if (numerical_target_kappa+epsilon>=1) {
+
+    sprintf(buffer,"%d",(int)(numerical_target_kappa+epsilon));
+    
+    if (DEBUG) {
+      cout << "yes" << endl;
+      cout << "resulting buffer=" << buffer << endl;
+    }
+    
+    string_target_kappa+=buffer;
+    numerical_target_kappa-=((int)(numerical_target_kappa+epsilon));
+    numerical_target_kappa=fabs(numerical_target_kappa);
+  }
+  else
+    string_target_kappa+='0';  
+
+  string_target_kappa+='p';
+  
+  if (DEBUG) {
+    cout << "phase 3" << endl;
+    printf("numerical_target_kappa=%20.20f\n",numerical_target_kappa);
+    
+    cout << "test>=0.1" << endl;
+  }
+
+  if (numerical_target_kappa+epsilon>=0.1) {
+    
+    sprintf(buffer,"%01d",(int)(numerical_target_kappa*10.+epsilon));
+    
+    if (DEBUG) {
+      cout << "yes" << endl;
+      
+      cout << "buffer=" << buffer << endl;
+    }
+    
+    string_target_kappa+=buffer;
+  }
+  else
+    string_target_kappa+='0';
+  
+  //keep that for sure
+  if (string_target_kappa=="n0p0")
+    string_target_kappa="0p0";
+  
+  if (DEBUG) {
+    cout << "this gives : " << string_target_kappa << endl;
+    cout << "====================================" << endl;
+  }
+  
+  return string_target_kappa;
+}
+//###################################################################################################

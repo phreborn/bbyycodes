@@ -1,0 +1,159 @@
+\newcolumntype{C}{>{\centering\arraybackslash}p{2cm}}
+\begin{table}[h!]
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|l|c|}
+\hline
+\multicolumn{2}{|l|}{Source of systematic uncertainty}   &\multicolumn{1}{c|}{\% effect wrt nominal}\\
+\multicolumn{2}{|l|}{                                }   &X260\\
+\hline
+\hline
+\hline
+\multirow{2}{*}{Event-based}          \rule[-1.ex]{0pt}{3.5ex}&\verb|PH_EFF_TRIGGER_Uncertainty|	&$^{+0.94}_{-0.94}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|PRW_DATASF|	&$^{-2.82}_{+2.60}$	\\
+\cline{2-3}
+\hline
+\multirow{5}{*}{Photon}          \rule[-1.ex]{0pt}{3.5ex}&\verb|PH_EFF_ID_Uncertainty|	&$^{+1.81}_{-1.79}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|PH_EFF_ISO_Uncertainty|	&$^{+1.65}_{-1.63}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|EG_SCALE_ALL|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|EG_SCALE_AF2|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|EG_RESOLUTION_ALL|	&-	\\
+\cline{2-3}
+\hline
+\multirow{48}{*}{Jet}          \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_BJES_Response|	&$^{+0.41}_{-0.65}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EtaIntercalibration_Modelling|	&$^{+0.10}_{-0.13}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EtaIntercalibration_NonClosure_2018data|	&$^{-0.09}_{+0.12}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EtaIntercalibration_NonClosure_highE|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EtaIntercalibration_NonClosure_negEta|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EtaIntercalibration_NonClosure_posEta|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EtaIntercalibration_TotalStat|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_Flavor_Composition|	&$^{-0.27}_{+0.15}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_Flavor_Response|	&$^{+0.06}_{-0.10}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_Pileup_OffsetMu|	&$^{-0.12}_{0.00}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_Pileup_OffsetNPV|	&$^{-0.18}_{0.00}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_Pileup_PtTerm|	&$^{-0.33}_{+0.28}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_Pileup_RhoTopology|	&$^{+0.17}_{-0.64}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_PunchThrough_MC16|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_PunchThrough_AFII|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_RelativeNonClosure_AFII|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_SingleParticle_HighPt|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JvtEfficiency|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_fJvtEfficiency|	&$^{+0.43}_{-0.43}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Detector1|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Detector2|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Mixed1|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Mixed2|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Mixed3|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Modelling1|	&$^{-0.21}_{0.00}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Modelling2|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Modelling3|	&$^{+0.10}_{-0.10}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Modelling4|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Statistical1|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Statistical2|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Statistical3|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Statistical4|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Statistical5|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_EffectiveNP_Statistical6|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_DataVsMC_MC16|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_DataVsMC_AFII|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_1|	&$^{-2.36}_{+0.78}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_2|	&$^{-3.14}_{+1.17}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_3|	&$^{+0.79}_{-1.67}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_4|	&$^{+0.75}_{-1.01}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_5|	&$^{+0.55}_{-1.21}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_6|	&$^{+0.62}_{-1.63}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_7|	&$^{-0.59}_{+0.35}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_8|	&$^{+0.37}_{-0.46}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_9|	&$^{-1.13}_{+0.36}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_10|	&$^{+0.16}_{-0.61}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_11|	&$^{+0.44}_{-0.44}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER_EffectiveNP_12restTerm|	&$^{-0.66}_{+0.21}$	\\
+\cline{2-3}
+\hline
+\multirow{14}{*}{Flavour tagging}          \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_B_0|	&$^{-3.05}_{+3.10}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_B_1|	&$^{-1.30}_{+1.30}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_B_2|	&$^{+0.21}_{-0.21}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_extrapolation|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_C_0|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_C_1|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_C_2|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_C_3|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_extrapolation_from_charm|	&-	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_Light_0|	&$^{-0.23}_{+0.23}$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_Light_1|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_Light_2|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_Light_3|	&$<0.1$	\\
+\cline{2-3}
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Eigen_Light_4|	&$<0.1$	\\
+\cline{2-3}
+\hline
+\end{tabular}
+\end{center}
+\vspace{-0.5cm}
+\caption{Summary of dominant systematic uncertainties affecting expected yields or shape parameters after the selection of the category \textrm{Resonant\_mX260}. Sources marked ~-~ and other sources not listed in the table are negligible by comparison. No systematic uncertainties related to the continuum background are considered, since this is derived through a fit to the observed data.}
+\label{table_systematics_details}
+\end{table}

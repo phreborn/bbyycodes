@@ -1,0 +1,31 @@
+\newcolumntype{C}{>{\centering\arraybackslash}p{2cm}}
+\begin{table}[h!]
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|l|c|}
+\hline
+\multicolumn{2}{|l|}{Source of systematic uncertainty}   &\multicolumn{1}{c|}{\% effect wrt nominal}\\
+\multicolumn{2}{|l|}{                                }   &TheProcess\\
+\hline
+\hline
+\multirow{2}{*}{Event-based}    \rule[-1.ex]{0pt}{3.5ex}&\verb|PRW|	&$\pm 2.86$	\\
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|Trigger|	&$\pm 0.99$	\\
+\hline
+\multirow{4}{*}{Photon}         \rule[-1.ex]{0pt}{3.5ex}&\verb|PH_PES|	&$\pm 0.43$	\\
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|PH_PER|	&$\pm 0.11$	\\
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|PH_EFF_ID|	&$\pm 1.81$	\\
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|PH_EFF_Isol|	&$\pm 1.69$	\\
+\hline
+\multirow{3}{*}{Jet}            \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JES|	&$\pm 1.76$	\\
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|JET_JER|	&$\pm 4.78$	\\
+\hline
+\multirow{3}{*}{Flavour tagging}\rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_B|	&$\pm 3.59$	\\
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_C|	&$<0.1$	\\
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|FT_EFF_Light|	&$\pm 0.42$	\\
+\hline
+\end{tabular}
+\end{center}
+\vspace{-0.5cm}
+\caption{Summary of dominant systematic uncertainties affecting expected after the selection. Sources marked - are not significant.}
+\label{table_systematics_thematic_yield}
+\end{table}

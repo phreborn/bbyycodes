@@ -1,0 +1,19 @@
+\newcolumntype{C}{>{\centering\arraybackslash}p{2cm}}
+\begin{table}[h!]
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|l|c|}
+\hline
+\multicolumn{2}{|l|}{Source of systematic uncertainty}   &\multicolumn{1}{c|}{\% effect wrt nominal}\\
+\multicolumn{2}{|l|}{                                }   &TheProcess\\
+\hline
+\hline
+\multirow{3}{*}{Theory}\rule[-1.ex]{0pt}{3.5ex}&\verb|QCD|	&$\pm 4.17$	\\
+                                 \rule[-1.ex]{0pt}{3.5ex}&\verb|PDF_alpha_s|	&$\pm 2.08$	\\
+\hline
+\end{tabular}
+\end{center}
+\vspace{-0.5cm}
+\caption{Summary of dominant systematic uncertainties affecting expected after the selection. Sources marked - are not significant.}
+\label{table_systematics_thematic_yield}
+\end{table}
