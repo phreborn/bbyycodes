@@ -1,0 +1,7 @@
+1) for each campaign (mc16a or mc16d or mc16e), in case of several files for a same process
+hadd them
+(don't mix the campaigns, since the sum of weight init is expected to be different)
+
+2) use Renormalize_Weights.C in order to correct the weights, by using a same normalization
+
+3) in case of several campaigns, merge them only from the results of the rel effects, from the ReviewSystematics program, merge option

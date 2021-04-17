@@ -1,0 +1,26 @@
+  /*
+  if (do_ShapeSyst_from_mean_interquartile)
+    gErrorIgnoreLevel=kError; //switch off the message at SaveAs
+  */
+
+  /*
+  cout << "ROOT::Math::MinimizerOptions::DefaultTolerance()=" << ROOT::Math::MinimizerOptions::DefaultTolerance() << endl;
+
+  ROOT::Math::MinimizerOptions::SetDefaultTolerance(1e-5); //1e-2*1e-3
+
+  cout << "ROOT::Math::MinimizerOptions::DefaultTolerance()=" << ROOT::Math::MinimizerOptions::DefaultTolerance() << endl;
+  exit(1);
+  */
+
+  /*
+  //not useful for the moment
+  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
+  ROOT::Math::MinimizerOptions::SetDefaultStrategy(1);
+  ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(0);
+  */
+
+  /*
+  cout << "ROOT::Math::MinimizerOptions::MaxFunctionCalls()=" << ROOT::Math::MinimizerOptions::MaxFunctionCalls() << endl;
+  cout << "ROOT::Math::MinimizerOptions::MaxIterations()=" << ROOT::Math::MinimizerOptions::MaxIterations() << endl;
+  exit(1);
+  */

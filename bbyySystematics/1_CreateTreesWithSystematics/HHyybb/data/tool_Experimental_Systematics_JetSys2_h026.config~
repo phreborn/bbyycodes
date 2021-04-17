@@ -1,0 +1,74 @@
+########"
+#
+# Configuration file for /sps/atlas/e/escalier/ATLAS_HGam/Framework/source/HHyybb/tool_Systematics_CERN_EP_2018_130 analysis
+#
+########"
+
+
+##################################
+# Job steering setup
+
+#OutputDir:        tool_Systematics_CERN_EP_2018_130_DATE
+#OutputDir:        tool_Systematics_CERN_EP_2018_130_SAMPLE
+SampleName:       sample
+InputFileList:    input_data.txt
+BaseConfig:       HGamAnalysisFramework/HGamRel21.config
+Include:          HGamAnalysisFramework/MCSamples.config
+#to replace+Include:          HGamAnalysisFramework/SumOfWeights_h015d.config
+
+#HHH01
+SumOfWeightsMC16a.600051: 11154.4
+SumOfWeightsMC16d.600051: 13947.8
+
+#HHH10
+SumOfWeightsMC16e.600052: 192554
+
+#HHH01 Py8
+SumOfWeightsMC16a.600021: 10440.7
+SumOfWeightsMC16d.600021: 12809.4
+SumOfWeightsMC16e.600021: 16453.7
+
+#ggH
+SumOfWeightsMC16a.343981: 2.06565e8
+SumOfWeightsMC16d.343981: 2.06559e8
+SumOfWeightsMC16e.343981: 3.42536e8
+
+#ZHJ
+SumOfWeightsMC16a.345319: 1.26204e6
+SumOfWeightsMC16d.345319: 1.62826e6
+SumOfWeightsMC16e.345319: 2.20388e6
+
+#ttH
+SumOfWeightsMC16a.346525: 933798
+SumOfWeightsMC16e.346525: 1.58902e6
+
+#MGH7_X280
+SumOfWeightsMC16e.450529: 1.11025e8
+
+#MGH7_X300
+SumOfWeightsMC16e.450530: 1.17621e8
+
+#MGH7_X325
+SumOfWeightsMC16e.450531: 1.19547e8
+
+#MGH7_X350
+SumOfWeightsMC16e.450532: 1.32238e08
+
+#MonteCarloType:                                  MC16a
+
+##################################
+# HgammaAnalysis setup
+
+
+##################################
+# Photon calibration, smearing and selection settings
+
+
+##################################
+# Jet calibration, smearing and selection settings
+
+
+##################################
+# What to save in the MxAOD
+
+

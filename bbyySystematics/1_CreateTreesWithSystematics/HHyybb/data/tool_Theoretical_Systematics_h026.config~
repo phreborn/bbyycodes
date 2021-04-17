@@ -1,0 +1,58 @@
+ ########"
+#
+# Configuration file for /sps/atlas/e/escalier/ATLAS_HGam/Framework_h025/source/HHyybb/tool_Theoretical_Systematics analysis
+#
+########"
+
+
+##################################
+# Job steering setup
+
+#OutputDir:        tool_Theoretical_Systematics_DATE
+SampleName:       sample
+InputFileList:    input_data.txt
+
+BaseConfig:       HGamAnalysisFramework/HGamRel21.config
+Include:          HGamAnalysisFramework/MCSamples.config
+
+#to put directly in the HGamRel21
+#+EventHandler.HiggsWeights.Types: ggF
+#+EventHandler.HiggsWeights.ggF: 600051
+
+#ggH
+SumOfWeightsMC16a.343981: 2.06565e8
+SumOfWeightsMC16d.343981: 2.06559e8
+SumOfWeightsMC16e.343981: 3.42536e8
+
+#ttH
+SumOfWeightsMC16a.346525: 962732
+SumOfWeightsMC16d.346525: 1.20229e6
+SumOfWeightsMC16e.346525: 1.58903e6
+
+#tool_Theoretical_Systematics_h025_mc16d_nominal_PowhegH7_HHbbyy_cHHH01d0
+
+##################################
+# HgammaAnalysis setup
+
+
+##################################
+# Photon calibration, smearing and selection settings
+
+
+##################################
+# Jet calibration, smearing and selection settings
+
+
+##################################
+# What to save in the MxAOD
+
+#suggestion JBdV : speed-up code
+#DoHGamCategoryTool: NO
+#DoHiggsHFTool:      NO
+#DoDiphotonHF:       NO
+#DoVLQTool:          NO
+#DoHGamMETCatTool:   NO
+#DoFCNCTool:         NO
+#DoHcTool:           NO
+#JetHandler.EnableBTagging: NO
+#JetHandlerPFlow.EnableBTagging: NO

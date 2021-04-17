@@ -1,0 +1,46 @@
+########"
+#
+# Configuration file for /sps/atlas/e/escalier/ATLAS_HGam/Framework/source/HHyybb/tool_Systematics_CERN_EP_2018_130 analysis
+#
+########"
+
+
+##################################
+# Job steering setup
+
+#OutputDir:        tool_Systematics_CERN_EP_2018_130_DATE
+#OutputDir:        tool_Systematics_CERN_EP_2018_130_SAMPLE
+SampleName:       sample
+InputFileList:    input_data.txt
+BaseConfig:       HGamAnalysisFramework/HGamRel21.config
+Include:          HGamAnalysisFramework/MCSamples.config
+#to replace+Include:          HGamAnalysisFramework/SumOfWeights_h015d.config
+
+#ggH
+SumOfWeightsMC16a.343981: 2.05738e+08
+SumOfWeightsMC16d.343981: 2.06559e+08
+SumOfWeightsMC16e.343981: 2.82995e+08
+
+#ttH
+SumOfWeightsMC16a.346525: 832619
+SumOfWeightsMC16d.346525: 1.20229e+06
+SumOfWeightsMC16e.346525: 1.58903e+06
+
+#MonteCarloType:                                  MC16a
+
+##################################
+# HgammaAnalysis setup
+
+
+##################################
+# Photon calibration, smearing and selection settings
+
+
+##################################
+# Jet calibration, smearing and selection settings
+
+
+##################################
+# What to save in the MxAOD
+
+
