@@ -158,7 +158,7 @@ def test():
   )
   return dict(w=w, data=data, catVariable='cat', catInfo=catInfo, newObs='mgg', nBins=55) #20
 
-def getInfoCouplings(fName='WS-yybb-nonresonant_BDT_h026_v5_kl1p0.root', snapshot='ucmles_0', noWeights = False, nBins=55, subset=args.category):
+def getInfoCouplings(fName='WS-yybb-nonresonant_BDT_h026_v6_kl1p0.root', snapshot='ucmles_0', noWeights = False, nBins=55, subset=args.category):
   """return info for getWeightedWorkspace. <subset> can be ggH, VBF, VH or ttH"""
   f = ROOT.TFile(fName)
   w = f.combWS
@@ -415,7 +415,7 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
   w1.var('mu').setVal(fitted_mu) #fitted_mu should be 1
   w1.var(ss_name).setVal(fitted_SS)
   w1.obj('pdfW').plotOn(frame, RooFit.LineStyle(1), RooFit.LineColor(2), RooFit.Normalization(1, ROOT.RooAbsReal.RelativeExpected))
-  frame.SetMaximum((frame.GetMaximum() + 1.5 * math.sqrt(frame.GetMaximum()))*1.5)
+  frame.SetMaximum((frame.GetMaximum() + 1.7 * math.sqrt(frame.GetMaximum()))*1.5)
   frame.SetMinimum(0.001)
 
   NSigPlusBg = w1.obj('pdfW').expectedEvents( w1.obj('dataW').get() )
@@ -438,22 +438,22 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
   #w1.obj('pdfW').plotOn(frame, RooFit.LineStyle(1), RooFit.LineColor(ROOT.kBlack), RooFit.Normalization( NSg,ROOT.RooAbsReal.NumEvent))
 
 
-  textscale = 0.60
+  textscale = 0.80
   if subpanel == 1: textscale = 1
 
   # Add legend
-  legend = getLegend(frame, ['Data', 'Continuum Background', 'Total Background'], [0.18, 0.93 - 0.35 * textscale, 0.63, 0.93]) #0.18, 0.58, 0.63, 0.93
+  legend = getLegend(frame, ['Data', 'Continuum Background', 'Total Background'], [0.13, 0.93 - 0.35 * textscale, 0.63, 0.93]) #0.18, 0.58, 0.63, 0.93
   #legend = getLegend(frame, ['Data', 'Background', 'Signal + Background'], [0.23, 0.75, 0.55, 0.93])
 
   frame.Draw()
 
   if subpanel == 1: frame.GetXaxis().SetLabelOffset(800)
-  else: frame.GetXaxis().SetLabelOffset(0)
+  else: frame.GetXaxis().SetLabelOffset(0) #
   frame.GetYaxis().SetLabelSize(0.075 * textscale)
   frame.GetXaxis().SetLabelSize(0.075 * textscale)
   frame.GetYaxis().SetTitleOffset(0.8)
   if subpanel == 1: frame.GetXaxis().SetTitleOffset(0.8)
-  else: frame.GetXaxis().SetTitleOffset(0)
+  else: frame.GetXaxis().SetTitleOffset(0.95)
   frame.GetYaxis().SetTitleSize(0.075 * textscale)
   frame.GetXaxis().SetTitleSize(0.075 * textscale)
 #   frame.GetYaxis().SetTitle("#scale[0.7]{#sum} weights / %s" % ('GeV' if binWidth==1 else ' %s' % binWidth))
@@ -477,10 +477,11 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
   tl.SetNDC()
   tl.SetTextSize(0.068 * textscale)
   #tl.DrawLatex(0.65,0.86,"#bf{#it{ATLAS}} Internal")
-  tl.DrawLatex(0.65,0.86,"#bf{#it{ATLAS}} Internal")
-  tl.DrawLatex(0.65,0.86 - 0.08 * textscale,"#sqrt{s} = 13 TeV, 139 fb^{-1}")
+  tl.DrawLatex(0.60,0.86,"#bf{#it{ATLAS}} Preliminary")
+  tl.DrawLatex(0.60,0.86 - 0.08 * textscale,"#sqrt{s} = 13 TeV, 139 fb^{-1}")
+  tl.DrawLatex(0.60,0.86 - 0.08 * 2 * textscale,"HH#rightarrowb#bar{b}#gamma#gamma")
   #tl.DrawLatex(0.65,0.70,"m_{H} = 125.09 GeV")
-  tl.DrawLatex(0.65,0.86 - 0.08 * 2 * textscale,label) #0.63, 0.58
+  tl.DrawLatex(0.60,0.86 - 0.08 * 3 * textscale,label) #0.63, 0.58
   if (not noWeights):
     tl.DrawLatex(0.63,0.50,"ln(1+S/B) weighted sum")
     tl.DrawLatex(0.63,0.42,"S =	Inclusive")
@@ -550,7 +551,7 @@ if __name__ == '__main__':
     x = plot(w, noWeights=1-args.weighted, label="All categories", nBins = 22, subpanel = args.subpanel)	#<- and also change this
   c = x[0]
 
-  tag = 'v2'
+  tag = 'v3'
 
   if args.category:
     c.SaveAs("plots/unweighted_yybb_%s%s_%s.pdf" %(args.category, '_subpanel' if args.subpanel == 1 else '', tag))

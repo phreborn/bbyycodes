@@ -299,7 +299,7 @@ color6->SetRGB(253/255., 197/255., 54/255.);
   double x_loc = 0.20; double y_loc = 0.80;
   double t_size = 0.05;
   TLatex * l_fit = caption_fit(t_size);
-  ATLASLabel(x_loc,y_loc+0.05,"Internal",t_size,0.13);
+  ATLASLabel(x_loc,y_loc+0.05,"Preliminary",t_size,0.13);
   l_fit->DrawLatex(x_loc,y_loc, "#sqrt{s} = 13 TeV, 139 fb^{-1}" );
   if (region == "SM") {
   l_fit->DrawLatex(x_loc,y_loc-0.05, "High mass region" );
