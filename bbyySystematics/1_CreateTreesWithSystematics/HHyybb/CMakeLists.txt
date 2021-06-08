@@ -31,7 +31,6 @@ atlas_add_library( HHyybbLib
                    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
                    LINK_LIBRARIES ${ROOT_LIBRARIES}
                    HGamAnalysisFrameworkLib
-		   hhTruthWeightToolsLib
 		   PMGAnalysisInterfacesLib
                    )
 
