@@ -1,0 +1,1 @@
+root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h026/mc16a/FlavorSys/mc16a.PowhegPy8_ttH125_fixweight.MxAODFlavorSys.e7488_s3126_r9364_p4180_h026.root/mc16a.PowhegPy8_ttH125_fixweight.MxAODFlavorSys.e7488_s3126_r9364_p4180_h026.025.root
