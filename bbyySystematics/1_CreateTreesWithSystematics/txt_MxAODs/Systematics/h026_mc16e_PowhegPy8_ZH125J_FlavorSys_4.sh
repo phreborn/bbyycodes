@@ -1,0 +1,2 @@
+root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h026/mc16e/FlavorSys/mc16e.PowhegPy8_ZH125J.MxAODFlavorSys.e5743_s3126_r10724_p4207_h026.root/mc16e.PowhegPy8_ZH125J.MxAODFlavorSys.e5743_s3126_r10724_p4207_h026.025.root
+root://eosatlas.cern.ch//eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h026/mc16e/FlavorSys/mc16e.PowhegPy8_ZH125J.MxAODFlavorSys.e5743_s3126_r10724_p4207_h026.root/mc16e.PowhegPy8_ZH125J.MxAODFlavorSys.e5743_s3126_r10724_p4207_h026.026.root
