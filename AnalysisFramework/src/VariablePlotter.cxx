@@ -153,24 +153,38 @@ void VariablePlotter::execute()
 	  // Adding an additional truth-matching feature, which we only need when
 	  // running on the yy samples to get the yycj, yybj, yylj separation
 	  //std::string truthMatch = "";
-	  if (sampleName == "yybj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==5";
-	  if (sampleName == "yycj") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]==4";
-	  if (sampleName == "yylj") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[0]!=5)";
+	  if (sampleName == "yybb") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==5";
+	  if (sampleName == "yyrr") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]!=5 || HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]!=5)";
+	  if (sampleName == "yybc") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==4";
+	  if (sampleName == "yybl") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==5 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==0";
+	  if (sampleName == "yycb") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==5";
+	  if (sampleName == "yycc") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==4";
+	  if (sampleName == "yycl") truthMatch = " && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==4 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==0";
+	  if (sampleName == "yylb") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==0 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==5)";
+	  if (sampleName == "yylc") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==0 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==4)";
+	  if (sampleName == "yyll") truthMatch = " && (HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet1_fix]==0 && HGamAntiKt4PFlowCustomVtxHggJetsAuxDyn.HadronConeExclTruthLabelID[HGamEventInfoAuxDyn.yybb_candidate_jet2_fix]==0)";
 
 	  // Have a specific XStimesBR if we are running on a resonant signal
+	  /*
 	  if (sampleName.find("toHH") != std::string::npos) {
 	    std::string sampleNameShort;
 	    sampleNameShort = sampleName;
 	    int pos = sampleNameShort.find("toHH") + 4; // not beautiful, should be changed
 	    sampleNameShort.erase(pos, -1); //erase everything that comes after "toHH". This allows to attach strings in the names of the resonant samples in the json files, which might be useful for making the validation plots, and at the same time keep the same mapping for the XS.
 	    theXStimesBR = XStimesBR[sampleNameShort];
+	    std::cout<<"ZIHANG XSBR= "<<theXStimesBR<<std::endl;
 	  }
+	  */
 	  
 	  logging = sampleName + "_" + mc + "_" + iCut;
 
 	  // Pick up the selections for each of the different categories
 	  std::string select = document.selections.selMap[iCut];
-	  select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed" + truthMatch);
+	  //std::cout<<"ZIHANG select= "<<select<<std::endl;
+	  //if (select.find("HGamEventInfoAuxDyn.isPassed") != std::string::npos) {
+	  //select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.isPassed"), std::string("HGamEventInfoAuxDyn.isPassed").length(), "HGamEventInfoAuxDyn.isPassed" + truthMatch);
+	  //}
+	  select = select.std::string::replace(select.find("HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6"), std::string("HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6").length(), "HGamEventInfoAuxDyn.yybb_btag77_BCal_cutFlow == 6" + truthMatch);
 	  if (sampleName == "data") select = document.selections.dataSel;
 	  // Below removed to now
 	  //if (document.selections.weight.empty()) select+="*"+document.selections.weight;
@@ -240,6 +254,7 @@ void VariablePlotter::execute()
 	    }
 	    std::string vvar = var + " >> " + hName;
 	    //std::cout << "Drawing with selection: " << select.c_str() << " and weight: " << weight.c_str() << " and weighted selection " << weighted_selection.c_str() << std::endl;
+	    std::cout << "Drawing with selection: " << select.c_str() << std::endl;
 	    //if (MC_counter == 1) std::cout << "Drawing weighted selection " << weighted_selection.c_str() << std::endl;
 	    //tree->Draw(vvar.c_str(),select.c_str(),"HIST")	  
 	    tree->Draw(vvar.c_str(), weighted_selection.c_str(), "HIST");

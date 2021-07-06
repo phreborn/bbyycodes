@@ -74,6 +74,7 @@ TStyle* AtlasStyle()
 
   // get rid of X error bars 
   //atlasStyle->SetErrorX(0.001);
+  atlasStyle->SetErrorX(0.5);
   // get rid of error bar caps
   atlasStyle->SetEndErrorSize(0.);
 

@@ -30,6 +30,8 @@ cd ../run
 
 **or by using any of the JSON files linked through the *json* soft link (you will find three folders, namely H024, H025, H026  which contain configurations for the 3 production campaigns).**
 
+For the final paper results, please use the json files listed [here](https://gitlab.cern.ch/atlas-physics/HDBS/DiHiggs/yybb/code/-/blob/master/AnalysisFramework/utils/README.md).
+
 **You can also submit your jobs on condor, otherwise it takes quite some time to run over all the samples.**
 
 python SubmitCondor.py
