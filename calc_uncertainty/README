@@ -1,0 +1,16 @@
+Based on code in the ``statistics'' package from HONGTAO YANG
+
+Calculate the uncertainty due to systematics by the following method:
+
+1. Obtain covariance matrix from fit to pre-fit Asimov
+2. Generate toys with covariance matrix
+3. For each toy, integrate the yield from 120 - 130 GeV
+4. Compute the 1 sigma variation over all toys 
+
+How to use:
+
+1. You first need to generate some asimov data with cont. bkg parameters from sideband + SM signal
+2. Modify src/calcNbkgHighMassgg with the appropriate POIs and uncertainties in the WS. Need to run this a few times, once per POI you want to calculate the uncertainty on.
+3. Setup and compile with source setup.sh && make bin/calcNbkgHighMassgg
+5. Run with the script run_yybb.sh
+6. Sanity check: central value should not be changed

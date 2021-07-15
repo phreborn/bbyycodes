@@ -1,0 +1,261 @@
+#include "CommonHead.h"
+#include "CommonFunc.h"
+#include "RooFitHead.h"
+#include "RooStatsHead.h"
+#include "titleList.hh"
+#include "HggTwoSidedCBPdf.hh"
+#include "HggGravitonLineShapePdf.hh"
+#include "FlexibleInterpVarMkII.hh"
+#include "statistics.hh"
+
+using namespace std;
+using namespace RooFit;
+using namespace RooStats;
+using namespace CommonFunc;
+
+bool _nllOffset=true;
+int _minimizerStrategy=1;
+string _minimizerAlgo="Minuit2";
+double _minimizerTolerance=1e-5;
+int _printLevel=2;
+
+RooFitResult* profileToData(ModelConfig *mc, RooAbsData *data){
+  RooAbsPdf *pdf=mc->GetPdf();
+
+  RooWorkspace *w=mc->GetWS();
+  RooArgSet funcs = w->allPdfs();
+  std::auto_ptr<TIterator> iter(funcs.createIterator());
+  for ( RooAbsPdf* v = (RooAbsPdf*)iter->Next(); v!=0; v = (RooAbsPdf*)iter->Next() ) {
+    std::string name = v->GetName();
+    if (v->IsA() == RooRealSumPdf::Class()) {
+      std::cout << "\tset binned likelihood for: " << v->GetName() << std::endl;
+      v->setAttribute("BinnedLikelihood", true);
+    }
+  }
+  unique_ptr<RooAbsReal> nll(pdf->createNLL(*data, Constrain(*mc->GetNuisanceParameters()), GlobalObservables(*mc->GetGlobalObservables())));
+  nll->enableOffsetting(_nllOffset);
+  RooMinimizer minim(*nll);
+  minim.setStrategy(_minimizerStrategy);
+  minim.setPrintLevel(_printLevel-1);
+  minim.setProfile(); /* print out time */
+  minim.setEps(_minimizerTolerance/0.001);
+  // minim.optimizeConst(2);
+  int status=minim.minimize(_minimizerAlgo.c_str());
+  if(status!=0) abort();
+  return minim.save();
+}
+
+int main(int argc, char**argv){
+    //============================ Global booking and setting ==========================
+  //   gErrorIgnoreLevel = kError+1;
+  map<string,bool> Opt;
+  Opt["FIT"]=false;
+  Opt["CALC"]=false;
+
+  TString myOptList="";
+  if(argc>1) myOptList=argv[1];
+  myOptList.ToUpper();
+  if (myOptList != "") {
+    for (std::map<std::string,bool>::iterator it = Opt.begin(); it != Opt.end(); it++) it->second = false;
+
+    std::vector<TString> olist = TMVA::gTools().SplitString( myOptList, ',' );
+    for (UInt_t i=0; i<olist.size(); i++) {
+      std::string Option(olist[i]);
+      
+      if (Opt.find(Option) == Opt.end()) {
+	std::cout << "Option \"" << Option << "\" not known in DrawFrame under this name. Choose among the following:" << std::endl;
+	for (std::map<std::string,bool>::iterator it = Opt.begin(); it != Opt.end(); it++) std::cout << it->first << " ";
+	std::cout << std::endl;
+	return 1;
+      }
+      Opt[Option] = true;
+    }
+  }
+  SetAtlasStyle();
+  map<TString,TString> title=createTitleList();
+  //================================= Do the fit ====================================
+  if(Opt["FIT"]){
+    TString jobname=argv[2];
+    TString inputWSFileName=argv[3];
+    double mass=atof(argv[4]);
+    double width=atof(argv[5]);
+    
+    TString option=argv[6];
+    
+    TString wname="combWS", mname="ModelConfig", dname="asimovData_0";
+    double xmin=200, xmax=2000;
+    int nbin=165;		// 20 GeV bins
+    
+    TFile *fws=TFile::Open(inputWSFileName);
+    RooWorkspace *ws=(RooWorkspace*)fws->Get(wname);
+    ModelConfig *mc=(ModelConfig*)ws->obj(mname);
+    RooSimultaneous *pdf=(RooSimultaneous*)mc->GetPdf();
+    RooDataSet *data=(RooDataSet*)ws->data(dname);
+    RooAbsCategoryLValue*  m_cat = (RooAbsCategoryLValue*)&pdf->indexCat();
+    int numChannels = m_cat->numBins(0);
+
+    TList* m_dataList = data->split( *m_cat, true );
+
+    TCanvas *c=new TCanvas(Form("c"),"c",800,600);
+    TH1F *hframe=new TH1F("hframe","", 10000, xmin, xmax);
+    hframe->SetMinimum(-10);
+    hframe->SetMaximum(8e3);
+
+    hframe->GetXaxis()->SetTitle("m_{G*} [GeV]");
+
+    hframe->SetLineWidth(0);
+    hframe->GetYaxis()->SetTitleSize(0.07);
+    hframe->GetYaxis()->SetTitleOffset(0.9);
+    hframe->GetYaxis()->SetTitle(Form("Events / %.1f GeV", (xmax-xmin)/double(nbin)));
+    hframe->Draw();
+
+    double x1, y1, x2, y2;
+    CommonFunc::GetX1Y1X2Y2(c,x1,y1,x2,y2);
+
+    vector<TString> pavetext;
+    pavetext.push_back("#bf{#it{ATLAS}} internal");
+    pavetext.push_back("#sqrt{#it{s}} = 13 TeV, 3.2 fb^{-1}");
+    TPaveText* text=CommonFunc::CreatePaveText(x2-0.5,y2-0.3,x2-0.03,y2-0.05,pavetext,0.06);
+    text->Draw("same");
+    // c->SetLogy();
+
+    ws->loadSnapshot("conditionalNuis_0");
+    ws->loadSnapshot("conditionalGlobs_0");
+    RooArgSet *toBeFixed=new RooArgSet();
+    if(option.Contains("graviton")){
+      statistics::setVal(ws->var("mG"), mass, true);
+      statistics::setVal(ws->var("GkM"), width, true);
+      statistics::setVal(ws->var("xs"), 0, true);
+      // Fix nuisance parameters on signal
+      if(option.Contains("mt")){
+	toBeFixed->add(*ws->var("ATLAS_mRes"));
+	toBeFixed->add(*ws->allVars().selectByName("gamma_*"));
+      }
+    }
+    if(option.Contains("scalar")){
+      statistics::setVal(ws->var("mX"), mass, true);
+      statistics::setVal(ws->var("wX"), width, true);
+      statistics::setVal(ws->var("xs"), 0, true);
+    }
+
+    statistics::constSet(toBeFixed,true);
+    
+    RooFitResult* res=profileToData(mc, data);
+
+    for ( int i= 0; i < numChannels; i++ ) {
+      m_cat->setBin(i);
+      TString channelname=m_cat->getLabel();
+    
+      RooAbsPdf* pdfi = pdf->getPdf(m_cat->getLabel());
+      RooDataSet* datai = ( RooDataSet* )( m_dataList->At( i ) );
+      std::cout << "\t\tIndex: " << i << ", Pdf: " << pdfi->GetName() << ", Data: " << datai->GetName()  << ", SumEntries: " << datai->sumEntries() << " NumEntries: "<< datai->numEntries() <<std::endl;
+    
+      RooRealVar *x=(RooRealVar*)pdfi->getObservables(datai)->first();
+    
+      unique_ptr<RooPlot> frame(x->frame());
+      frame->GetXaxis()->SetTitle("m_G* [GeV]");
+      datai->plotOn(frame.get(), Binning(nbin), DataError(RooAbsData::Poisson),Name("data"));
+      pdfi->plotOn(frame.get(),Components("pdf_background_inclusive_13TeV"),VisualizeError(*res,1,true),FillColor(kOrange),Name("band"));
+      // pdfi->plotOn(frame.get(),Components("pdf_background_inclusive_13TeV"),VisualizeError(*res,1,false),FillColor(kOrange),Name("band"));
+      pdfi->plotOn(frame.get(),LineColor(kRed),LineWidth(2),Name("SB"));
+      pdfi->plotOn(frame.get(),Components("pdf_background_inclusive_13TeV"),LineColor(kBlue),LineWidth(2),Name("nominal"));
+      datai->plotOn(frame.get(), Binning(nbin), DataError(RooAbsData::Poisson),Name("data_again"));
+
+      frame->Draw("same");
+
+      cout<<"Printing out frame information"<<endl;
+      frame->Print("v");
+      RooCurve *band=frame->getCurve("band");
+      RooCurve *nominal=frame->getCurve("nominal");
+      RooHist *data=frame->getHist("data");
+      RooCurve *SB=frame->getCurve("SB");
+
+      // band->Print("v");
+      // nominal->Print("v");
+      
+      system("mkdir -vp fig/fit/"+jobname);
+      TString outputCanvasName="fig/fit/"+jobname+Form("/plot_SB_fit");
+      CommonFunc::PrintCanvas(c,outputCanvasName);
+
+      TString outputFileName="fig/fit/"+jobname+Form("/output_%.2f_%.4f.root",mass,width);
+      TFile *fout=TFile::Open(outputFileName,"recreate");
+      band->Write();
+      nominal->Write();
+      data->Write();
+      SB->Write();
+      res->Write();
+      // ws->Write();
+      fout->Close();
+    }
+    // Now fix all nuisance parameters
+    toBeFixed->add(*ws->allVars().selectByName("ATLAS_*"));
+    toBeFixed->add(*ws->allVars().selectByName("alpha_*"));
+    toBeFixed->add(*ws->allVars().selectByName("a"));
+    toBeFixed->add(*ws->allVars().selectByName("b"));
+    toBeFixed->Print("v");
+    statistics::constSet(toBeFixed, true);
+
+    TCanvas *c_nosys=new TCanvas(Form("c_nosys"),"c_nosys",800,600);
+    hframe->Draw();
+    text->Draw("same");
+    // c_nosys->SetLogy();
+
+    RooFitResult* res_nosys=profileToData(mc, data);
+
+    for ( int i= 0; i < numChannels; i++ ) {
+      m_cat->setBin(i);
+      TString channelname=m_cat->getLabel();
+    
+      RooAbsPdf* pdfi = pdf->getPdf(m_cat->getLabel());
+      RooDataSet* datai = ( RooDataSet* )( m_dataList->At( i ) );
+      std::cout << "\t\tIndex: " << i << ", Pdf: " << pdfi->GetName() << ", Data: " << datai->GetName()  << ", SumEntries: " << datai->sumEntries() << " NumEntries: "<< datai->numEntries() <<std::endl;
+    
+      RooRealVar *x=(RooRealVar*)pdfi->getObservables(datai)->first();
+    
+      unique_ptr<RooPlot> frame(x->frame());
+      frame->GetXaxis()->SetTitle("m_G* [GeV]");
+      datai->plotOn(frame.get(), Binning(nbin), DataError(RooAbsData::Poisson),Name("data"));
+      // pdfi->plotOn(frame.get(),Components("pdf_background_inclusive_13TeV"),VisualizeError(*res_nosys,1,false),FillColor(kOrange),Name("band"));
+      pdfi->plotOn(frame.get(),Components("pdf_background_inclusive_13TeV"),VisualizeError(*res_nosys,1,true),FillColor(kOrange),Name("band"));
+      pdfi->plotOn(frame.get(),LineColor(kRed),LineWidth(2),Name("SB"));
+      pdfi->plotOn(frame.get(),Components("pdf_background_inclusive_13TeV"),LineColor(kBlue),LineWidth(2),Name("nominal"));
+      datai->plotOn(frame.get(), Binning(nbin), DataError(RooAbsData::Poisson),Name("data_again"));
+
+      frame->Draw("same");
+
+      cout<<"Printing out frame information"<<endl;
+      frame->Print("v");
+      RooCurve *band=frame->getCurve("band");
+      RooCurve *nominal=frame->getCurve("nominal");
+      RooHist *data=frame->getHist("data");
+      RooCurve *SB=frame->getCurve("SB");
+      // band->Print("v");
+      // nominal->Print("v");
+      
+      system("mkdir -vp fig/fit/"+jobname);
+      TString outputCanvasName="fig/fit/"+jobname+Form("/plot_SB_fit_nosys");
+      CommonFunc::PrintCanvas(c_nosys,outputCanvasName);
+
+      TString outputFileName="fig/fit/"+jobname+Form("/output_%.2f_%.4f_nosys.root",mass,width);
+      TFile *fout=TFile::Open(outputFileName,"recreate");
+      band->Write();
+      nominal->Write();
+      data->Write();
+      SB->Write();
+      res_nosys->Write();
+      // ws->Write();
+      fout->Close();
+    }
+  }
+  //================================= Calculate error band ====================================
+  if(Opt["CALC"]){
+    TString jobname=argv[1];
+
+    TString inputFileName="fig/fit/"+jobname+"/output.root";
+    TString inputFileName_nosys="fig/fit/"+jobname+"/output_nosys.root";
+
+    TFile *fin=TFile::Open(inputFileName);
+
+    RooCurve *gr_nominal=(RooCurve*)fin->Get("nominal");
+  }
+}
