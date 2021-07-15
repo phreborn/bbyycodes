@@ -50,7 +50,9 @@ def xs_HH(kl):
 def sigma_upper_ggF(kl):
     #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Latest_recommendations_for_gluon
     #add the std on ggF HH due to qcd scale, PDF, and mtop in quadrature
-    return xs_ggF(kl) * math.sqrt((max(72.0744-51.7362*kl+11.3712*kl**2, 70.9286-51.5708*kl+11.4497*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    #return xs_ggF(kl) * math.sqrt((max(72.0744-51.7362*kl+11.3712*kl**2, 70.9286-51.5708*kl+11.4497*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    #new mtop uncertainty:
+    return xs_ggF(kl) * math.sqrt((max(76.6075 - 56.4818*kl + 12.635*kl**2, 75.4617 - 56.3164*kl + 12.7135*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2)
     
 def sigma_upper_VBF(kl):
     #from klambda = 1
@@ -65,7 +67,9 @@ def xs_upper_HH(kl):
 def sigma_lower_ggF(kl):
     #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Latest_recommendations_for_gluon
     #add the std on ggF HH due to qcd scale, PDF, and mtop in quadrature
-    return xs_ggF(kl) * math.sqrt((min(66.0621-46.7458*kl+10.1673*kl**2, 66.7581-47.721*kl+10.4535*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    #return xs_ggF(kl) * math.sqrt((min(66.0621-46.7458*kl+10.1673*kl**2, 66.7581-47.721*kl+10.4535*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    #new mtop uncertainty:
+    return xs_ggF(kl) * math.sqrt((min(57.6809 - 42.9905*kl + 9.58474*kl**2, 58.3769 - 43.9657*kl + 9.87094*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2)
 
 def sigma_lower_VBF(kl):
     return xs_VBF(kl) * math.sqrt(0.0004**2 + 0.021**2)
@@ -79,7 +83,7 @@ def xs_lower_HH(kl):
 #Input: json file with the following format
 #["kappa_lambda": [-2sigma, -1sigma, expected, +1sigma, +2sigma, observed]
 
-limits = json.load(open('2021_03_09_yybb_param_withsyst/limits.json'), object_pairs_hook=collections.OrderedDict)
+limits = json.load(open('2021_07_11_yybb_param_v7/limits.json'), object_pairs_hook=collections.OrderedDict)
 
 lambdas = [float(kl) for kl in limits.keys()]
 
@@ -187,10 +191,10 @@ if (add_subplot):
 else:
         ampl.set_xlabel('$\kappa_\lambda$', fontsize=20)
 
-ampl.draw_atlas_label(0.05, 0.95, ax, status = 'prelim', energy = '13 TeV', lumi = 139, desc = r'$HH {\rightarrow} b\bar{b} \gamma \gamma$')
+ampl.draw_atlas_label(0.05, 0.95, ax, status = 'int', energy = '13 TeV', lumi = 139, desc = r'$HH {\rightarrow} b\bar{b} \gamma \gamma$')
 
 plt.xlim([-10, 10])
 
-plt.savefig('kappa_lambda_scan_ratio_param_obs_v8.pdf')
+plt.savefig('kappa_lambda_scan_ratio_param_obs_v9.pdf')
 
 plt.show()
