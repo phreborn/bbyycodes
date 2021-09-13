@@ -5,6 +5,8 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+import matplotlib.patches as patches
+import matplotlib.lines as lines
 import atlas_mpl_style as ampl
 import collections
 import json
@@ -48,7 +50,9 @@ def xs_HH(kl):
 def sigma_upper_ggF(kl):
     #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Latest_recommendations_for_gluon
     #add the std on ggF HH due to qcd scale, PDF, and mtop in quadrature
-    return xs_ggF(kl) * math.sqrt((max(72.0744-51.7362*kl+11.3712*kl**2, 70.9286-51.5708*kl+11.4497*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    #return xs_ggF(kl) * math.sqrt((max(72.0744-51.7362*kl+11.3712*kl**2, 70.9286-51.5708*kl+11.4497*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    #new mtop uncertainty:
+    return xs_ggF(kl) * math.sqrt((max(76.6075 - 56.4818*kl + 12.635*kl**2, 75.4617 - 56.3164*kl + 12.7135*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2)
     
 def sigma_upper_VBF(kl):
     #from klambda = 1
@@ -63,7 +67,9 @@ def xs_upper_HH(kl):
 def sigma_lower_ggF(kl):
     #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH#Latest_recommendations_for_gluon
     #add the std on ggF HH due to qcd scale, PDF, and mtop in quadrature
-    return xs_ggF(kl) * math.sqrt((min(66.0621-46.7458*kl+10.1673*kl**2, 66.7581-47.721*kl+10.4535*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    #return xs_ggF(kl) * math.sqrt((min(66.0621-46.7458*kl+10.1673*kl**2, 66.7581-47.721*kl+10.4535*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2 + 0.026**2)
+    #new mtop uncertainty:
+    return xs_ggF(kl) * math.sqrt((min(57.6809 - 42.9905*kl + 9.58474*kl**2, 58.3769 - 43.9657*kl + 9.87094*kl**2) * SCALE_GGF / xs_ggF(kl) - 1)**2 + 0.03**2)
 
 def sigma_lower_VBF(kl):
     return xs_VBF(kl) * math.sqrt(0.0004**2 + 0.021**2)
@@ -77,7 +83,7 @@ def xs_lower_HH(kl):
 #Input: json file with the following format
 #["kappa_lambda": [-2sigma, -1sigma, expected, +1sigma, +2sigma, observed]
 
-limits = json.load(open('2021_03_09_yybb_param_withsyst/limits.json'), object_pairs_hook=collections.OrderedDict)
+limits = json.load(open('2021_07_11_yybb_param_v7/limits.json'), object_pairs_hook=collections.OrderedDict)
 
 lambdas = [float(kl) for kl in limits.keys()]
 
@@ -102,8 +108,8 @@ else:
         ax = fig.add_subplot(gs[:4,0])
 
 
-ax.semilogy(lambdas, n * np.array(limit_bands[3]),'k',label='Observed limit (95\%)')
-ax.semilogy(lambdas, n * np.array(limit_bands[0]),'k--',label='Expected limit (95\%)')
+ax.semilogy(lambdas, n * np.array(limit_bands[3]),'k',label='Observed limit (95\% CL)')
+ax.semilogy(lambdas, n * np.array(limit_bands[0]),'k--',label='Expected limit (95\% CL)')
 
 ax.fill_between(lambdas, n * np.array(limit_bands[-2]), n * np.array(limit_bands[2]),  facecolor = '#FDC536', label='Expected limit $\pm 2\sigma$')
 ax.fill_between(lambdas, n * np.array(limit_bands[-1]), n * np.array(limit_bands[1]),  facecolor = '#4AD9D9', label='Expected limit $\pm 1\sigma$')
@@ -111,9 +117,14 @@ ax.fill_between(lambdas, n * np.array(limit_bands[-1]), n * np.array(limit_bands
 # The extra bands that I wanted to add
 #ax.semilogy(lambdas, n * np.array(limit2_bands[0]),color='r',linestyle='--',label='Stat only')
 
-ax.plot(lambdas,n,'C4', color = 'darkred', label='Theory prediction')
+ax.plot(lambdas, n, color = 'darkred', label='Theory prediction')
 th_band = ax.fill_between(lambdas, [xs_lower_HH(kl) for kl in lambdas], [xs_upper_HH(kl) for kl in lambdas],  facecolor = '#F2385A')
 
+#border for the legend
+border_leg = patches.Rectangle((0, 0), 1, 1, facecolor = 'none', edgecolor = 'black', linewidth = 1)
+
+#SM point
+ax.plot(1, xs_HH(1), linewidth = 0, marker = '*', markersize = 20, color = '#E9F1DF', markeredgecolor = 'black', label = 'SM prediction')
 
 ylim = [.001,10]#for xsecbr
 ylim = [10, 100000]
@@ -121,21 +132,29 @@ ylim = [10, 100000]
 #ax.plot([1]*2,ylim,'grey')
 ax.set_ylim(ylim)
 
-#get the intersection between expected and theory prediction
-limitm1 = np.array(limit_bands[0]) - 1
+#get the intersection between expected and theory prediction (central value only)
+limitm1 = n * np.array(limit_bands[0]) - n
+#including lower th band
+#limitm1 = n * np.array(limit_bands[0]) - [xs_lower_HH(kl) for kl in lambdas]
 idx = np.argwhere(np.diff(np.sign(limitm1))).flatten()
 #linear interpolation: x = x1 + (x2-x1)/(y2-y1) * (y-y1)
 #y = 0 -> x = x1 - (x2-x1)/(y2-y1) * y1
 intersections = [lambdas[x] - (lambdas[x+1] - lambdas[x])/(limitm1[x+1] - limitm1[x]) * limitm1[x] for x in idx]
 print ('limits:', intersections)
+plt.annotate(r'Expected: $\kappa_\lambda \in [%.1f, %.1f]$' %(intersections[0], intersections[1]), (0.04, 0.10), xycoords = 'axes fraction', fontsize = 15)
 #for x in intersections:
 #	ax.plot([x]*2,ylim,'blue')
 
 #observed
-limitm1 = np.array(limit_bands[3]) - 1
+limitm1 = n * np.array(limit_bands[3]) - n
+#including lower th band
+#limitm1 = n * np.array(limit_bands[3]) - [xs_lower_HH(kl) for kl in lambdas]
 idx = np.argwhere(np.diff(np.sign(limitm1))).flatten()
 intersections = [lambdas[x] - (lambdas[x+1] - lambdas[x])/(limitm1[x+1] - limitm1[x]) * limitm1[x] for x in idx]
 print ('limits:', intersections)
+plt.annotate(r'Observed: $\kappa_\lambda \in [%.1f, %.1f]$' %(intersections[0], intersections[1]), (0.04, 0.18), xycoords = 'axes fraction', fontsize = 15)
+#for x in intersections:
+#	ax.plot([x]*2,ylim,'green')
 
 
 #for the second one
@@ -151,14 +170,15 @@ print ('limits:', intersections)
 
 ax.xaxis.set_ticks(np.arange(min(lambdas), max(lambdas) + 1, 2))
 
-ampl.set_ylabel('$\sigma_{ggF+VBF}$ (HH) [fb]', fontsize=16)
+ampl.set_ylabel('$\sigma_{ggF+VBF}$ (HH) [fb]', fontsize=20)
 
 #reorder the legend
 handles,labels = ax.get_legend_handles_labels()
-handles = [handles[0], handles[1], handles[3], handles[4], (th_band, handles[2])]
-labels = [labels[0], labels[1], labels[3], labels[4], labels[2]]
+handles[2].set_linewidth(1.0)
+handles = [handles[0], handles[1], (handles[5], border_leg), (handles[4], border_leg), (th_band, handles[2], border_leg), handles[3]]
+labels = [labels[0], labels[1], labels[5], labels[4], labels[2], labels[3]]
 
-ax.legend(handles, labels, loc='upper right', fontsize = 'small', frameon = False)
+ax.legend(handles, labels, loc='upper right', fontsize = 15, frameon = False)
 
 if (add_subplot):
 	ax2.plot(lambdas,np.array(limit2_bands[0])/np.array(limit_bands[0]),color='r',linestyle='--')
@@ -169,12 +189,12 @@ if (add_subplot):
 	ax2.set_ylabel('Limit ratio')
 	ax2.set_ylim(0.5,1.5)
 else:
-        ampl.set_xlabel('$\kappa_\lambda$', fontsize=16)
+        ampl.set_xlabel('$\kappa_\lambda$', fontsize=20)
 
-ampl.draw_atlas_label(0.05, 0.95, ax, status = 'int', energy = '13 TeV', lumi = 139, desc = r'$HH \rightarrow b\bar{b} \gamma \gamma$')
+ampl.draw_atlas_label(0.05, 0.95, ax, status = 'int', energy = '13 TeV', lumi = 139, desc = r'$HH {\rightarrow} b\bar{b} \gamma \gamma$')
 
 plt.xlim([-10, 10])
 
-plt.savefig('kappa_lambda_scan_ratio_param_obs_v5.pdf')
+plt.savefig('kappa_lambda_scan_ratio_param_obs_v9.pdf')
 
 plt.show()
