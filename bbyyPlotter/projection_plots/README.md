@@ -14,6 +14,7 @@ Setup instructions:
 
 kl xs limit scan requires python 3 with atlas_mpl_style
 
+For the other scripts you can just do source setup.sh
 
 Input files for the plots can be found in: /afs/cern.ch/work/a/alwang/public/forJake
 
