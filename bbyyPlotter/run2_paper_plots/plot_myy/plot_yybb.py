@@ -179,22 +179,22 @@ def getInfoCouplings(fName='WS-yybb-nonresonant_BDT_h026_v6_kl1p0.root', snapsho
   
   catInfo = {
     "SM_1": {
-      "weight": 1,
+      "weight": 0.146182625663,
       "pdfName": "_model_SM_1",
       "observable": "atlas_invMass_SM_1"
     },
     "SM_2": {
-      "weight": 1,
+      "weight": 0.0326766069984,
       "pdfName": "_model_SM_2",
       "observable": "atlas_invMass_SM_2"
     },
     "BSM_1": {
-      "weight": 1,
+      "weight": 0.0124223256799,
       "pdfName": "_model_BSM_1",
       "observable": "atlas_invMass_BSM_1"
     },
     "BSM_2": {
-      "weight": 1,
+      "weight": 0.00299076220379,
       "pdfName": "_model_BSM_2",
       "observable": "atlas_invMass_BSM_2"
     },
@@ -368,9 +368,10 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
   #get best fit mu (should be 1) then set to 0 for the cont. bkg only component
   fitted_mu=w1.var('mu').getVal()
   w1.var('mu').setVal(0.0)
-
-  fitted_SS=w1.var(ss_name).getVal()
-  w1.var(ss_name).setVal(0)
+  fitted_SS = {}
+  for name in ss_name: 
+    fitted_SS[name] = w1.var(name).getVal()
+    w1.var(name).setVal(0)
   if not w1.allPdfs().find('pdfB'):
     pdfB = w1.obj('pdfW')
   else:
@@ -413,9 +414,11 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
   print 'setting mu to ', fitted_mu
   print 'setting', ss_name, 'to', fitted_SS
   w1.var('mu').setVal(fitted_mu) #fitted_mu should be 1
-  w1.var(ss_name).setVal(fitted_SS)
+  for name in ss_name:
+    w1.var(name).setVal(fitted_SS[name])
   w1.obj('pdfW').plotOn(frame, RooFit.LineStyle(1), RooFit.LineColor(2), RooFit.Normalization(1, ROOT.RooAbsReal.RelativeExpected))
-  frame.SetMaximum((frame.GetMaximum() + 1.7 * math.sqrt(frame.GetMaximum()))*1.5)
+  if noWeights: frame.SetMaximum((frame.GetMaximum() + 1.7 * math.sqrt(frame.GetMaximum()))*1.5)
+  if not noWeights: frame.SetMaximum((frame.GetMaximum() + 1 * math.sqrt(frame.GetMaximum()))*1.3)
   frame.SetMinimum(0.001)
 
   NSigPlusBg = w1.obj('pdfW').expectedEvents( w1.obj('dataW').get() )
@@ -440,6 +443,7 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
 
   textscale = 0.80
   if subpanel == 1: textscale = 1
+  if not noWeights: textscale = 0.68
 
   # Add legend
   legend = getLegend(frame, ['Data', 'Continuum Background', 'Total Background'], [0.13, 0.93 - 0.35 * textscale, 0.63, 0.93]) #0.18, 0.58, 0.63, 0.93
@@ -477,14 +481,14 @@ def plot(w1, noWeights=False, label='All categories', canvasName='c', canvasTitl
   tl.SetNDC()
   tl.SetTextSize(0.068 * textscale)
   #tl.DrawLatex(0.65,0.86,"#bf{#it{ATLAS}} Internal")
-  tl.DrawLatex(0.60,0.86,"#bf{#it{ATLAS}} Preliminary")
+  tl.DrawLatex(0.60,0.86,"#bf{#it{ATLAS}}")
   tl.DrawLatex(0.60,0.86 - 0.08 * textscale,"#sqrt{s} = 13 TeV, 139 fb^{-1}")
   tl.DrawLatex(0.60,0.86 - 0.08 * 2 * textscale,"HH#rightarrowb#bar{b}#gamma#gamma")
   #tl.DrawLatex(0.65,0.70,"m_{H} = 125.09 GeV")
   tl.DrawLatex(0.60,0.86 - 0.08 * 3 * textscale,label) #0.63, 0.58
   if (not noWeights):
-    tl.DrawLatex(0.63,0.50,"ln(1+S/B) weighted sum")
-    tl.DrawLatex(0.63,0.42,"S =	Inclusive")
+    tl.DrawLatex(0.60,0.86 - 0.08 * 4 * textscale,"ln(1+S/B) weighted sum")
+    tl.DrawLatex(0.60,0.86 - 0.08 * 5 * textscale,"S =	Inclusive")
 
   if subpanel == 1:
     p2.SetFillColor(0)
@@ -546,9 +550,9 @@ if __name__ == '__main__':
     elif args.category == 'SM_2': label = 'High mass BDT loose'
     elif args.category == 'BSM_1': label = 'Low mass BDT tight'
     elif args.category == 'BSM_2': label = 'Low mass BDT loose'
-    x = plot(w, noWeights=1-args.weighted, label=label, nBins = 22, subpanel = args.subpanel, ss_name = 'SPURIOUS_' + args.category)       #<- and also change this
+    x = plot(w, noWeights=1-args.weighted, label=label, nBins = 22, subpanel = args.subpanel, ss_name = ['SPURIOUS_' + args.category])       #<- and also change this
   else: 
-    x = plot(w, noWeights=1-args.weighted, label="All categories", nBins = 22, subpanel = args.subpanel)	#<- and also change this
+    x = plot(w, noWeights=1-args.weighted, label="All categories", nBins = 22, subpanel = args.subpanel, ss_name = ['SPURIOUS_' + cat for cat in ['SM_1', 'SM_2', 'BSM_1', 'BSM_2']])	#<- and also change this
   c = x[0]
 
   tag = 'v3'

@@ -191,7 +191,7 @@ if (add_subplot):
 else:
         ampl.set_xlabel('$\kappa_\lambda$', fontsize=20)
 
-ampl.draw_atlas_label(0.05, 0.95, ax, status = 'int', energy = '13 TeV', lumi = 139, desc = r'$HH {\rightarrow} b\bar{b} \gamma \gamma$')
+ampl.draw_atlas_label(0.05, 0.95, ax, status = '', energy = '13 TeV', lumi = 139, desc = r'$HH {\rightarrow} b\bar{b} \gamma \gamma$')
 
 plt.xlim([-10, 10])
 
