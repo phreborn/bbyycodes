@@ -13,6 +13,7 @@
 #include "TH2F.h"
 #include "TH1F.h"
 #include "TF1.h"
+#include "TF2.h"
 #include <typeinfo>
 #include "TLatex.h"
 #include <string>
@@ -21,13 +22,18 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-
+TString  filename  = "../../../EFT_bbyy/bbyy_1D_2D_3D_scans_yield.root";
+//TString  filename  = "../../../EFT_bbyy/XS_1D2D3D_scans.root";
 using json = nlohmann::json;
 
 std::vector <std::string> Regions = {"Tight_HM", "Loose_HM", "Tight_LM", "Loose_LM"};
+//std::vector <std::string> Regions = {"NLO_XS"};
+
 bool ModifyRange = false;
 
-std::vector <std::string> Scans = {"kl","kt", "c2", "c2g", "cg","kt_cg","kl_kt","kl_cg","kl_c2g","kl_c2","kt_c2","kt_c2g","cg_c2g","cg_c2","c2_c2g"};
+std::vector <std::string> Scans = {"chhh","ctth", "ctthh", "cgghh", "cggh", "ctthh_cgghh", "chhh_ctthh", "chhh_cgghh"}; 
+
+//std::vector <std::string> Scans = {"chhh_ctthh_cgghh"}; // You still need to write a Fit3D function if you want that fit :)
 
 std::vector <std::string> SplitString(std::string s, std::string delimiter){
   size_t pos = 0;
@@ -134,7 +140,7 @@ TString FitOutput(std::unordered_map < std::string, const char* > Fit_poly, std:
   }
 
 for (int k=0; k<c_name.size();k++){
-  if (c_name[k] == "kl" or c_name[k] == "kt") {
+  if (c_name[k] == "chhh" or c_name[k] == "ctth") {
     output+=" "+c_name[k]+"[1,-10,10] ";
   } else{
     output+=" "+c_name[k]+"[0,-10,10] ";
@@ -163,12 +169,18 @@ TString Fit1D(TFile *f, std::string coupling, std::string region, std::unordered
   TCanvas *c = new TCanvas("c", "c");
 
   TString c_name = name[coupling];
-  TString Title_name = "Yield("+name[coupling]+") in "+region;
+  TString Title_name;
+  if (region == "NLO_XS"){
+    Title_name = "\\sigma^{NLO}("+name[coupling]+")";
+  } else {
+    Title_name = "Yield("+name[coupling]+") in "+region;
+  }    
+
   h->SetTitle(Title_name);
   h->GetXaxis()->SetTitle(c_name);
   h->GetYaxis()->SetTitle("Events");
 
-  h->Draw();
+  h->Draw("HIST");
 
 
   TF1 *fx = new TF1("fx",Fit_poly[poly[coupling]],range_x[0],range_x[1]);
@@ -279,44 +291,47 @@ int FitHistograms(){
 
   Fit_poly["x2_y3_z2"] = "[35]*x**2*y**3*z**2+[34]*x**2*y**3*z+[33]*x**2*y**3+[32]*x**2*y**2*z**2+[31]*x**2*y**2*z+[30]*x**2*y**2+[29]*x**2*y*z**2+[28]*x**2*y*z+[27]*x**2*y*+[26]*x**2*z**2+[25]*x**2*z+[24]*x**2+[23]*x*y**3*z**2+[22]*x*y**3*z+[21]*x*y**3+[20]*x*y**2*z**2+[19]*x*y**2*z+[18]*x*y**2+[17]*x*y*z**2+[16]*x*y*z+[15]*x*y+[14]*x*z**2+[13]*x*z+[12]*x+[11]*y**3*z**2+[10]*y**3*z+[9]*y**3+[8]*y**2*z**2+[7]*y**2*z+[6]*y**2+[5]*y*z**2+[4]*y*z+[3]*y+[2]*z**2+[1]*z+[0]";
 
+  Fit_poly["x2_y2_z2"] = "[26]*x**2*y**2*z**2+[25]*x**2*y**2*z+[24]*x**2*y**2+[23]*x**2*y*z**2+[22]*x**2*y*z+[21]*x**2*y+[20]*x**2*z**2+[19]*x**2*z+[18]*x**2+[17]*x*y**2*z**2+[16]*x*y**2*z+[15]*x*y**2+[14]*x*y*z**2+[13]*x*y*z+[12]*x*y+[11]*x*z**2+[10]*x*z+[9]*x+[8]*y**2*z**2+[7]*y**2*z+[6]*y**2+[5]*y*z**2+[4]*y*z+[3]*y+[2]*z**2+[1]*z+[0]";
+
   // Dictionary of couplings to polynomials
 
   std::unordered_map<std::string, std::string> poly;
   // 1D scans
-  poly["kl"] = "x2";
-  poly["kt"] = "x4";
-  poly["cg"] = "x3";
-  poly["c2g"] = "x2";
-  poly["c2"] = "x2";
+  poly["chhh"] = "x2";
+  poly["ctth"] = "x4";
+  poly["cggh"] = "x3";
+  poly["cgghh"] = "x2";
+  poly["ctthh"] = "x2";
 
   // 2D scans
-  poly["kl_kt"] = "x2_y4";
-  poly["kl_cg"] = "x2_y3";
-  poly["kl_c2g"] = "x2_y2";
-  poly["kl_c2"] = "x2_y2";
-  poly["kt_c2"] =  "x4_y2";
-  poly["kt_c2g"] =  "x4_y2";
-  poly["kt_cg"] =  "x4_y3";
-  poly["cg_c2"] =  "x3_y2";
-  poly["cg_c2g"] =  "x3_y2";
-  poly["c2_c2g"] =  "x3_y2";
+  poly["chhh_ctth"] = "x2_y4";
+  poly["chhh_cggh"] = "x2_y3";
+  poly["chhh_cgghh"] = "x2_y2";
+  poly["chhh_ctthh"] = "x2_y2";
+  poly["ctth_ctthh"] =  "x4_y2";
+  poly["ctth_cgghh"] =  "x4_y2";
+  poly["ctth_cggh"] =  "x4_y3";
+  poly["cggh_ctthh"] =  "x3_y2";
+  poly["cggh_cgghh"] =  "x3_y2";
+  poly["ctthh_cgghh"] =  "x3_y2";
  
   //3D scans
-  poly["c2g_cg_c2"] = "x2_y3_z2";
+  poly["cgghh_cggh_ctthh"] = "x2_y3_z2";
+  poly["chhh_ctthh_cgghh"] = "x2_y2_z2";
 
   std::unordered_map<std::string, std::string> name;
-  name["kl"] = "\\kappa_{\\lambda}";
-  name["kt"] = "\\kappa_{t}";
-  name["cg"] = "c_{ggh}";
-  name["c2g"] = "c_{gghh}";
-  name["c2"] = "c_{tt}";
+  name["chhh"] = "c_{hhh}";
+  name["ctth"] = "c_{tth}";
+  name["cggh"] = "c_{ggh}";
+  name["cgghh"] = "c_{gghh}";
+  name["ctthh"] = "c_{tthh}";
 
   std::unordered_map<std::string,std::vector<float>> range;
-  range["kl"] = {-4.0,10.0};
-  range["kt"] = {-1.0,1.5};
-  range["cg"] = {-6.0,7.0};
-  range["c2g"] = {-2.0,2.0};
-  range["c2"] = {-2.0,2.0};
+  range["chhh"] = {-4.0,10.0};
+  range["ctth"] = {-1.0,1.5};
+  range["cggh"] = {-6.0,7.0};
+  range["cgghh"] = {-2.0,2.0};
+  range["ctthh"] = {-2.0,2.0};
   
   
 
@@ -326,7 +341,7 @@ int FitHistograms(){
 
   std::string json_string = "{ ";
 
-  TFile *f = TFile::Open("/afs/cern.ch/work/l/lapereir/public/KEEP/bbyy_scans.root", "READ");  
+  TFile *f = TFile::Open(filename, "READ");  
 
   std::map<std::pair< std::string,std::string>, TString> ParamF;
 
