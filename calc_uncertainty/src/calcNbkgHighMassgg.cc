@@ -150,26 +150,33 @@ RooCurve *createBand(RooCurve *cenCurve, RooAbsPdf *pdf, RooRealVar *x, RooFitRe
   unique_ptr<RooAbsPdf> cloneFunc((RooAbsPdf*)pdf->cloneTree());
   RooArgSet *cloneParams=cloneFunc->getObservables(res->floatParsFinal());
   RooArgSet *errorParams=(RooArgSet*)cloneParams->selectCommon(*params);
+std::cout<<__LINE__<<std::endl;
   unique_ptr<RooAbsPdf> paramPdf(res->createHessePdf(*errorParams));
+std::cout<<__LINE__<<std::endl;
 
   unique_ptr<RooDataSet> asimovData;
 
-  //Int_t n = Int_t(1./TMath::Erfc(Z/sqrt(2.)))*1; // <- ALEX: quick version for testing
-  Int_t n = Int_t(100./TMath::Erfc(Z/sqrt(2.)))*100; // <- ALEX: for the final result
+  Int_t n = Int_t(1./TMath::Erfc(Z/sqrt(2.)))*1; // <- ALEX: quick version for testing
+  //Int_t n = Int_t(100./TMath::Erfc(Z/sqrt(2.)))*100; // <- ALEX: for the final result
   if (n<100) n=100 ;
 
   // Generate variation curves with above set of parameter values
   //RooRandom::randomGenerator() -> SetSeed(0) ;
   gRandom->SetSeed(0);
+std::cout<<__LINE__<<std::endl;
   RooDataSet* d = paramPdf->generate(*errorParams,n) ;
   vector<RooCurve*> cvec ;
+std::cout<<__LINE__<<std::endl;
   for (int i=0 ; i<d->numEntries() ; i++) {
     *cloneParams = (*d->get(i)) ;
     unique_ptr<RooDataSet> asimovData_tmp((RooDataSet*)AsymptoticCalculator::GenerateAsimovData(*cloneFunc, RooArgSet(*x)));
     RooRealVar w("w","w",1);
     asimovData.reset(new RooDataSet("asimovData_tmp","asimovData_tmp", RooArgSet(*x, w), WeightVar(w)));
+std::cout<<__LINE__<<std::endl;
     statistics::copyDataSet(asimovData_tmp.get(), x, asimovData.get(), x, &w);
+std::cout<<__LINE__<<std::endl;
     releaseTheGhost(asimovData.get(), x, &w, 1e-9);
+std::cout<<__LINE__<<std::endl;
 
     cvec.push_back(convertAsimovToCurve(asimovData.get(), x->GetName(), isHist));
 
@@ -236,8 +243,8 @@ int main(int argc, char**argv){
     
     //ws->loadSnapshot("conditionalGlobs_1");
     //ws->loadSnapshot("conditionalNuis_1");
-    ws->var("mu_XS_HH")->setVal(0);   //ALEX: Tell the program that the main POI in the fit is mu_XS_HH (otherwise it will not know).
-    ws->var("mu_XS_HH")->setConstant(false);
+    ws->var("mu_VBF_RW")->setVal(0);   //ALEX: Tell the program that the main POI in the fit is mu_XS_HH (otherwise it will not know).
+    ws->var("mu_VBF_RW")->setConstant(false);
 
     cout << inputWSFileName << "\t" << option << endl;
 
@@ -275,6 +282,7 @@ int main(int argc, char**argv){
     //cout<<"Fix set:"<<endl;
     //fixSet->Print("V");
     
+std::cout<<__LINE__<<std::endl;
     RooFitResult* res=profileToData(mc, data);
     //res->Print();
     //cout << "parameters" << endl;
@@ -410,7 +418,9 @@ int main(int argc, char**argv){
       statistics::setVal(ws->var("mu_XS_H"), 0, true);
     } 
 
+std::cout<<__LINE__<<std::endl;
     for ( int i= 0; i < numChannels; i++ ) {
+std::cout<<"channel: "<<i<<std::endl;
       m_cat->setBin(i);
       TString channelname=m_cat->getLabel();
       RooAbsPdf* pdfi = pdf->getPdf(m_cat->getLabel());
@@ -422,10 +432,12 @@ int main(int argc, char**argv){
       AsymptoticCalculator::SetPrintLevel(0);
       unique_ptr<RooDataSet> asimovData((RooDataSet*)AsymptoticCalculator::GenerateAsimovData(*pdfi, RooArgSet(*x)));
       RooCurve *cenCurve=convertAsimovToCurve(asimovData.get(), x->GetName(), option.Contains("mt"));
+std::cout<<__LINE__<<std::endl;
 
       cenCurve->SetName("nominal");
       RooCurve* bandFull=createBand(cenCurve, pdfi, x, res, fullSet, 1, option.Contains("mt"));
       bandFull->SetName("bandFull");
+std::cout<<__LINE__<<std::endl;
 
       double central = 0, errHi = 0, errLow = 0;
       calcNbkg(cenCurve, bandFull, central, errHi, errLow);
